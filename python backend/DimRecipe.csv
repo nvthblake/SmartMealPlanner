@@ -1,0 +1,81 @@
+id,title,vegetarian,vegan,glutenFree,dairyFree,veryHealthy,cheap,veryPopular,sustainable,sourceName,readyInMinutes,servings,sourceUrl
+873979,Onigiri,True,True,True,True,False,False,False,False,Food Fanatic,45,3,https://www.foodfanatic.com/2017/04/onigiri/
+795145,VIDEO: Chocolate Peanut Butter Brown Rice Crispy Treats,True,True,True,True,False,False,True,False,Fit Foodie Finds,5,9,http://fitfoodiefinds.com/2016/07/video-chocolate-peanut-butter-brown-rice-crispy-treats/
+526321,Red Dates and Egg Tea,True,False,True,True,False,False,False,False,Christines Recipes ,50,1,http://en.christinesrecipes.com/2012/03/red-dates-and-egg-tea.html
+565537,{ Redux} Green Tea Rice,True,True,True,True,False,False,False,False,The Lean Green Bean,35,4,http://www.theleangreenbean.com/recipe-redux-green-tea-rice/
+201056,"Glutinous Rice with Red Bean Paste, Walnuts, and Currants",True,True,True,True,False,False,False,False,Serious Eats,60,8,http://www.seriouseats.com/recipes/2012/05/glutinous-rice-with-red-bean-paste-walnuts-an.html
+202384,Berliner Weisse (For Intermediate Homebrewers),True,False,False,False,False,False,False,False,Serious Eats,45,40,http://www.seriouseats.com/recipes/2012/03/homebrewing-berliner-weisse-recipe-how-to-brew-sour-beer.html
+540657,Gyudon Bento,True,True,True,True,True,False,False,False,Just One Cookbook,15,1,http://www.justonecookbook.com/recipes/gyudon-bento/
+36516,Red Beans And Rice,True,True,True,True,False,False,False,False,Healthy Happy Life,45,1,http://kblog.lunchboxbunch.com/2011/12/easy-vegan-family-meal-hsus-party-too.html
+273947,Country Pie,False,False,True,True,False,False,False,False,Kraft Recipes,60,6,http://www.kraftrecipes.com/recipes/country-pie-66271.aspx
+1120239,Fresh Grilled Shrimp Meal Prep Bowls,False,False,False,True,False,False,False,False,Fit Foodie Finds,40,4,https://fitfoodiefinds.com/fresh-grilled-shrimp-meal-prep-bowls/
+1031764,Clean Eating Lunch Box Burritos,True,True,False,True,False,False,False,False,The Gracious Pantry,15,1,https://www.thegraciouspantry.com/clean-eating-lunch-box-burritos-recipe/
+99259,Easy Rice Salsa Salad,True,True,True,True,False,False,False,False,Food.com,5,1,http://www.food.com/recipe/easy-rice-salsa-salad-234363
+35633,Peanut Butter Crispy Rice Treats,True,False,True,True,False,False,False,False,My Recipes,45,15,http://www.myrecipes.com/recipe/peanut-butter-crispy-rice-treats-10000002011071/
+265244,Cilantro-Chipotle Rice,True,True,True,True,False,False,False,False,My Recipes,6,4,http://www.myrecipes.com/recipe/cilantro-chipotle-rice-10000001896161/
+35868,Rice Pilaf with Chorizo and Scallions,False,False,True,True,False,False,False,False,My Recipes,45,4,http://www.myrecipes.com/recipe/rice-pilaf-with-chorizo-scallions-10000001866498/
+70625,Apple Rice,True,True,True,True,False,False,False,False,,12,1,http://healthy.betterrecipes.com/apple-rice.html
+271836,10-Minute Cheesy Mexican Rice,True,False,True,True,False,False,False,False,,10,10,http://www.Kraftrecipes.com/recipes/10-minute-cheesy-mexican-rice-51916.aspx
+110417,San Francisco Chicken Brocco - Roni,False,False,True,True,False,False,False,False,Food.com,11,4,http://www.food.com/recipe/san-francisco-chicken-brocco-roni-428464
+372588,Broccoli with Rice,False,False,True,True,True,False,False,False,Taste of Home,20,4,http://www.tasteofhome.com/Recipes/broccoli-with-rice
+113625,Black Beans and Yellow Rice,False,False,True,True,False,False,False,False,Food.com,13,4,http://www.food.com/recipe/black-beans-and-yellow-rice-253774
+481928,How to Make Gluten Free Instant Oatmeal,True,True,True,True,False,False,False,False,Confessions of an Over Worked Mom,6,1,http://www.confessionsofanover-workedmom.com/2014/03/make-gluten-free-instant-oatmeal.html
+521501,Chocolate and Peanut Butter Oatmeal,False,False,True,True,True,False,False,False,Clean and Delicious,45,1,http://cleananddelicious.com/2007/12/27/chocolate_and_peanut_butter_oa/
+248189,Homemade Fruit-Sweetened Oat Milk,True,True,True,True,False,False,False,False,Go Dairy Free,10,4,http://www.godairyfree.org/recipes/homemade-oat-milk-ii-vegan-nut-free-soy-free-wheat-free
+56649,Honey And Dates Oatmeal,True,False,True,True,False,False,False,False,Closet Cooking,15,4,http://www.closetcooking.com/2008/01/oatmeal.html
+793786,Baked Oatmeal Breakfast Bowls,True,False,True,False,False,False,False,False,Fountain Venue Kitchen,45,1,http://fountainavenuekitchen.com/baked-oatmeal-breakfast-bowls/
+521703,Bee Pollen & Flax Topped Oatmeal,True,False,True,True,False,False,False,False,Clean and Delicious,5,1,http://cleananddelicious.com/2010/04/01/bee_pollen_flax_topped_oatmeal/
+228587,Granola Parfait Cups,True,False,True,False,False,False,False,False,Kirbie Cravings,45,6,http://kirbiecravings.com/2013/07/granola-yogurt-parfait-cups.html
+125298,Tropical Oatmeal,False,False,True,True,False,False,False,False,Food.com,6,1,http://www.food.com/recipe/tropical-oatmeal-185476
+616685,Oatmeal porridge with Goya chocolate hazelnut spread,True,True,True,True,False,False,False,False,Casaveneracion,2,1,http://casaveneracion.com/oatmeal-porridge-goya-chocolate-hazelnut-spread/
+96937,Prussian Kale,False,False,True,True,True,False,False,False,Food.com,35,3,http://www.food.com/recipe/prussian-kale-100200
+128910,Orange Oatmeal - 3 Ingredients!,True,True,True,True,False,False,False,False,Food.com,2,1,http://www.food.com/recipe/orange-oatmeal-3-ingredients-353642
+70524,Oatmeal and Pie Spice Cookies,False,False,False,True,False,False,False,False,My Recipes,45,60,http://www.myrecipes.com/recipe/oatmeal-pie-spice-cookies-10000001565749/
+608753,Vanilla Graham No Bake Granola Bars,False,False,False,True,False,False,True,False,The Housewife in Training Files,8,8,http://thehousewifeintrainingfiles.com/vanilla-graham-bake-granola-bars/
+610432,Oatmeal Banana Bread Pancakes {low fat high fiber},True,False,True,False,False,False,True,False,Tidy Mom,12,6,http://tidymom.net/2014/banana-bread-pancakes/
+604906,Chocolate Face Mask +Happy Birthday Printable Gift Tag,True,False,True,False,False,False,False,False,Tidy Mom,2,2,http://tidymom.net/2014/chocolate-face-mask/
+605773,Maple Bacon Oatmeal,False,False,True,True,False,False,False,False,Table for Two Blog,10,2,http://www.tablefortwoblog.com/maple-bacon-oatmeal/
+765471,White Chocolate Oatmeal Creme Pie Fudge,False,False,True,False,False,False,False,False,Inside BruCrew Life,20,36,http://insidebrucrewlife.com/2016/05/white-chocolate-oatmeal-creme-pie-fudge/
+49636,Gone Bananas Rolled Oats,False,False,True,True,False,False,False,False,,45,2,http://www.stilettochef.com/1857/gone-bananas-rolled-oats-in-the-am/
+142868,Muesli,True,False,True,False,False,False,False,False,Food.com,10,2,http://www.food.com/recipe/muesli-205921
+160518,Strawberry Banana Nut Oatmeal Smoothies,True,False,True,False,False,False,False,False,,5,2,http://www.BettyCrocker.com/recipes/strawberry-banana-nut-oatmeal-smoothies/3503c069-1bdf-432e-89a7-8a64fcead0ee
+670998,Italian Wedding Soup,False,False,False,True,False,False,True,False,King Arthur Flour,125,29,http://www.kingarthurflour.com/recipes/italian-wedding-soup-recipe
+76953,Spaghetti With Pecorino Romano And Black Pepper,True,False,False,False,True,False,False,False,Bijouxs,12,1,http://bijouxs.com/2010/09/12/cacio-e-pepe-spaghetti-with-pecorino-romano-and-black-pepper/
+537376,Haystacks,False,False,False,False,False,False,True,False,She Wears Many Hats,35,50,http://shewearsmanyhats.com/2011/10/haystacks-recipe/
+598024,Easter Egg Haystacks,False,False,False,True,False,False,True,False,Somethings Wanky,45,12,http://www.somethingswanky.com/easter-egg-haystacks/
+532783,French Bread Pizza,True,False,False,False,False,False,True,False,The Hungry House Wife,15,4,http://www.thehungryhousewife.com/2013/06/french-bread-pizza.html
+475267,Chocolate Haystacks,False,False,False,True,False,False,True,False,Add A Pinch,17,48,http://addapinch.com/cooking/2012/10/10/chocolate-haystacks-recipe/
+592424,Antipasto Pasta,False,False,False,True,False,False,False,False,Budget Bytes,15,8,http://www.budgetbytes.com/2010/01/antipasto-pasta/
+591703,Spaghetti and Meatballs,False,False,False,True,False,False,False,False,Budget Bytes,45,6,http://www.budgetbytes.com/2009/12/spaghetti-and-meatballs/
+532320,Chili Pasta Bake,False,False,False,False,True,False,False,False,Premeditated Left Over,35,8,http://premeditatedleftovers.com/recipes-cooking-tips/chili-pasta-bake/
+139508,Ravioli Lasagna,False,False,False,False,False,False,False,False,Food.com,80,4,http://www.food.com/recipe/ravioli-lasagna-90566
+538633,Pasta de langosta fácil,False,False,False,True,False,False,False,False,Cocina Dominicana,15,6,http://www.cocinadominicana.com/6973/pasta-langosta-facil.html
+799756,Cream Cheese Pesto Pasta,False,False,False,False,False,False,False,False,Kitchen Nostalgia,45,2,http://www.kitchennostalgia.com/pasta/cream-cheese-pesto-pasta.html
+393974,Sausage 'n' Black Bean Pasta,False,False,False,True,False,False,False,False,Taste of Home,20,3,http://www.tasteofhome.com/recipes/sausage--n--black-bean-pasta
+77247,Chicken And Mushroom Spaghetti,False,False,False,True,False,False,False,False,,2,4,http://www.wholeliving.com/132690/chicken-and-mushroom-spaghetti
+1509201,Healthy Brownies,False,False,False,False,False,False,False,False,The Gracious Pantry,30,12,https://www.thegraciouspantry.com/mac-and-cheese-bites-recipe/
+269443,Zesty Mac & Cheese,True,False,False,False,False,False,False,False,,20,20,http://www.Kraftrecipes.com/recipes/zesty-mac-cheese-129409.aspx
+138608,Tortellini and Caponata Bake,False,False,False,False,False,False,False,False,Food.com,30,3,http://www.food.com/recipe/tortellini-and-caponata-bake-198426
+138667,Chili Mac,False,False,False,True,False,False,False,False,Food.com,30,2,http://www.food.com/recipe/chili-mac-88215
+139388,Awesome Pasta Sauce,False,False,False,True,False,False,False,False,,605,6,http://italian.food.com/recipe/awesome-pasta-sauce-13434
+604875,Arugula Pesto Pasta Salad,True,False,False,False,False,False,False,False,Culicurious,30,4,http://www.culicurious.com/arugula-pesto-pasta-salad-recipe-nmhcp/
+1075071,25 Chicken,False,False,True,True,False,False,False,False,Real Housemoms,45,15,https://realhousemoms.com/25-chicken-recipes/
+559886,Chicken Fajita Sandwiches,False,False,False,False,False,False,True,False,Jo Cooks,40,4,http://www.jocooks.com/main-courses/poultry-main-courses/chicken-fajita-sandwiches/
+510869,Chicken Potsticker Soup,False,False,True,True,True,False,True,False,Peanut Butter and Peepers,12,4,http://www.peanutbutterandpeppers.com/2014/02/20/chicken-potsticker-soup/
+574737,Garlic Herb Crock Pot Chicken,False,False,True,True,False,False,True,False,Joyful Healthy Eats,365,6,http://www.joyfulhealthyeats.com/garlic-herb-crock-pot-chicken/
+217239,Beer-Can Chicken,False,False,False,True,False,False,True,False,Epicurious,45,4,http://www.epicurious.com/recipes/food/views/Beer-Can-Chicken-51175350
+570366,Basic Crockpot Buffalo Chicken,False,False,True,True,False,False,True,False,The Kitchen Magpie,481,4,http://www.thekitchenmagpie.com/basic-crockpot-buffalo-chicken
+74358,rotisserie” Chicken,False,False,True,True,True,False,False,False,Our Best Bites,45,1,http://www.ourbestbites.com/2008/05/rotisserie-chicken/
+611630,Balsamic Chicken and Pear Salad,False,False,True,False,False,False,False,False,Crumbs and Chaos,45,2,http://www.crumbsandchaos.net/2014/09/balsamic-chicken-pear-salad/
+248990,1-2-3 Portobello Chicken,False,False,True,True,False,False,False,False,Go Dairy Free,90,4,http://www.godairyfree.org/recipes/entrees/1-2-3-portobello-chicken-egg-free-gluten-free-nut-free-soy-free
+136586,Crock Pot Roasted Chicken With Rosemary and Garlic,False,False,True,True,False,False,False,False,Food.com,435,6,http://www.food.com/recipe/crock-pot-roasted-chicken-with-rosemary-and-garlic-19411
+521767,Chicken guacamole sandwich,False,False,False,True,False,False,False,False,Casaveneracion,10,4,http://casaveneracion.com/chicken-guacamole-sandwich/
+1156204,Air Fryer Whole Chicken,False,False,True,False,False,False,False,False,Belle of the Kitchen,65,6,https://belleofthekitchen.com/air-fryer-whole-chicken/
+1020423,Bold and Spicy BBQ Chicken Mignon Sliders,False,False,False,True,False,False,False,False,Daily Dish Recipes,25,4,https://dailydishrecipes.com/bold-and-spicy-bbq-chicken-mignon-sliders/
+394088,Diploma Sandwiches,False,False,False,True,False,False,False,False,Taste of Home,30,22,http://www.tasteofhome.com/Recipes/diploma-sandwiches
+386635,Quick Sweet-and-Sour Chicken,False,False,True,True,False,False,False,False,Taste of Home,25,3,http://www.tasteofhome.com/Recipes/quick-sweet-and-sour-chicken
+133849,Chicken Salad Crescent Rolls,False,False,False,True,False,False,False,False,My Recipes,45,8,http://www.myrecipes.com/recipe/chicken-salad-crescent-rolls-10000001599579/
+265707,Greek-Style Lemon Roast Chicken,False,False,True,True,False,False,False,False,,115,55,http://www.KraftRecipes.com/recipes/greek-style-lemon-roast-chicken-63162.aspx
+544373,Chicken Fajita Quesadilla,False,False,True,False,False,False,False,False,Weelicious,7,4,http://weelicious.com/2011/01/19/chicken-fajita-quesadilla/
+259284,Rosemary Garlic Roast Chicken,False,False,True,True,False,False,False,False,My Recipes,80,4,http://www.myrecipes.com/recipe/rosemary-garlic-roast-chicken-10000001133783/
+170328,Zesty Italian Chicken,False,False,True,True,False,False,False,False,Betty Crocker,65,6,https://www.bettycrocker.com/recipes/zesty-italian-chicken/6bf8d232-e4ea-401f-9397-9b07393c8813

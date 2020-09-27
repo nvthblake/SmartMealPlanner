@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/ingredientFragment">
+    <fragment
+        android:id="@+id/ingredientFragment"
+        android:name="com.example.smartfridge.IngredientFragment"
+        android:label="Ingredients"
+        tools:layout="@layout/fragment_ingredient" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.smartfridge.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/scanFragment"
+        android:name="com.example.smartfridge.ScanFragment"
+        android:label="Scan"
+        tools:layout="@layout/fragment_scan" />
+    <fragment
+        android:id="@+id/shoppingFragment"
+        android:name="com.example.smartfridge.ShoppingFragment"
+        android:label="Shopping List"
+        tools:layout="@layout/fragment_shopping" />
+    <fragment
+        android:id="@+id/recipeFragment"
+        android:name="com.example.smartfridge.RecipeFragment"
+        android:label="Recipe"
+        tools:layout="@layout/fragment_recipe" />
+</navigation>

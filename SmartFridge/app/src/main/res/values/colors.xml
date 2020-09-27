@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--  blue  -->
+    <color name="colorPrimary">#537aff</color>
+    <color name="colorPrimaryDark">#537aff</color>
+
+    <!--  light blue  -->
+    <color name="colorSecondary">#7a9aff</color>
+
+    <!--  super light blue  -->
+    <color name="colorThird">#eef3fb</color>
+
+    <!--  light blue grey for background  -->
+    <color name="colorBackground">#f4f6f9</color>
+
+    <color name="colorGrey">#575b63</color>
+    <color name="colorBlack">#292c3e</color>
+    <color name="colorAccent">#537aff</color>
+
+</resources>

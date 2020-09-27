@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/ingredientFragment"
+        android:title="Ingredient"
+        android:icon="@drawable/ic_baseline_fastfood_24"/>
+    <item
+        android:id="@+id/recipeFragment"
+        android:title="Recipe"
+        android:icon="@drawable/ic_baseline_restaurant_menu_24"/>
+    <item
+        android:id="@+id/scanFragment"
+        android:title="Scan"
+        android:icon="@drawable/ic_baseline_camera_24"/>
+    <item
+        android:id="@+id/shoppingFragment"
+        android:title="Shopping"
+        android:icon="@drawable/ic_baseline_add_shopping_cart_24"/>
+    <item
+        android:id="@+id/profileFragment"
+        android:title="Profile"
+        android:icon="@drawable/ic_baseline_person_24"/>
+</menu>
