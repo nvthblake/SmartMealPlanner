@@ -13,10 +13,15 @@ import WelcomeScreen from "./app/screens/WelcomeScreen";
 import navigationTheme from "./app/navigation/navigationTheme";
 import Icon from "./app/components/Icon";
 import colors from "./app/config/colors";
+import IngredientsTab from "./app/tabs/IngredientsTab";
 
+// export default function App() {
+//   return ( <NavigationContainer>
+//     <AppNavigator />
+//   </NavigationContainer> 
+//   );
+// }
 export default function App() {
-  return ( <NavigationContainer>
-    <AppNavigator />
-  </NavigationContainer> 
+  return ( <IngredientsTab/> 
   );
 }
