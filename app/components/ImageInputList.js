@@ -27,6 +27,7 @@ function ImageInputList({ imageUris = [], onRemoveImage, onAddImage }) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
