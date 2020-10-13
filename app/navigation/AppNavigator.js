@@ -17,7 +17,7 @@ import colors from '../config/colors';
 const Tab = createBottomTabNavigator();
 
 const AppNavigator = () => (
-    <Tab.Navigator>
+    <Tab.Navigator tabBarOptions={{keyboardHidesTabBar: true}}>
         <Tab.Screen name="Ingredients" component={ListingsScreen} options= {{
             tabBarIcon: ({ color, size }) => 
                 <MaterialCommunityIcons name="fridge-outline" color={color} size={size} />

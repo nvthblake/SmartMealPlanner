@@ -22,9 +22,12 @@ const validationSchema = Yup.object().shape({
 });
 
 const categories = [
-  { label: "Furniture", value: 1, backgroundColor: "red", icon: "apps" },
-  { label: "Clothing", value: 2, backgroundColor: "green", icon: "email" },
-  { label: "Electronic", value: 3, backgroundColor: "blue", icon: "lock" },
+  { label: "Meat", value: 1, backgroundColor: "red", icon: "apps" },
+  { label: "Vegetable", value: 2, backgroundColor: "green", icon: "email" },
+  { label: "Condiments", value: 3, backgroundColor: "blue", icon: "lock" },
+  { label: "Snack", value: 4, backgroundColor: "blue", icon: "lock" },
+  { label: "Fruit", value: 5, backgroundColor: "blue", icon: "lock" },
+  { label: "Others", value: 6, backgroundColor: "blue", icon: "lock" },
 ];
 
 function ListingEditScreen() {
@@ -54,8 +57,8 @@ function ListingEditScreen() {
         <AppFormPicker
           items={categories}
           name="category"
-          numberOfColumns={3} // Comment this out to display only 1 column
-          PickerItemComponent={CategoryPickerItem} // comment this out if dont want to display icon
+          // numberOfColumns={3} // Comment this out to display only 1 column
+          // PickerItemComponent={CategoryPickerItem} // comment this out if dont want to display icon
           placeholder="Category"
         />
         <AppFormField
