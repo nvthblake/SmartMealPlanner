@@ -8,7 +8,8 @@ import LoginScreen from "./app/screens/LoginScreen";
 import MessagesScreen from "./app/screens/MessagesScreen";
 import ViewImageScreen from "./app/screens/ViewImageScreen";
 import WelcomeScreen from "./app/screens/WelcomeScreen";
+import Profile from "./app/tabs/Profile";
 
 export default function App() {
-  return <AccountScreen />;
+  return <ListingEditScreen/>;
 }
