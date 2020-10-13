@@ -138,7 +138,10 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
-
+node_modules/*
+/node_modules
+node_modules/
+**/node_modules
 node_modules/**/*
 .expo/*
 npm-debug.*

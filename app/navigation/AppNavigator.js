@@ -6,6 +6,7 @@ import ListingEditScreen from '../screens/ListingEditScreen';
 import ListingsScreen from '../screens/ListingsScreen';
 import FeedNavigator from './FeedNavigator';
 import AccountNavigator from './AccountNavigator';
+import Profile from '../tabs/Profile';
 
 import { MaterialCommunityIcons, Feather, MaterialIcons } from '@expo/vector-icons';
 import AddItemButton from './AddItemButton';
@@ -42,7 +43,7 @@ const AppNavigator = () => (
                 // <MaterialCommunityIcons name="home" color={color} size={size} />
                 <Feather name="shopping-cart" size={size} color={color} />
         }} />
-        <Tab.Screen name="Account" component={AccountNavigator} options= {{
+        <Tab.Screen name="Account" component={Profile} options= {{
             tabBarIcon: ({ color, size }) => 
                 // <MaterialCommunityIcons name="account" color={color} size={size} />
                 <MaterialIcons name="person-outline" size={size} color={color} />

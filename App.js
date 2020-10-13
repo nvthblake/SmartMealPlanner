@@ -20,7 +20,3 @@ export default function App() {
   </NavigationContainer> 
   );
 }
-// export default function App() {
-//   return ( <AccountScreen/> 
-//   );
-// }
