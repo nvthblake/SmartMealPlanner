@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
-import CardView from "../shared/CardView";
+import CardView from "../components/CardView";
 
 function Profile(props) {
   return (
