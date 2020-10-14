@@ -138,7 +138,10 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
-
+node_modules/*
+/node_modules
+node_modules/
+**/node_modules
 node_modules/**/*
 .expo/*
 npm-debug.*
@@ -149,6 +152,7 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+package-lock.json
 
 # macOS
 .DS_Store
