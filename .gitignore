@@ -152,8 +152,10 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+package-lock.json
 
 # macOS
 .DS_Store
 node_modules
 
+.expo/packager-info.json

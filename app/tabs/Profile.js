@@ -1,10 +1,11 @@
 import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 import CardView from "../components/CardView";
+import Screen from "../components/Screen";
 
 function Profile(props) {
   return (
-    <View>
+    <Screen>
       <View style={styles.imageView}>
         <Text style={styles.welcome}> Welcome to SmartFridge</Text>
         <TouchableOpacity>
@@ -58,7 +59,7 @@ function Profile(props) {
           </View>
         </View>
       </CardView>
-    </View>
+    </Screen>
   );
 }
 
