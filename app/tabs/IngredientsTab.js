@@ -141,31 +141,38 @@ const listings = [
 const inventoryFilter = [
   {
     id: 1,
-    title: "All"
+    title: "All",
+    select: true
   },
   {
     id: 2,
-    title: "Meat"
+    title: "Meat",
+    select: false
   },
   {
     id: 3,
-    title: "Vegetable"
+    title: "Vegetable",
+    select: false
   },
   {
     id: 4,
-    title: "Snack"
+    title: "Snack",
+    select: false
   },
   {
     id: 5,
-    title: "Condiments"
+    title: "Condiments",
+    select: false
   },
   {
     id: 6,
-    title: "Fruit"
+    title: "Fruit",
+    select: false
   },
   {
     id: 7,
-    title: "Others"
+    title: "Others",
+    select: false
   },
 
 ];
@@ -173,11 +180,30 @@ const inventoryFilter = [
 const screenWidth = Dimensions.get('window').width;
 
 
-function onSelect(){
-  const [buttonColor, setButtonColor] = useState(colors.medium)
-}
-
 function IngredientsTab(props) {
+    const [ingrFilter, setIngrFilter] = useState(inventoryFilter)
+    const toggleOnOff = (item) => {
+      let temp = [...ingrFilter]
+      temp = temp.map(invFilter => {
+        if (item.id === 1 && invFilter.select === true) {
+          for (let i = 2; i < temp.length; i++) {
+            ingrFilter[i].select === false;
+          }
+          return {
+            id:invFilter.id,
+            select: !invFilter.select,
+            title: invFilter.title
+          }; 
+        }
+        if (item.id === invFilter.id) return {
+          id:invFilter.id,
+          select: !invFilter.select,
+          title: invFilter.title
+        };
+        else return invFilter;
+      })
+      setIngrFilter(temp)
+    };
   return (
     <Screen style={styles.screen}>
       <AppText style={{fontSize: 30, color: colors.primary, fontWeight: "bold", marginLeft: screenWidth*0.05 }} >{"My Ingredients"}</AppText>
@@ -186,14 +212,16 @@ function IngredientsTab(props) {
           marginRight: screenWidth*0.05
         }} >
         <FlatList 
-          data={inventoryFilter} 
+          data={ingrFilter} 
           horizontal
           showsHorizontalScrollIndicator={false}
           keyExtractor={(listing) => listing.id.toString()}
           renderItem={({ item }) => (
             <AppButton 
+              color = {item.select ? (colors.primary) : (colors.white)}
+              textColor = {item.select ? (colors.white) : (colors.primary)}
+              onPress={() => toggleOnOff(item)}
               title={item.title}
-              // onPress={() => } 
             />
           )} >
         </FlatList>
@@ -226,6 +254,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-evenly",
   },
+  AppButton: {
+    borderRadius: 10
+  }
 });
 
 export default IngredientsTab;

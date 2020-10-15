@@ -15,13 +15,13 @@ import Icon from "./app/components/Icon";
 import colors from "./app/config/colors";
 import IngredientsTab from "./app/tabs/IngredientsTab";
 
-// export default function App() {
-//   return ( <NavigationContainer>
-//     <AppNavigator />
-//   </NavigationContainer> 
-//   );
-// }
 export default function App() {
-  return ( <IngredientsTab/> 
+  return ( 
+    <IngredientsTab/>
   );
 }
+// export default function App() {
+//   return ( 
+//   <ListingEditScreen/> 
+//   );
+// }

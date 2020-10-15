@@ -68,7 +68,7 @@ function ListingEditScreen() {
           numberOfLines={3}
           placeholder="Description"
         />
-        <SubmitButton title="Post" />
+        <SubmitButton title="Post" size={25} />
       </AppForm>
     </Screen>
   );
