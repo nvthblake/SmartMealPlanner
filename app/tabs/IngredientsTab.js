@@ -226,21 +226,23 @@ function IngredientsTab(props) {
           )} >
         </FlatList>
       </View>
-      <FlatList
-        columnWrapperStyle={styles.gridView}
-        numColumns={3}
-        data={listings}
-        keyExtractor={(listing) => listing.id.toString()}
-        renderItem={({ item }) => (
-          <SqCard
-            title={item.title}
-            subTitle={"QTY: " + item.qty}
-            image={item.image}
-            screenWidth={screenWidth}
-            expStatus={item.exp}
-          />
-        )}
-      />
+      <View style={{marginBottom: 85}}>
+        <FlatList
+          columnWrapperStyle={styles.gridView}
+          numColumns={3}
+          data={listings}
+          keyExtractor={(listing) => listing.id.toString()}
+          renderItem={({ item }) => (
+            <SqCard
+              title={item.title}
+              subTitle={"QTY: " + item.qty}
+              image={item.image}
+              screenWidth={screenWidth}
+              expStatus={item.exp}
+            />
+          )}
+        />
+      </View>
     </Screen>
   );
 }

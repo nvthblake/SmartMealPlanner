@@ -14,14 +14,20 @@ import navigationTheme from "./app/navigation/navigationTheme";
 import Icon from "./app/components/Icon";
 import colors from "./app/config/colors";
 import IngredientsTab from "./app/tabs/IngredientsTab";
+import Profile from "./app/tabs/Profile";
 
 export default function App() {
   return ( 
-    <IngredientsTab/>
+    <Profile/>
   );
 }
+
+
+// Uncomment the following to test the Navigation Function
 // export default function App() {
 //   return ( 
-//   <ListingEditScreen/> 
+//   <NavigationContainer>
+//     <AppNavigator/>
+//   </NavigationContainer> 
 //   );
 // }
