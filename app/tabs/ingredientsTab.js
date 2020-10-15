@@ -181,8 +181,29 @@ const screenWidth = Dimensions.get('window').width;
 
 
 function IngredientsTab(props) {
-    const [isToggled, setToggled] = useState(inventoryFilter.select)
-    const toggleOnOff = () => {setToggled(!isToggled)};
+    const [ingrFilter, setIngrFilter] = useState(inventoryFilter)
+    const toggleOnOff = (item) => {
+      let temp = [...ingrFilter]
+      temp = temp.map(invFilter => {
+        if (item.id === 1 && invFilter.select === true) {
+          for (let i = 2; i < temp.length; i++) {
+            ingrFilter[i].select === false;
+          }
+          return {
+            id:invFilter.id,
+            select: !invFilter.select,
+            title: invFilter.title
+          }; 
+        }
+        if (item.id === invFilter.id) return {
+          id:invFilter.id,
+          select: !invFilter.select,
+          title: invFilter.title
+        };
+        else return invFilter;
+      })
+      setIngrFilter(temp)
+    };
   return (
     <Screen style={styles.screen}>
       <AppText style={{fontSize: 30, color: colors.primary, fontWeight: "bold", marginLeft: screenWidth*0.05 }} >{"My Ingredients"}</AppText>
@@ -191,14 +212,15 @@ function IngredientsTab(props) {
           marginRight: screenWidth*0.05
         }} >
         <FlatList 
-          data={inventoryFilter} 
+          data={ingrFilter} 
           horizontal
           showsHorizontalScrollIndicator={false}
           keyExtractor={(listing) => listing.id.toString()}
           renderItem={({ item }) => (
             <AppButton 
-              borderColor = {item.select ? (colors.primary) : (colors.medium)}
-              onPress={toggleOnOff}
+              color = {item.select ? (colors.primary) : (colors.white)}
+              textColor = {item.select ? (colors.white) : (colors.primary)}
+              onPress={() => toggleOnOff(item)}
               title={item.title}
             />
           )} >
@@ -232,6 +254,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-evenly",
   },
+  AppButton: {
+    borderRadius: 10
+  }
 });
 
 export default IngredientsTab;
