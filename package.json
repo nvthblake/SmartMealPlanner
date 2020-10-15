@@ -16,7 +16,7 @@
     "expo-image-picker": "~9.1.0",
     "expo-permissions": "~9.3.0",
     "expo-status-bar": "~1.0.2",
-    "formik": "^2.2.0",
+    "formik": "^2.1.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.2.tar.gz",
