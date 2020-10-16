@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import * as Yup from "yup";
+import {openDatabase} from 'expo-sqlite';
 
 import {
   AppForm,
@@ -11,7 +12,10 @@ import {
 import Screen from "../components/Screen";
 import CategoryPickerItem from "../components/CategoryPickerItem";
 import FormImagePicker from "../components/forms/FormImagePicker";
+import DatabaseObject from "../components/database/DatabaseObject";
 
+
+const db = openDatabase("db2.db");
 
 const validationSchema = Yup.object().shape({
   ingredient: Yup.string().required().min(1).label("Ingredient"),
@@ -38,6 +42,7 @@ const units = [
 
 function ScanTab() {
 
+  const [forceUpdate, forceUpdateId] = useForceUpdate();
 
   return (
     <Screen style={styles.container}>
@@ -50,7 +55,28 @@ function ScanTab() {
           dayToExp: "",
           images: [],
         }}
-        onSubmit={(values) => {console.log(values)}}
+        onSubmit={(values) => {
+          db.transaction(tx => {
+            tx.executeSql(
+              "INSERT INTO FactFridge (ingredient, qty, unit, category, dayToExp, inFridge) values (?, ?, ?, ?, ?, ?)", 
+              [values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1],
+              console.log([values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1]), 
+              (_, error) => console.log(error)
+            );
+          },
+          null,
+          forceUpdate);
+          db.transaction(tx => {
+            tx.executeSql(
+              "SELECT * FROM FactFridge", 
+              [], 
+              (_, { rows }) => console.log(rows._array), 
+              (_, error) => console.log(error)
+            );
+          },
+          null,
+          forceUpdate)
+        }}
         validationSchema={validationSchema}
       >
         <FormImagePicker name="images" />
@@ -82,6 +108,11 @@ function ScanTab() {
       </AppForm>
     </Screen>
   );
+}
+
+function useForceUpdate() {
+  const [value, setValue] = useState(0);
+  return [() => setValue(value + 1), value];
 }
 
 const styles = StyleSheet.create({
