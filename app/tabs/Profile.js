@@ -1,10 +1,11 @@
 import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 import CardView from "../components/CardView";
+import Screen from "../components/Screen";
 
 function Profile(props) {
   return (
-    <View>
+    <Screen>
       <View style={styles.imageView}>
         <Text style={styles.welcome}> Welcome to SmartFridge</Text>
         <TouchableOpacity>
@@ -58,7 +59,7 @@ function Profile(props) {
           </View>
         </View>
       </CardView>
-    </View>
+    </Screen>
   );
 }
 
@@ -118,18 +119,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   seperatorline: {
-    marginTop: 20,
-    marginLeft: 20,
-    marginRight: 20,
+    margin: 20,
     borderBottomColor: "black",
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
   },
   minilogoview: {
     flexDirection: "row",
-    marginTop: 20,
-    marginLeft: 20,
-    marginRight: 20,
-    marginBottom: 20,
+    margin: 20,
     justifyContent: "space-between",
   },
   minitext: {

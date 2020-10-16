@@ -18,12 +18,12 @@ container: {
     alignItems: 'center',
     justifyContent:"center",
     backgroundColor: colors.primary,
-    borderRadius: 40,
+    borderRadius: 35,
     borderColor: colors.white,
-    borderWidth: 10,
-    height: 80,
-    width: 80,
-    bottom: 40,
+    borderWidth: 8,
+    height: 70,
+    width: 70,
+    bottom: 20,
 },
 });
 

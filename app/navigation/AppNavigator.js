@@ -14,12 +14,13 @@ import Icon from '../components/Icon';
 import ListingDetailsScreen from '../screens/ListingDetailsScreen';
 import ViewImageScreen from '../screens/ViewImageScreen';
 import colors from '../config/colors';
+import IngredientsTab from '../tabs/IngredientsTab';
 
 const Tab = createBottomTabNavigator();
 
 const AppNavigator = () => (
     <Tab.Navigator tabBarOptions={{keyboardHidesTabBar: true}}>
-        <Tab.Screen name="Ingredients" component={ListingsScreen} options= {{
+        <Tab.Screen name="Ingredients" component={IngredientsTab} options= {{
             tabBarIcon: ({ color, size }) => 
                 <MaterialCommunityIcons name="fridge-outline" color={color} size={size} />
         }} />
