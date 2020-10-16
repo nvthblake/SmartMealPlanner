@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {
-  StyleSheet,
-  FlatList,
-  Dimensions,
-  ScrollView,
-  View,
-  Text
-} from "react-native";
+import { StyleSheet, FlatList, Dimensions, View } from "react-native";
 import AppButton from "../components/AppButton";
 import AppText from "../components/AppText";
 
@@ -17,7 +10,7 @@ import SqCard from "../components/SqCard";
 import colors from "../config/colors";
 import { Component } from "react";
 
-import { addIngredient } from '../../IngredientsActions';
+import { addIngredientToFridge } from '../../actions';
 
 const inventoryFilter = [
   {
@@ -60,9 +53,9 @@ const inventoryFilter = [
 const screenWidth = Dimensions.get("window").width;
 
 function IngredientsTab(state) {
-  const { ingredients } = state;
-  const availableIngredients = ingredients.current;
-  
+  const { ingredients, addIngredientToFridge } = state;
+  const ingredientsInFridge = ingredients.fridge;
+
   const [ingrFilter, setIngrFilter] = useState(inventoryFilter);
   const toggleOnOff = (item) => {
     let temp = [...ingrFilter];
@@ -87,8 +80,25 @@ function IngredientsTab(state) {
     });
     setIngrFilter(temp);
   };
+
+
+
   return (
     <Screen style={styles.screen}>
+      <AppButton
+        color={"blue"}
+        onPress={() => {
+          addIngredientToFridge({
+            id: Math.floor(Math.random() * Math.floor(10000000)),
+            title: "Couch with all kinds of stain",
+            categoryName: "Condiment",
+            quantity: 10,
+            expirationDate: "red",
+            imageUrl: require("../assets/couch.jpg"),
+          })
+        }}
+        title={"Hello"}
+      />
       <AppText
         style={{
           fontSize: 30,
@@ -124,16 +134,16 @@ function IngredientsTab(state) {
         <FlatList
           columnWrapperStyle={styles.gridView}
           numColumns={3}
-          data={availableIngredients}
+          data={ingredientsInFridge}
           keyExtractor={(ingredient) => ingredient.id.toString()}
           renderItem={({ ingredient, index }) => {
             return (
               <SqCard
-                title={availableIngredients[index].title}
-                subTitle={"QTY: " + availableIngredients[index].qty}
-                image={availableIngredients[index].image}
+                title={ingredientsInFridge[index].title}
+                subTitle={"QTY: " + ingredientsInFridge[index].quantity}
+                image={ingredientsInFridge[index].imageUrl}
                 screenWidth={screenWidth}
-                expStatus={availableIngredients[index].exp}
+                expStatus={ingredientsInFridge[index].expirationDate}
               />
             )
           }}
@@ -164,7 +174,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => (
   bindActionCreators({
-    addIngredient,
+    addIngredientToFridge,
   }, dispatch)
 )
 

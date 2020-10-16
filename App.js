@@ -20,9 +20,9 @@ import Profile from "./app/tabs/Profile";
 import CameraScreen from "./app/screens/CameraScreen";
 
 // Redux Territory
-import ingredientsReducer from './IngredientsReducer';
+import reducers from './reducers';
 
-const store = createStore(ingredientsReducer);
+const store = createStore(reducers);
 
 export default function App() {
   return (
