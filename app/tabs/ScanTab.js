@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import * as Yup from "yup";
-import { Formik } from "formik";
 
 import {
   AppForm,
@@ -15,11 +14,12 @@ import FormImagePicker from "../components/forms/FormImagePicker";
 
 
 const validationSchema = Yup.object().shape({
-  title: Yup.string().required().min(1).label("Title"),
-  price: Yup.number().required().min(1).max(10000).label("Price"),
-  description: Yup.string().label("Description"),
+  ingredient: Yup.string().required().min(1).label("Ingredient"),
+  qty: Yup.number().required().min(1).max(10000).label("Quantity"),
+  unit: Yup.object().required().nullable().label("Unit"),
   category: Yup.object().required().nullable().label("Category"),
-  image: Yup.array().min(1, "Please select at least 1 image."),
+  dayToExp: Yup.number().required().min(1).label("Days to Expiration"),
+  images: Yup.array().min(1, "Please select at least 1 image."),
 });
 
 const categories = [
@@ -37,29 +37,31 @@ const units = [
 ]
 
 function ScanTab() {
- 
- 
+
+
   return (
     <Screen style={styles.container}>
       <AppForm
         initialValues={{
           ingredient: "",
           qty: "",
-          unit: "",
+          unit: null,
           category: null,
           dayToExp: "",
           images: [],
         }}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={(values) => {console.log(values)}}
         validationSchema={validationSchema}
       >
         <FormImagePicker name="images" />
-        <AppFormField maxLength={255} name="ingredient" placeholder="Ingredient" />
+        <AppFormField 
+          name="ingredient" 
+          placeholder="Ingredient" 
+        />
         <AppFormField
-          keyboardType="numeric"
-          maxLength={8}
           name="qty"
           placeholder="Quantity"
+          keyboardType="numeric"
         />
         <AppFormPicker
           items={units}
@@ -69,16 +71,12 @@ function ScanTab() {
         <AppFormPicker
           items={categories}
           name="category"
-          // numberOfColumns={3} // Comment this out to display only 1 column
-          // PickerItemComponent={CategoryPickerItem} // comment this out if dont want to display icon
           placeholder="Category"
         />
         <AppFormField
-          maxLength={255}
-          multiline
-          name="description"
-          numberOfLines={3}
-          placeholder="Description"
+          name="dayToExp"
+          placeholder="Days to Expiration"
+          keyboardType="numeric"
         />
         <SubmitButton title="Post" />
       </AppForm>
