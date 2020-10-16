@@ -65,7 +65,9 @@ function ShoppingList(props) {
           <FlatList
             data={todos}
             renderItem={({ item }) => (
-              <ShoppingItem item={item} pressHandler={pressHandler} />
+              <ShoppingItem 
+                item={item}   
+                pressHandler={pressHandler} />
             )}
           />
         </View>
@@ -125,17 +127,14 @@ const styles = StyleSheet.create({
   textformat: {
     fontSize: 30,
     color: colors.primary,
-    fontWeight: "bold",
-    marginLeft: screenWidth * 0.05,
+    fontWeight: "bold"
   },
   underline: {
-    marginLeft: screenWidth * 0.05,
     borderBottomColor: colors.primary,
     borderBottomWidth: 2,
-    width: 180,
+    width: 205,
   },
   list: {
-    marginLeft: screenWidth * 0.05,
     marginTop: 20,
   },
   plusButton: {
@@ -166,8 +165,6 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     marginLeft: 5,
-    borderBottomColor: colors.primary,
-    borderBottomWidth: 1
   },
   centeredView: {
     flex: 1,
