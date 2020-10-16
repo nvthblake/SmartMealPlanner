@@ -15,19 +15,17 @@ import Icon from "./app/components/Icon";
 import colors from "./app/config/colors";
 import IngredientsTab from "./app/tabs/IngredientsTab";
 import Profile from "./app/tabs/Profile";
+import CameraScreen from "./app/screens/CameraScreen";
 
 export default function App() {
-  return ( 
-    <Profile/>
-  );
+  return <CameraScreen />;
 }
 
-
-// Uncomment the following to test the Navigation Function
+// // Uncomment the following to test the Navigation Function
 // export default function App() {
-//   return ( 
-//   <NavigationContainer>
-//     <AppNavigator/>
-//   </NavigationContainer> 
+//   return (
+//     <NavigationContainer>
+//       <AppNavigator />
+//     </NavigationContainer>
 //   );
 // }
