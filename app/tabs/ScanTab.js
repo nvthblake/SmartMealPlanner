@@ -43,6 +43,7 @@ const units = [
 function ScanTab() {
 
   const [forceUpdate, forceUpdateId] = useForceUpdate();
+  tableFactFridge = DatabaseObject("FactFridge", db);
 
   return (
     <Screen style={styles.container}>
@@ -56,26 +57,21 @@ function ScanTab() {
           images: [],
         }}
         onSubmit={(values) => {
-          db.transaction(tx => {
-            tx.executeSql(
-              "INSERT INTO FactFridge (ingredient, qty, unit, category, dayToExp, inFridge) values (?, ?, ?, ?, ?, ?)", 
-              [values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1],
-              console.log([values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1]), 
-              (_, error) => console.log(error)
-            );
-          },
-          null,
-          forceUpdate);
-          db.transaction(tx => {
-            tx.executeSql(
-              "SELECT * FROM FactFridge", 
-              [], 
-              (_, { rows }) => console.log(rows._array), 
-              (_, error) => console.log(error)
-            );
-          },
-          null,
-          forceUpdate)
+          tableFactFridge.insert(
+            ["ingredient", "qty", "unit", "category", "dayToExp", "inFridge"],
+            [values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1]
+          )
+          tableFactFridge.select()
+          // db.transaction(tx => {
+          //   tx.executeSql(
+          //     "SELECT * FROM FactFridge", 
+          //     [], 
+          //     (_, { rows }) => console.log(rows._array), 
+          //     (_, error) => console.log(error)
+          //   );
+          // },
+          // null,
+          // forceUpdate)
         }}
         validationSchema={validationSchema}
       >
