@@ -1,5 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import AppNavigator from "./app/navigation/AppNavigator";
@@ -17,15 +19,22 @@ import IngredientsTab from "./app/tabs/IngredientsTab";
 import Profile from "./app/tabs/Profile";
 import CameraScreen from "./app/screens/CameraScreen";
 
-export default function App() {
-  return <CameraScreen />;
-}
+// Redux Territory
+import ingredientsReducer from './IngredientsReducer';
 
-// // Uncomment the following to test the Navigation Function
+const store = createStore(ingredientsReducer);
+
 // export default function App() {
-//   return (
-//     <NavigationContainer>
-//       <AppNavigator />
-//     </NavigationContainer>
-//   );
+//   return <CameraScreen />;
 // }
+
+// Uncomment the following to test the Navigation Function
+export default function App() {
+  return (
+    <Provider store={store}>
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
+    </Provider>
+  );
+}
