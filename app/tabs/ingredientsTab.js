@@ -85,7 +85,7 @@ function IngredientsTab(state) {
 
   return (
     <Screen style={styles.screen}>
-      <AppButton
+      {/* <AppButton
         color={"blue"}
         onPress={() => {
           addIngredientToFridge({
@@ -98,7 +98,7 @@ function IngredientsTab(state) {
           })
         }}
         title={"Hello"}
-      />
+      /> */}
       <AppText
         style={{
           fontSize: 30,
