@@ -17,15 +17,14 @@ import IngredientsTab from "./app/tabs/IngredientsTab";
 import Profile from "./app/tabs/Profile";
 import CameraScreen from "./app/screens/CameraScreen";
 
-export default function App() {
-  return <CameraScreen />;
-}
-
-// // Uncomment the following to test the Navigation Function
 // export default function App() {
-//   return (
-//     <NavigationContainer>
-//       <AppNavigator />
-//     </NavigationContainer>
-//   );
+//   return <CameraScreen />;
 // }
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <AppNavigator />
+    </NavigationContainer>
+  );
+}
