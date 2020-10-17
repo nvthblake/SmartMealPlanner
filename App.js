@@ -14,18 +14,17 @@ import navigationTheme from "./app/navigation/navigationTheme";
 import Icon from "./app/components/Icon";
 import colors from "./app/config/colors";
 import IngredientsTab from "./app/tabs/IngredientsTab";
-import ShoppingList from "./app/tabs/ShoppingList";
-
-export default function App() {
-  return ( 
-    <ShoppingList/>
-  );
-}
+import Profile from "./app/tabs/Profile";
+import CameraScreen from "./app/screens/CameraScreen";
 
 // export default function App() {
-//   return ( 
-//   <NavigationContainer>
-//     <AppNavigator/>
-//   </NavigationContainer> 
-//   );
+//   return <CameraScreen />;
 // }
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <AppNavigator />
+    </NavigationContainer>
+  );
+}

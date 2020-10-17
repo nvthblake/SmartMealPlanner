@@ -125,18 +125,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   seperatorline: {
-    marginTop: 20,
-    marginLeft: 20,
-    marginRight: 20,
+    margin: 20,
     borderBottomColor: "black",
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
   },
   minilogoview: {
     flexDirection: "row",
-    marginTop: 20,
-    marginLeft: 20,
-    marginRight: 20,
-    marginBottom: 20,
+    margin: 20,
     justifyContent: "space-between",
   },
   minitext: {
