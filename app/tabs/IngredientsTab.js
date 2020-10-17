@@ -1,11 +1,7 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  FlatList,
-  Dimensions,
-  ScrollView,
-  View,
-} from "react-native";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { StyleSheet, FlatList, Dimensions, View } from "react-native";
 import AppButton from "../components/AppButton";
 import AppText from "../components/AppText";
 
@@ -14,134 +10,7 @@ import SqCard from "../components/SqCard";
 import colors from "../config/colors";
 import { Component } from "react";
 
-const listings = [
-  {
-    id: 1,
-    title: "Red Dude for sale",
-    qty: 100,
-    exp: "red",
-    image: require("../assets/appIcon/ingredients.png"),
-  },
-  {
-    id: 2,
-    title: "Couch with all kinds of stain",
-    qty: 1000,
-    exp: "red",
-    image: require("../assets/couch.jpg"),
-  },
-  {
-    id: 3,
-    title: "Couch with all kinds of stain",
-    qty: 1000,
-    exp: "red",
-    image: require("../assets/couch.jpg"),
-  },
-  {
-    id: 4,
-    title: "Red Dude for sale",
-    qty: 100,
-    exp: "orange",
-    image: require("../assets/jacket.jpg"),
-  },
-  {
-    id: 5,
-    title: "Couch with all kinds of stain",
-    qty: 1000,
-    exp: "orange",
-    image: require("../assets/couch.jpg"),
-  },
-  {
-    id: 6,
-    title: "Couch with all kinds of stain",
-    qty: 1000,
-    exp: "yellow",
-    image: require("../assets/couch.jpg"),
-  },
-  {
-    id: 7,
-    title: "Red Dude for sale",
-    qty: 100,
-    exp: "yellow",
-    image: require("../assets/jacket.jpg"),
-  },
-  {
-    id: 8,
-    title: "Couch with all kinds of stain",
-    qty: 1000,
-    exp: "green",
-    image: require("../assets/couch.jpg"),
-  },
-  {
-    id: 9,
-    title: "Couch with all kinds of stain",
-    qty: 1000,
-    exp: "green",
-    image: require("../assets/couch.jpg"),
-  },
-  {
-    id: 10,
-    title: "Red Dude for sale",
-    qty: 100,
-    exp: "red",
-    image: require("../assets/jacket.jpg"),
-  },
-  {
-    id: 11,
-    title: "Red Dude for sale",
-    qty: 100,
-    exp: "red",
-    image: require("../assets/jacket.jpg"),
-  },
-  {
-    id: 12,
-    title: "Couch with all kinds of stain",
-    qty: 1000,
-    exp: "red",
-    image: require("../assets/couch.jpg"),
-  },
-  {
-    id: 13,
-    title: "Couch with all kinds of stain",
-    qty: 1000,
-    exp: "red",
-    image: require("../assets/couch.jpg"),
-  },
-  {
-    id: 14,
-    title: "Red Dude for sale",
-    qty: 100,
-    exp: "orange",
-    image: require("../assets/jacket.jpg"),
-  },
-  {
-    id: 15,
-    title: "Couch with all kinds of stain",
-    qty: 1000,
-    exp: "orange",
-    image: require("../assets/couch.jpg"),
-  },
-  {
-    id: 16,
-    title: "Couch with all kinds of stain",
-    qty: 1000,
-    exp: "yellow",
-    image: require("../assets/couch.jpg"),
-  },
-  {
-    id: 17,
-    title: "Red Dude for sale",
-    qty: 100,
-    exp: "yellow",
-    image: require("../assets/jacket.jpg"),
-  },
-  {
-    id: 18,
-    title: "Couch with all kinds of stain",
-    qty: 1000,
-    exp: "green",
-    image: require("../assets/couch.jpg"),
-  },
-];
+import { addIngredientToFridge } from '../../actions';
 
 const inventoryFilter = [
   {
@@ -183,7 +52,10 @@ const inventoryFilter = [
 
 const screenWidth = Dimensions.get("window").width;
 
-function IngredientsTab(props) {
+function IngredientsTab(state) {
+  const { ingredients, addIngredientToFridge } = state;
+  const ingredientsInFridge = ingredients.fridge;
+
   const [ingrFilter, setIngrFilter] = useState(inventoryFilter);
   const toggleOnOff = (item) => {
     let temp = [...ingrFilter];
@@ -208,8 +80,25 @@ function IngredientsTab(props) {
     });
     setIngrFilter(temp);
   };
+
+
+
   return (
     <Screen style={styles.screen}>
+      {/* <AppButton
+        color={"blue"}
+        onPress={() => {
+          addIngredientToFridge({
+            id: Math.floor(Math.random() * Math.floor(10000000)),
+            title: "Couch with all kinds of stain",
+            categoryName: "Condiment",
+            quantity: 10,
+            expirationDate: "red",
+            imageUrl: require("../assets/couch.jpg"),
+          })
+        }}
+        title={"Hello"}
+      /> */}
       <AppText
         style={{
           fontSize: 30,
@@ -245,17 +134,19 @@ function IngredientsTab(props) {
         <FlatList
           columnWrapperStyle={styles.gridView}
           numColumns={3}
-          data={listings}
-          keyExtractor={(listing) => listing.id.toString()}
-          renderItem={({ item }) => (
-            <SqCard
-              title={item.title}
-              subTitle={"QTY: " + item.qty}
-              image={item.image}
-              screenWidth={screenWidth}
-              expStatus={item.exp}
-            />
-          )}
+          data={ingredientsInFridge}
+          keyExtractor={(ingredient) => ingredient.id.toString()}
+          renderItem={({ ingredient, index }) => {
+            return (
+              <SqCard
+                title={ingredientsInFridge[index].title}
+                subTitle={"QTY: " + ingredientsInFridge[index].quantity}
+                image={ingredientsInFridge[index].imageUrl}
+                screenWidth={screenWidth}
+                expStatus={ingredientsInFridge[index].expirationDate}
+              />
+            )
+          }}
         />
       </View>
     </Screen>
@@ -276,4 +167,15 @@ const styles = StyleSheet.create({
   },
 });
 
-export default IngredientsTab;
+const mapStateToProps = (state) => {
+  const { ingredients } = state
+  return { ingredients }
+};
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    addIngredientToFridge,
+  }, dispatch)
+)
+
+export default connect(mapStateToProps, mapDispatchToProps)(IngredientsTab);
