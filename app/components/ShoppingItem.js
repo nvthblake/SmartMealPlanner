@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, TouchableOpacity, Text, Image, View } from "react-native";
+import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
 import { Checkbox } from "react-native-paper";
 import colors from "../config/colors";
 import ListItemDeleteAction from "../components/lists/ListItemDeleteAction";

@@ -15,6 +15,7 @@ import ListingDetailsScreen from '../screens/ListingDetailsScreen';
 import ViewImageScreen from '../screens/ViewImageScreen';
 import colors from '../config/colors';
 import IngredientsTab from '../tabs/IngredientsTab';
+import ShoppingList from '../tabs/ShoppingList';
 
 const Tab = createBottomTabNavigator();
 
@@ -39,7 +40,7 @@ const AppNavigator = () => (
                 color={color} 
                 size={size} />
             })}/>
-        <Tab.Screen name="Shopping" component={ViewImageScreen} options= {{
+        <Tab.Screen name="Shopping" component={ShoppingList} options= {{
             tabBarIcon: ({ color, size }) => 
                 // <MaterialCommunityIcons name="home" color={color} size={size} />
                 <Feather name="shopping-cart" size={size} color={color} />

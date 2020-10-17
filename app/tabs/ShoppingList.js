@@ -3,18 +3,17 @@ import {
   StyleSheet,
   View,
   Dimensions,
-  Image,
   Modal,
   Text,
   TouchableHighlight,
-  TextInput
+  TextInput,
+  Alert,
 } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 import ShoppingItem from "../components/ShoppingItem";
-
-const screenWidth = Dimensions.get("window").width;
+import { AntDesign, Feather } from "@expo/vector-icons";
 
 function ShoppingList(props) {
   // Item states
@@ -23,23 +22,20 @@ function ShoppingList(props) {
     { text: "buy candies", key: "2" },
     { text: "buy kitkat", key: "3" },
   ]);
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const changeHandler = (val) => {
-      setText(val)
-  }
+    setText(val);
+  };
   const pressHandler = (key) => {
     setTodos((prevCheck) => {
       return prevCheck.filter((check) => check.key != key);
     });
   };
-  const submitHandler =() => {
+  const submitHandler = () => {
     setTodos((prevCheck) => {
-        return [
-            {text: text, key: Math.random().toString() },
-            ...prevCheck
-        ];
-    })
-  }
+      return [{ text: text, key: Math.random().toString() }, ...prevCheck];
+    });
+  };
   // Modal states
   const [modalVisible, setModalVisible] = useState(false);
   return (
@@ -52,11 +48,38 @@ function ShoppingList(props) {
           </View>
           <TouchableOpacity
             onPress={() => {
+              Alert.alert(
+                "Delete all shopping items?",
+                "Press OK to proceed",
+                [
+                  {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                  },
+                  { text: "OK", onPress: () => setTodos([]) },
+                ],
+                { cancelable: false }
+              );
+            }}
+            style={{ marginLeft: 30 }}
+          >
+            <Feather
+              name="trash-2"
+              size={35}
+              color={colors.black}
+              style={styles.plusButton}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
               setModalVisible(true);
             }}
           >
-            <Image
-              source={require("../assets/appIcon/plus.jpg")}
+            <AntDesign
+              name="pluscircleo"
+              size={37}
+              color={colors.black}
               style={styles.plusButton}
             />
           </TouchableOpacity>
@@ -65,9 +88,7 @@ function ShoppingList(props) {
           <FlatList
             data={todos}
             renderItem={({ item }) => (
-              <ShoppingItem 
-                item={item}   
-                pressHandler={pressHandler} />
+              <ShoppingItem item={item} pressHandler={pressHandler} />
             )}
           />
         </View>
@@ -79,29 +100,29 @@ function ShoppingList(props) {
           >
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <TextInput 
-                    style={styles.modalText}
-                    placeholder='Add item to buy'
-                    onChangeText={changeHandler}
-                    />
+                <TextInput
+                  style={styles.modalText}
+                  placeholder="Add item to buy"
+                  onChangeText={changeHandler}
+                />
                 <View style={styles.header}>
-                    <TouchableHighlight
+                  <TouchableHighlight
                     style={styles.closeButton}
                     onPress={() => {
-                        setModalVisible(!modalVisible);
+                      setModalVisible(!modalVisible);
                     }}
-                    >
+                  >
                     <Text style={styles.textStyle}>CLOSE</Text>
-                    </TouchableHighlight>
-                    <TouchableHighlight
+                  </TouchableHighlight>
+                  <TouchableHighlight
                     style={styles.addButton}
                     onPress={() => {
-                        submitHandler();
-                        setModalVisible(!modalVisible);
+                      submitHandler();
+                      setModalVisible(!modalVisible);
                     }}
-                    >
+                  >
                     <Text style={styles.textStyle}>ADD ITEM</Text>
-                    </TouchableHighlight>
+                  </TouchableHighlight>
                 </View>
               </View>
             </View>
@@ -127,7 +148,7 @@ const styles = StyleSheet.create({
   textformat: {
     fontSize: 30,
     color: colors.primary,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   underline: {
     borderBottomColor: colors.primary,
@@ -139,8 +160,6 @@ const styles = StyleSheet.create({
   },
   plusButton: {
     marginTop: 10,
-    width: 25,
-    height: 25,
   },
   modalView: {
     margin: 20,
@@ -177,7 +196,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    width: 110
+    width: 110,
   },
   addButton: {
     backgroundColor: colors.primary,
@@ -185,7 +204,7 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
     width: 110,
-    marginLeft: 50
+    marginLeft: 50,
   },
 });
 
