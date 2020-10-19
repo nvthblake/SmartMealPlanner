@@ -42,7 +42,6 @@ const units = [
 function ScanTab() {
 
   const [forceUpdate, forceUpdateId] = useForceUpdate();
-  tableFactFridge = DatabaseObject("FactFridge", db);
 
   return (
     <Screen style={styles.container}>
