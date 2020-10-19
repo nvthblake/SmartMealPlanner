@@ -12,7 +12,6 @@ import {
 import Screen from "../components/Screen";
 import CategoryPickerItem from "../components/CategoryPickerItem";
 import FormImagePicker from "../components/forms/FormImagePicker";
-import DatabaseObject from "../components/database/DatabaseObject";
 
 
 const db = openDatabase("db2.db");
@@ -56,26 +55,18 @@ function ScanTab() {
           images: [],
         }}
         onSubmit={(values) => {
+          var expDate = new Date(new Date().getTime()+(values.dayToExp*24*60*60*1000)).toISOString();
+          // Insert new ingredient to SQLite database
           db.transaction(tx => {
             tx.executeSql(
-              "INSERT INTO FactFridge (ingredient, qty, unit, category, dayToExp, inFridge) values (?, ?, ?, ?, ?, ?)", 
-              [values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1],
-              console.log([values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1]), 
+              "INSERT INTO FactFridge (ingredient, qty, unit, category, dayToExp, inFridge, expDate) values (?, ?, ?, ?, ?, ?, ?)", 
+              [values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1, expDate],
+              [], 
               (_, error) => console.log(error)
             );
           },
           null,
           forceUpdate);
-          db.transaction(tx => {
-            tx.executeSql(
-              "SELECT * FROM FactFridge", 
-              [], 
-              (_, { rows }) => console.log(rows._array), 
-              (_, error) => console.log(error)
-            );
-          },
-          null,
-          forceUpdate)
         }}
         validationSchema={validationSchema}
       >
