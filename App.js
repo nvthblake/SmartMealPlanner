@@ -44,7 +44,7 @@ export default function App() {
         expDate DATETIME NULL,
         inFridge INT(1));`
       );
-      });
+    });
   }, []);
 
   return ( <ScanTab/> 
