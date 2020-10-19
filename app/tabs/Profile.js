@@ -1,12 +1,14 @@
 import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 import CardView from "../components/CardView";
+import AppText from "../components/AppText";
+import colors from "../config/colors";
 
 function Profile(props) {
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.imageView}>
-        <Text style={styles.welcome}> Welcome to SmartFridge</Text>
+      <AppText style={styles.welcome} >{"Welcome to SmartFridge"}</AppText>
         <TouchableOpacity>
           <Image
             source={require("../assets/appIcon/ava.png")}
@@ -63,6 +65,10 @@ function Profile(props) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.secondary,
+  },
   logo: {
     height: 140,
     width: 140,
@@ -86,9 +92,10 @@ const styles = StyleSheet.create({
   },
   welcome: {
     marginTop: 70,
-    fontSize: 25,
+    fontSize: 30,
     fontWeight: "bold",
     padding: 20,
+    color: colors.primary
   },
   fridgeheader: {
     marginTop: 20,
@@ -118,18 +125,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   seperatorline: {
-    marginTop: 20,
-    marginLeft: 20,
-    marginRight: 20,
+    margin: 20,
     borderBottomColor: "black",
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
   },
   minilogoview: {
     flexDirection: "row",
-    marginTop: 20,
-    marginLeft: 20,
-    marginRight: 20,
-    marginBottom: 20,
+    margin: 20,
     justifyContent: "space-between",
   },
   minitext: {
