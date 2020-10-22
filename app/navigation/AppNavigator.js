@@ -17,6 +17,7 @@ import colors from '../config/colors';
 import IngredientsTab from '../tabs/IngredientsTab';
 import ShoppingList from '../tabs/ShoppingList';
 import RecipeTab from '../tabs/RecipeTab';
+import ScanTab from '../tabs/ScanTab';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,10 +32,10 @@ const AppNavigator = () => (
                 <MaterialCommunityIcons name="silverware-variant" color={color} size={size} />
         }} />
         <Tab.Screen
-            name="ListingEdit"
-            component={ListingEditScreen}
+            name="ScanTab"
+            component={ScanTab}
             options={({ navigation }) => ({
-                tabBarButton: () => <AddItemButton onPress={() => navigation.navigate("ListingEdit")} />,
+                tabBarButton: () => <AddItemButton onPress={() => navigation.navigate("ScanTab")} />,
                 tabBarIcon: ({ color, size }) =>
                 <MaterialCommunityIcons 
                 name="plus-circle" 
