@@ -42,6 +42,29 @@ const units = [
 function ScanTab() {
 
   const [forceUpdate, forceUpdateId] = useForceUpdate();
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = async (values, { resetForm }) => {
+    var expDate = new Date(new Date().getTime()+(values.dayToExp*24*60*60*1000)).toISOString();
+    // Insert new ingredient to SQLite database
+    db.transaction(tx => {
+      tx.executeSql(
+        "INSERT INTO FactFridge (ingredient, qty, unit, category, dayToExp, inFridge, expDate) values (?, ?, ?, ?, ?, ?, ?)", 
+        [values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1, expDate],
+        setSuccess(true), 
+        (_, error) => {
+          setSuccess(false);
+          console.log(error);
+        }
+      );
+    },
+    null,
+    forceUpdate);
+    if (success) {
+      resetForm();
+      setSuccess(false);
+    }
+  }
 
   return (
     <Screen style={styles.container}>
@@ -54,20 +77,7 @@ function ScanTab() {
           dayToExp: "",
           images: [],
         }}
-        onSubmit={(values) => {
-          var expDate = new Date(new Date().getTime()+(values.dayToExp*24*60*60*1000)).toISOString();
-          // Insert new ingredient to SQLite database
-          db.transaction(tx => {
-            tx.executeSql(
-              "INSERT INTO FactFridge (ingredient, qty, unit, category, dayToExp, inFridge, expDate) values (?, ?, ?, ?, ?, ?, ?)", 
-              [values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1, expDate],
-              [], 
-              (_, error) => console.log(error)
-            );
-          },
-          null,
-          forceUpdate);
-        }}
+        onSubmit={handleSubmit}
         validationSchema={validationSchema}
       >
         <FormImagePicker name="images" />
