@@ -20,15 +20,8 @@ import colors from "./app/config/colors";
 import IngredientsTab from "./app/tabs/IngredientsTab";
 import ScanTab from "./app/tabs/ScanTab";
 import Profile from "./app/tabs/Profile";
-<<<<<<< HEAD
 import CameraScreen from "./app/screens/CameraScreen";// Redux Territory
 import reducers from './reducers';
-=======
-import CameraScreen from "./app/screens/CameraScreen";
-
-// Redux Territory
-import reducers from "./reducers";
->>>>>>> blake-dev
 
 const store = createStore(reducers);
 const db = SQLite.openDatabase("db2.db");
@@ -59,12 +52,8 @@ export default function App() {
       </NavigationContainer>
     </Provider>
   );
-<<<<<<< HEAD
-}
-=======
 }
 // export default function App() {
 //   return ( <IngredientsTab/>
 //   );
 // }
->>>>>>> blake-dev

@@ -22,8 +22,12 @@ import Screen from "../components/Screen";
 import SqCard from "../components/SqCard";
 import colors from "../config/colors";
 
-import { addIngredientToFridge } from "../../actions";
+import { addIngredientToFridge, clearIngredientsInFridge } from "../../actions";
 import AppTextInput from "../components/AppTextInput";
+
+// Database imports
+import { openDatabase } from 'expo-sqlite';
+const db = openDatabase("db2.db");
 
 const inventoryFilter = [
   {
@@ -66,7 +70,9 @@ const inventoryFilter = [
 const screenWidth = Dimensions.get("window").width;
 
 function IngredientsTab(state) {
-  const { ingredients, addIngredientToFridge } = state;
+  const { ingredients, addIngredientToFridge, clearIngredientsInFridge } = state;
+  const [forceUpdate, forceUpdateId] = useForceUpdate();
+
   const ingredientsInFridge = ingredients.fridge;
 
   const [ingrFilter, setIngrFilter] = useState(inventoryFilter);
@@ -101,6 +107,40 @@ function IngredientsTab(state) {
     setSelectedIngre(ingredient);
   };
   const [selectedIngre, setSelectedIngre] = useState(null);
+
+  // const updateCategory = (categoryName) => {
+  //   const clone = {...selectedIngre}
+  //   clone.
+  // }
+
+  React.useEffect(() => {
+    // Load ingredients from database
+    clearIngredientsInFridge();
+
+    db.transaction(tx => {
+      tx.executeSql(
+        "SELECT * FROM FactFridge",
+        [],
+        (_, { rows }) => {
+          console.log("IngredientsTab -> rows", rows)
+          rows._array.forEach((row) => {
+            addIngredientToFridge({
+              id: row.id,
+              title: row.ingredient,
+              categoryName: row.category,
+              quantity: row.qty,
+              expirationDate: "red",
+              imageUrl: require("../assets/appIcon/Honeycrisp.jpg"),
+            })
+          });
+          // console.log(rows._array)
+        },
+        (_, error) => console.log(error)
+      );
+    },
+      null,
+      forceUpdate);
+  }, []);
 
   return (
     <Screen style={styles.screen}>
@@ -237,9 +277,11 @@ function IngredientsTab(state) {
                       />
                       <Picker
                         selectedValue={selectedIngre.categoryName}
-                        onValueChange={(itemValue, itemIndex) =>
+                        onValueChange={(itemValue, itemIndex) => {
+                          console.log("itemValue", itemValue)
                           setIngrFilter(itemValue)
-                        }
+                          // setSelectedIngre(itemValue)
+                        }}
                       >
                         <Picker.Item label="Meat" value="Meat" />
                         <Picker.Item label="Vegetable" value="Vegetable" />
@@ -266,8 +308,8 @@ function IngredientsTab(state) {
             </Modal>
           </View>
         ) : (
-          <></>
-        )}
+            <></>
+          )}
       </View>
     </Screen>
   );
@@ -324,6 +366,11 @@ const styles = StyleSheet.create({
   },
 });
 
+function useForceUpdate() {
+  const [value, setValue] = useState(0);
+  return [() => setValue(value + 1), value];
+}
+
 const mapStateToProps = (state) => {
   const { ingredients } = state;
   return { ingredients };
@@ -333,6 +380,7 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       addIngredientToFridge,
+      clearIngredientsInFridge
     },
     dispatch
   );

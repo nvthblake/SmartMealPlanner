@@ -4,6 +4,7 @@ import {
   ADD_INGREDIENT_TO_FRIDGE,
   ADD_RECIPE,
   CLEAR_RECIPE,
+  CLEAR_INGREDIENTS_IN_FRIDGE
 } from "./types";
 
 const INITIAL_STATE = {
@@ -65,6 +66,11 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
 
     case CLEAR_RECIPE:
       recipes = [];
+      newState = { fridge, cart, recipes };
+      return newState;
+
+    case CLEAR_INGREDIENTS_IN_FRIDGE:
+      fridge = [];
       newState = { fridge, cart, recipes };
       return newState;
 
