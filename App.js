@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { Provider } from "react-redux";
+import { createStore } from "redux";
 import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import * as SQLite from 'expo-sqlite';
@@ -20,8 +20,15 @@ import colors from "./app/config/colors";
 import IngredientsTab from "./app/tabs/IngredientsTab";
 import ScanTab from "./app/tabs/ScanTab";
 import Profile from "./app/tabs/Profile";
+<<<<<<< HEAD
 import CameraScreen from "./app/screens/CameraScreen";// Redux Territory
 import reducers from './reducers';
+=======
+import CameraScreen from "./app/screens/CameraScreen";
+
+// Redux Territory
+import reducers from "./reducers";
+>>>>>>> blake-dev
 
 const store = createStore(reducers);
 const db = SQLite.openDatabase("db2.db");
@@ -52,4 +59,12 @@ export default function App() {
       </NavigationContainer>
     </Provider>
   );
+<<<<<<< HEAD
 }
+=======
+}
+// export default function App() {
+//   return ( <IngredientsTab/>
+//   );
+// }
+>>>>>>> blake-dev
