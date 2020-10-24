@@ -1,16 +1,33 @@
 import React, { useState } from "react";
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { StyleSheet, FlatList, Dimensions, View } from "react-native";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { Picker } from "@react-native-community/picker";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  StyleSheet,
+  FlatList,
+  Dimensions,
+  View,
+  Image,
+  Text,
+  Modal,
+  Alert,
+  TouchableHighlight,
+  ScrollView,
+} from "react-native";
 import AppButton from "../components/AppButton";
 import AppText from "../components/AppText";
 
 import Screen from "../components/Screen";
 import SqCard from "../components/SqCard";
 import colors from "../config/colors";
-import { Component } from "react";
 
-import { addIngredientToFridge } from '../../actions';
+import { addIngredientToFridge, clearIngredientsInFridge } from "../../actions";
+import AppTextInput from "../components/AppTextInput";
+
+// Database imports
+import { openDatabase } from 'expo-sqlite';
+const db = openDatabase("db2.db");
 
 const inventoryFilter = [
   {
@@ -53,7 +70,9 @@ const inventoryFilter = [
 const screenWidth = Dimensions.get("window").width;
 
 function IngredientsTab(state) {
-  const { ingredients, addIngredientToFridge } = state;
+  const { ingredients, addIngredientToFridge, clearIngredientsInFridge } = state;
+  const [forceUpdate, forceUpdateId] = useForceUpdate();
+
   const ingredientsInFridge = ingredients.fridge;
 
   const [ingrFilter, setIngrFilter] = useState(inventoryFilter);
@@ -81,7 +100,47 @@ function IngredientsTab(state) {
     setIngrFilter(temp);
   };
 
+  const [modalVisible, setModalVisible] = useState(false);
+  // console.log(modalVisible);
+  const toggleModal = (ingredient) => {
+    setModalVisible(!modalVisible);
+    setSelectedIngre(ingredient);
+  };
+  const [selectedIngre, setSelectedIngre] = useState(null);
 
+  // const updateCategory = (categoryName) => {
+  //   const clone = {...selectedIngre}
+  //   clone.
+  // }
+
+  React.useEffect(() => {
+    // Load ingredients from database
+    clearIngredientsInFridge();
+
+    db.transaction(tx => {
+      tx.executeSql(
+        "SELECT * FROM FactFridge",
+        [],
+        (_, { rows }) => {
+          console.log("IngredientsTab -> rows", rows)
+          rows._array.forEach((row) => {
+            addIngredientToFridge({
+              id: row.id,
+              title: row.ingredient,
+              categoryName: row.category,
+              quantity: row.qty,
+              expirationDate: "red",
+              imageUrl: require("../assets/appIcon/Honeycrisp.jpg"),
+            })
+          });
+          // console.log(rows._array)
+        },
+        (_, error) => console.log(error)
+      );
+    },
+      null,
+      forceUpdate);
+  }, []);
 
   return (
     <Screen style={styles.screen}>
@@ -138,22 +197,162 @@ function IngredientsTab(state) {
           keyExtractor={(ingredient) => ingredient.id.toString()}
           renderItem={({ ingredient, index }) => {
             return (
-              <SqCard
-                title={ingredientsInFridge[index].title}
-                subTitle={"QTY: " + ingredientsInFridge[index].quantity}
-                image={ingredientsInFridge[index].imageUrl}
-                screenWidth={screenWidth}
-                expStatus={ingredientsInFridge[index].expirationDate}
-              />
-            )
+              <>
+                <SqCard
+                  title={ingredientsInFridge[index].title}
+                  subTitle={"QTY: " + ingredientsInFridge[index].quantity}
+                  image={ingredientsInFridge[index].imageUrl}
+                  screenWidth={screenWidth}
+                  expStatus={ingredientsInFridge[index].expirationDate}
+                  onPress={() => toggleModal(ingredientsInFridge[index])}
+                ></SqCard>
+              </>
+            );
           }}
         />
+        {selectedIngre ? (
+          <View style={styles.centeredView}>
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                Alert.alert(
+                  "Save the Changes?",
+                  "Are you sure you want to save the changes?",
+                  [
+                    {
+                      text: "Discard Changes",
+                      onPress: () => console.log("Canceled Pressed"),
+                      style: "cancel",
+                    },
+                    {
+                      text: "Yes",
+                      onPress: () => console.log("Yes Pressed"),
+                    },
+                  ],
+                  { cancelable: true }
+                );
+              }}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <ScrollView>
+                    <Image
+                      style={{
+                        width: screenWidth - 150,
+                        height: screenWidth - 200,
+                        borderRadius: 15,
+                      }}
+                      source={selectedIngre.imageUrl}
+                    />
+                    <AppTextInput
+                      icon={"food-variant"}
+                      title={selectedIngre.title}
+                    />
+                    <AppTextInput
+                      icon={"pound"}
+                      title={selectedIngre.quantity.toString()}
+                    />
+                    <AppTextInput
+                      icon={"calendar-remove-outline"}
+                      title={selectedIngre.expirationDate}
+                    />
+                    {/* <AppText>
+                      {"Category: " + selectedIngre.categoryName}
+                    </AppText> */}
+                    <View
+                      style={{
+                        width: "100%",
+                        height: 60,
+                        backgroundColor: colors.light,
+                        borderRadius: 25,
+                        marginVertical: 10,
+                      }}
+                    >
+                      <MaterialCommunityIcons
+                        name="menu-open"
+                        size={15}
+                        color={colors.medium}
+                      />
+                      <Picker
+                        selectedValue={selectedIngre.categoryName}
+                        onValueChange={(itemValue, itemIndex) => {
+                          console.log("itemValue", itemValue)
+                          setIngrFilter(itemValue)
+                          // setSelectedIngre(itemValue)
+                        }}
+                      >
+                        <Picker.Item label="Meat" value="Meat" />
+                        <Picker.Item label="Vegetable" value="Vegetable" />
+                        <Picker.Item label="Fruit" value="Fruit" />
+                        <Picker.Item label="Snack" value="Snack" />
+                        <Picker.Item label="Condiments" value="Condiments" />
+                        <Picker.Item label="Others" value="Others" />
+                      </Picker>
+                    </View>
+                    <TouchableHighlight
+                      style={{
+                        ...styles.modalButton,
+                        backgroundColor: "#2196F3",
+                      }}
+                      onPress={() => toggleModal(null)}
+                    >
+                      <Text style={{ color: "white", textAlign: "center" }}>
+                        Close and Save Changes
+                      </Text>
+                    </TouchableHighlight>
+                  </ScrollView>
+                </View>
+              </View>
+            </Modal>
+          </View>
+        ) : (
+            <></>
+          )}
       </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
+  centeredView: {
+    flex: 0.85,
+    // alignSelf: "baseline",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalView: {
+    margin: 10,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 10,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  modalButton: {
+    alignSelf: "center",
+    backgroundColor: colors.primary,
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    width: 150,
+    marginTop: 10,
+  },
+  modalImg: {
+    borderRadius: 15,
+  },
   screen: {
     paddingVertical: 20,
     backgroundColor: colors.light,
@@ -167,15 +366,23 @@ const styles = StyleSheet.create({
   },
 });
 
+function useForceUpdate() {
+  const [value, setValue] = useState(0);
+  return [() => setValue(value + 1), value];
+}
+
 const mapStateToProps = (state) => {
-  const { ingredients } = state
-  return { ingredients }
+  const { ingredients } = state;
+  return { ingredients };
 };
 
-const mapDispatchToProps = dispatch => (
-  bindActionCreators({
-    addIngredientToFridge,
-  }, dispatch)
-)
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      addIngredientToFridge,
+      clearIngredientsInFridge
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapDispatchToProps)(IngredientsTab);
