@@ -4,35 +4,41 @@ import {
   ADD_INGREDIENT_TO_FRIDGE,
   ADD_RECIPE,
   CLEAR_RECIPE,
-  CLEAR_INGREDIENTS_IN_FRIDGE
+  CLEAR_INGREDIENTS_IN_FRIDGE,
+  UPDATE_INGREDIENT_IN_FRIDGE
 } from "./types";
+
+const today = new Date();
 
 const INITIAL_STATE = {
   fridge: [
-    {
-      id: 1,
-      title: "Apple",
-      categoryName: "Fruit",
-      quantity: 100,
-      expirationDate: "red",
-      imageUrl: require("./app/assets/appIcon/Honeycrisp.jpg"),
-    },
-    {
-      id: 2,
-      title: "Banana",
-      categoryName: "Fruit",
-      quantity: 1000,
-      expirationDate: "yellow",
-      imageUrl: require("./app/assets/appIcon/bananas.jpg"),
-    },
-    {
-      id: 3,
-      title: "Ground Beef",
-      categoryName: "Meat",
-      quantity: 10,
-      expirationDate: "green",
-      imageUrl: require("./app/assets/appIcon/steak.jpg"),
-    },
+    // {
+    //   id: 1,
+    //   ingredient: "Apple",
+    //   category: "Fruit",
+    //   qty: 100,
+    //   expDate: today,
+    //   unit: "Kg",
+    //   imageUrl: require("./app/assets/appIcon/Honeycrisp.jpg"),
+    // },
+    // {
+    //   id: 2,
+    //   ingredient: "Banana",
+    //   category: "Fruit",
+    //   qty: 1000,
+    //   expDate: today,
+    //   unit: "Kg",
+    //   imageUrl: require("./app/assets/appIcon/bananas.jpg"),
+    // },
+    // {
+    //   id: 3,
+    //   ingredient: "Ground Beef",
+    //   category: "Meat",
+    //   qty: 10,
+    //   expDate: today,
+    //   unit: "Kg",
+    //   imageUrl: require("./app/assets/appIcon/steak.jpg"),
+    // },
   ],
   cart: [],
   recipes: [],
@@ -72,6 +78,17 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
     case CLEAR_INGREDIENTS_IN_FRIDGE:
       fridge = [];
       newState = { fridge, cart, recipes };
+      return newState;
+
+    case UPDATE_INGREDIENT_IN_FRIDGE:
+
+      // Change value of ingredient chosen
+      const ingreIndex = fridge.findIndex((ingre => ingre.id === action.payload.id));
+      fridge[ingreIndex] = action.payload;
+
+      // Update the redux state
+      newState = { fridge, cart, recipes };
+
       return newState;
 
     default:

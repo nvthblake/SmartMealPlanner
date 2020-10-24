@@ -13,7 +13,7 @@ class RecipeCard extends Component {
 
     render() {
         const recipe = this.props.recipe;
-        console.log("RecipeCard -> render -> recipes", recipe)
+        // console.log("RecipeCard -> render -> recipes", recipe)
         const isMan = Math.floor(Math.random() * Math.floor(2));
         const randomNumber = Math.floor(Math.random() * Math.floor(99));
         const avaUrl = `https://randomuser.me/api/portraits/${isMan ? 'men' : 'women'}/${randomNumber}.jpg`;

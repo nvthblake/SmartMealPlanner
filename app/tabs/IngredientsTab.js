@@ -22,11 +22,20 @@ import Screen from "../components/Screen";
 import SqCard from "../components/SqCard";
 import colors from "../config/colors";
 
-import { addIngredientToFridge, clearIngredientsInFridge } from "../../actions";
+import { addIngredientToFridge, clearIngredientsInFridge, updateIngredientInFridge } from "../../actions";
 import AppTextInput from "../components/AppTextInput";
+import {
+  AppForm,
+  AppFormField,
+  AppFormPicker,
+  SubmitButton,
+  AppTextFormField,
+} from "../components/forms";
 
 // Database imports
 import { openDatabase } from 'expo-sqlite';
+import { date } from "yup";
+
 const db = openDatabase("db2.db");
 
 const inventoryFilter = [
@@ -70,7 +79,7 @@ const inventoryFilter = [
 const screenWidth = Dimensions.get("window").width;
 
 function IngredientsTab(state) {
-  const { ingredients, addIngredientToFridge, clearIngredientsInFridge } = state;
+  const { ingredients, addIngredientToFridge, clearIngredientsInFridge, updateIngredientInFridge } = state;
   const [forceUpdate, forceUpdateId] = useForceUpdate();
 
   const ingredientsInFridge = ingredients.fridge;
@@ -108,56 +117,85 @@ function IngredientsTab(state) {
   };
   const [selectedIngre, setSelectedIngre] = useState(null);
 
-  // const updateCategory = (categoryName) => {
-  //   const clone = {...selectedIngre}
-  //   clone.
-  // }
+  
+  const handleSubmit = async (values) => {
+    // console.log("handleSubmit -> ", values);
+    toggleModal(null);
+    var expDate = new Date(new Date().getTime() + (values.dayToExp * 24 * 60 * 60 * 1000) + (24 * 60 * 60 * 1000)).toISOString();
+    db.transaction(tx => {
+      tx.executeSql(
+        "UPDATE FactFridge\
+        SET ingredient = ?,\
+          qty = ?,\
+          unit = ?,\
+          category = ?,\
+          inFridge = ?,\
+          expDate = ?\
+        WHERE id = ?;", 
+        [values.ingredient, values.qty, values.unit.label, values.category.label, values.inFridge, expDate, values.id], 
+        () => {
+          updateIngredientInFridge({
+            id: values.id,
+            ingredient: values.ingredient,
+            category: values.category.label,
+            qty: values.qty,
+            expDate: expDate,
+            unit: values.unit.label,
+            imageUrl: require("../assets/appIcon/Honeycrisp.jpg"),
+          })
+        }, 
+        (_, error) => console.log(error)
+      );
+    },
+    null,
+    forceUpdate);
+  }
+
+  const categories = [
+    { label: "Meat", value: 1, backgroundColor: "red", icon: "apps" },
+    { label: "Vegetable", value: 2, backgroundColor: "green", icon: "email" },
+    { label: "Condiments", value: 3, backgroundColor: "blue", icon: "lock" },
+    { label: "Snack", value: 4, backgroundColor: "blue", icon: "lock" },
+    { label: "Fruit", value: 5, backgroundColor: "blue", icon: "lock" },
+    { label: "Others", value: 6, backgroundColor: "blue", icon: "lock" },
+  ];
+  
+  const units = [
+    { label: "Quartz", value: 1 },
+    { label: "Kg", value: 2 }
+  ]
 
   React.useEffect(() => {
     // Load ingredients from database
-    clearIngredientsInFridge();
-
+    
     db.transaction(tx => {
       tx.executeSql(
         "SELECT * FROM FactFridge",
         [],
         (_, { rows }) => {
-          console.log("IngredientsTab -> rows", rows)
           rows._array.forEach((row) => {
+            clearIngredientsInFridge();
             addIngredientToFridge({
               id: row.id,
-              title: row.ingredient,
-              categoryName: row.category,
-              quantity: row.qty,
-              expirationDate: "red",
+              ingredient: row.ingredient,
+              category: row.category,
+              qty: row.qty,
+              expDate: row.expDate,
+              unit: row.unit,
               imageUrl: require("../assets/appIcon/Honeycrisp.jpg"),
             })
+            // console.log("IngredientTab -> ", row)
           });
-          // console.log(rows._array)
         },
         (_, error) => console.log(error)
-      );
-    },
+        );
+      },
       null,
       forceUpdate);
   }, []);
 
   return (
     <Screen style={styles.screen}>
-      {/* <AppButton
-        color={"blue"}
-        onPress={() => {
-          addIngredientToFridge({
-            id: Math.floor(Math.random() * Math.floor(10000000)),
-            title: "Couch with all kinds of stain",
-            categoryName: "Condiment",
-            quantity: 10,
-            expirationDate: "red",
-            imageUrl: require("../assets/couch.jpg"),
-          })
-        }}
-        title={"Hello"}
-      /> */}
       <AppText
         style={{
           fontSize: 30,
@@ -199,11 +237,11 @@ function IngredientsTab(state) {
             return (
               <>
                 <SqCard
-                  title={ingredientsInFridge[index].title}
-                  subTitle={"QTY: " + ingredientsInFridge[index].quantity}
+                  title={ingredientsInFridge[index].ingredient}
+                  subTitle={"QTY: " + ingredientsInFridge[index].qty}
                   image={ingredientsInFridge[index].imageUrl}
                   screenWidth={screenWidth}
-                  expStatus={ingredientsInFridge[index].expirationDate}
+                  expStatus={expDateToColor(ingredientsInFridge[index].expDate)[1]}
                   onPress={() => toggleModal(ingredientsInFridge[index])}
                 ></SqCard>
               </>
@@ -238,70 +276,54 @@ function IngredientsTab(state) {
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                   <ScrollView>
-                    <Image
-                      style={{
-                        width: screenWidth - 150,
-                        height: screenWidth - 200,
-                        borderRadius: 15,
+                  <Image
+                    style={{
+                      width: screenWidth - 150,
+                      height: screenWidth - 200,
+                      borderRadius: 15,
+                    }}
+                    source={selectedIngre.imageUrl}
+                  />
+                    <AppForm
+                      initialValues={{
+                        id: selectedIngre.id,
+                        ingredient: selectedIngre.ingredient,
+                        qty: selectedIngre.qty.toString(),
+                        unit: units.find(unit => unit.label === selectedIngre.unit) ,
+                        category: categories.find(category => category.label === selectedIngre.category),
+                        dayToExp: expDateToColor(selectedIngre.expDate)[0].toString(),
+                        images: [],
+                        inFridge: 1,
                       }}
-                      source={selectedIngre.imageUrl}
-                    />
-                    <AppTextInput
-                      icon={"food-variant"}
-                      title={selectedIngre.title}
-                    />
-                    <AppTextInput
-                      icon={"pound"}
-                      title={selectedIngre.quantity.toString()}
-                    />
-                    <AppTextInput
-                      icon={"calendar-remove-outline"}
-                      title={selectedIngre.expirationDate}
-                    />
-                    {/* <AppText>
-                      {"Category: " + selectedIngre.categoryName}
-                    </AppText> */}
-                    <View
-                      style={{
-                        width: "100%",
-                        height: 60,
-                        backgroundColor: colors.light,
-                        borderRadius: 25,
-                        marginVertical: 10,
-                      }}
+                      onSubmit={handleSubmit}
+                      // validationSchema={validationSchema}
                     >
-                      <MaterialCommunityIcons
-                        name="menu-open"
-                        size={15}
-                        color={colors.medium}
+                      <AppFormField
+                        name="ingredient"
+                        placeholder="Ingredient"
                       />
-                      <Picker
-                        selectedValue={selectedIngre.categoryName}
-                        onValueChange={(itemValue, itemIndex) => {
-                          console.log("itemValue", itemValue)
-                          setIngrFilter(itemValue)
-                          // setSelectedIngre(itemValue)
-                        }}
-                      >
-                        <Picker.Item label="Meat" value="Meat" />
-                        <Picker.Item label="Vegetable" value="Vegetable" />
-                        <Picker.Item label="Fruit" value="Fruit" />
-                        <Picker.Item label="Snack" value="Snack" />
-                        <Picker.Item label="Condiments" value="Condiments" />
-                        <Picker.Item label="Others" value="Others" />
-                      </Picker>
-                    </View>
-                    <TouchableHighlight
-                      style={{
-                        ...styles.modalButton,
-                        backgroundColor: "#2196F3",
-                      }}
-                      onPress={() => toggleModal(null)}
-                    >
-                      <Text style={{ color: "white", textAlign: "center" }}>
-                        Close and Save Changes
-                      </Text>
-                    </TouchableHighlight>
+                      <AppFormField
+                        name="qty"
+                        placeholder="Quantity"
+                        keyboardType="numeric"
+                      />
+                      <AppFormPicker
+                        items={units}
+                        name="unit"
+                        placeholder="Unit"
+                      />
+                      <AppFormPicker
+                        items={categories}
+                        name="category"
+                        placeholder="Category"
+                      />
+                      <AppFormField
+                        name="dayToExp"
+                        placeholder="Days to Expiration"
+                        keyboardType="numeric"
+                      />
+                      <SubmitButton title="Close"/>
+                    </AppForm>
                   </ScrollView>
                 </View>
               </View>
@@ -371,6 +393,16 @@ function useForceUpdate() {
   return [() => setValue(value + 1), value];
 }
 
+function expDateToColor(expDateStr) {
+  const today = new Date();
+  const expDate = Date.parse(expDateStr);
+  var dateDiff = Math.floor((expDate - today) / (1000*60*60*24));
+  if (dateDiff <= 4) return [dateDiff, "red"];
+  else if (dateDiff <= 8) return [dateDiff, "orange"];
+  else if (dateDiff <= 14) return [dateDiff, "yellow"];
+  else return [dateDiff, "green"];
+}
+
 const mapStateToProps = (state) => {
   const { ingredients } = state;
   return { ingredients };
@@ -380,7 +412,8 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       addIngredientToFridge,
-      clearIngredientsInFridge
+      clearIngredientsInFridge,
+      updateIngredientInFridge
     },
     dispatch
   );

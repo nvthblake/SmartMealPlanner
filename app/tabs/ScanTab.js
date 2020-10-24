@@ -16,6 +16,7 @@ import CategoryPickerItem from "../components/CategoryPickerItem";
 import FormImagePicker from "../components/forms/FormImagePicker";
 
 import { addIngredientToFridge } from "../../actions";
+import { getFridgeSql } from "../components/database/queries";
 
 const db = openDatabase("db2.db");
 
@@ -58,20 +59,20 @@ function ScanTab(state) {
         [values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1, expDate],
         () => {
           setSuccess(true)
+          console.log(values);
           db.transaction(tx => {
             tx.executeSql(
               "SELECT MAX(ID) AS ID FROM FactFridge",
               [],
               (_, { rows }) => {
-                console.log("handleSubmit -> rows", rows)
                 const row = rows._array[0];
-                console.log("handleSubmit -> row", row)
                 addIngredientToFridge({
                   id: row.ID,
-                  title: values.ingredient,
-                  categoryName: values.category.label,
-                  quantity: values.qty,
-                  expirationDate: 'red',
+                  ingredient: values.ingredient,
+                  qty: values.qty,
+                  unit: values.unit.label,
+                  category: values.category.label,
+                  expDate: expDate,
                   imageUrl: require("../assets/appIcon/Honeycrisp.jpg"),
                 })
               },
@@ -93,6 +94,7 @@ function ScanTab(state) {
       resetForm();
       setSuccess(false);
     }
+    // console.log(getFridgeSql(db));
   }
 
   return (
