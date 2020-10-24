@@ -167,6 +167,7 @@ function IngredientsTab(state) {
 
   React.useEffect(() => {
     // Load ingredients from database
+    clearIngredientsInFridge();
     
     db.transaction(tx => {
       tx.executeSql(
@@ -174,7 +175,6 @@ function IngredientsTab(state) {
         [],
         (_, { rows }) => {
           rows._array.forEach((row) => {
-            clearIngredientsInFridge();
             addIngredientToFridge({
               id: row.id,
               ingredient: row.ingredient,
@@ -192,6 +192,7 @@ function IngredientsTab(state) {
       },
       null,
       forceUpdate);
+    console.log(ingredientsInFridge);
   }, []);
 
   return (
