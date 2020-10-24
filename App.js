@@ -28,6 +28,11 @@ const db = SQLite.openDatabase("db2.db");
 
 export default function App() {
   React.useEffect(() => {
+    // db.transaction(tx => {
+    //   tx.executeSql(
+    //     `DROP TABLE IF EXISTS FactFridge;`
+    //   );
+    //   });
     db.transaction((tx) => {
       tx.executeSql(
         `CREATE TABLE IF NOT EXISTS FactFridge \
@@ -52,3 +57,7 @@ export default function App() {
     </Provider>
   );
 }
+// export default function App() {
+//   return ( <IngredientsTab/>
+//   );
+// }
