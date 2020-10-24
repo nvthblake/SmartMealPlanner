@@ -1,4 +1,4 @@
-import { ADD_INGREDIENT_TO_FRIDGE, ADD_INGREDIENT_TO_CART, ADD_RECIPE, CLEAR_RECIPE, CLEAR_INGREDIENTS_IN_FRIDGE } from './types';
+import { ADD_INGREDIENT_TO_FRIDGE, ADD_INGREDIENT_TO_CART, ADD_RECIPE, CLEAR_RECIPE, CLEAR_INGREDIENTS_IN_FRIDGE, UPDATE_INGREDIENT_IN_FRIDGE } from './types';
 
 export const addIngredientToFridge = (ingredient) => (
     {
@@ -30,5 +30,12 @@ export const clearRecipe = () => (
 export const clearIngredientsInFridge = () => (
     {
         type: CLEAR_INGREDIENTS_IN_FRIDGE
+    }
+)
+
+export const updateIngredientInFridge = (ingredient) => (
+    {
+        type: UPDATE_INGREDIENT_IN_FRIDGE,
+        payload: ingredient
     }
 )

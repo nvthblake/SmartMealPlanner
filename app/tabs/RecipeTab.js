@@ -126,7 +126,7 @@ class RecipeTab extends Component {
         });
       })
       .catch((err) => {
-        console.log("RecipeTab -> componentDidMount -> err", err);
+        // console.log("RecipeTab -> componentDidMount -> err", err);
         alert("Out of Spoonacular usage lol!");
       });
   }
