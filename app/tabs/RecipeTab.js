@@ -31,7 +31,7 @@ class RecipeTab extends Component {
 
   componentDidMount() {
     const params = this.props.ingredients.fridge
-      .map((ingredient) => ingredient.title.replace(" ", "%20"))
+      .map((ingredient) => ingredient.ingredient.replace(" ", "%20"))
       .join("%2C");
     // alert(params)
     return fetch(

@@ -134,6 +134,7 @@ function IngredientsTab(state) {
         WHERE id = ?;", 
         [values.ingredient, values.qty, values.unit.label, values.category.label, values.inFridge, expDate, values.id], 
         () => {
+          console.log('Update Values -> ', values);
           updateIngredientInFridge({
             id: values.id,
             ingredient: values.ingredient,
@@ -141,7 +142,7 @@ function IngredientsTab(state) {
             qty: values.qty,
             expDate: expDate,
             unit: values.unit.label,
-            imageUrl: require("../assets/appIcon/Honeycrisp.jpg"),
+            imageUri: values.imageUri,
           })
         }, 
         (_, error) => console.log("IngredientTab updateIngre SQLite -> ", error)
@@ -182,7 +183,7 @@ function IngredientsTab(state) {
               qty: row.qty,
               expDate: row.expDate,
               unit: row.unit,
-              imageUrl: require("../assets/appIcon/Honeycrisp.jpg"),
+              imageUri: row.imageUri,
             })
             // console.log("IngredientTab -> ", row)
           });
@@ -239,7 +240,7 @@ function IngredientsTab(state) {
                 <SqCard
                   title={ingredientsInFridge[index].ingredient}
                   subTitle={"QTY: " + ingredientsInFridge[index].qty}
-                  image={ingredientsInFridge[index].imageUrl}
+                  image={ingredientsInFridge[index].imageUri}
                   screenWidth={screenWidth}
                   expStatus={expDateToColor(ingredientsInFridge[index].expDate)[1]}
                   onPress={() => toggleModal(ingredientsInFridge[index])}
@@ -281,7 +282,7 @@ function IngredientsTab(state) {
                       height: screenWidth - 200,
                       borderRadius: 15,
                     }}
-                    source={selectedIngre.imageUrl}
+                    source={{uri: selectedIngre.imageUri}}
                   />
                   <Text>{selectedIngre.id}</Text>
                     <AppForm
@@ -292,7 +293,7 @@ function IngredientsTab(state) {
                         unit: units.find(unit => unit.label === selectedIngre.unit) ,
                         category: categories.find(category => category.label === selectedIngre.category),
                         dayToExp: expDateToColor(selectedIngre.expDate)[0].toString(),
-                        images: [],
+                        imageUri: selectedIngre.imageUri,
                         inFridge: 1,
                       }}
                       onSubmit={handleSubmit}
