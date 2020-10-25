@@ -17,7 +17,7 @@ function SqCard({ title, subTitle, image, expStatus, screenWidth, onPress }) {
           },
         ]}
       >
-        <Image style={styles.image} source={image} />
+        <Image style={styles.image} source={{uri: image}} />
         <View style={styles.detailsContainer}>
           <AppText style={[styles.subTitle, { fontSize: 0.03 * screenWidth }]}>
             {subTitle}

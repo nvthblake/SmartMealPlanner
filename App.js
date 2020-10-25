@@ -38,14 +38,15 @@ export default function App() {
       tx.executeSql(
         `CREATE TABLE IF NOT EXISTS FactFridge \
         (id INTEGER PRIMARY KEY NOT NULL, \
-        createdTs DATETIME DEFAULT CURRENT_TIMESTAMP, 
-        ingredient VARCHAR NOT NULL, 
-        qty INTEGER NOT NULL, 
-        unit VARCHAR NOT NULL, 
-        category VARCHAR NOT NULL, 
-        dayToExp INTEGER NOT NULL, 
-        expDate DATETIME NULL,
-        inFridge INT(1));`
+        createdTs DATETIME DEFAULT CURRENT_TIMESTAMP, \
+        ingredient VARCHAR NOT NULL, \
+        qty INTEGER NOT NULL, \
+        unit VARCHAR NOT NULL, \
+        category VARCHAR NOT NULL, \
+        dayToExp INTEGER NOT NULL, \
+        expDate DATETIME NULL, \
+        inFridge INT(1), \
+        imageUri VARCHAR);`
       );
     });
   }, []);

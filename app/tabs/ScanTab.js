@@ -48,15 +48,15 @@ function ScanTab(state) {
   const ingredientsInFridge = ingredients.fridge;
 
   const [forceUpdate, forceUpdateId] = useForceUpdate();
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState(true);
 
   const handleSubmit = async (values, { resetForm }) => {
     var expDate = new Date(new Date().getTime() + (values.dayToExp * 24 * 60 * 60 * 1000)).toISOString();
     // Insert new ingredient to SQLite database
     db.transaction(tx => {
       tx.executeSql(
-        "INSERT INTO FactFridge (ingredient, qty, unit, category, dayToExp, inFridge, expDate) values (?, ?, ?, ?, ?, ?, ?)",
-        [values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1, expDate],
+        "INSERT INTO FactFridge (ingredient, qty, unit, category, dayToExp, inFridge, expDate, imageUri) values (?, ?, ?, ?, ?, ?, ?, ?)",
+        [values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1, expDate, values.images[0]],
         () => {
           setSuccess(true)
           console.log(values);
@@ -73,6 +73,7 @@ function ScanTab(state) {
                   unit: values.unit.label,
                   category: values.category.label,
                   expDate: expDate,
+                  // imageUri: values.images[0],
                   imageUrl: require("../assets/appIcon/Honeycrisp.jpg"),
                 })
               },
