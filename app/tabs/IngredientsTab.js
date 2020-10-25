@@ -144,7 +144,7 @@ function IngredientsTab(state) {
             imageUrl: require("../assets/appIcon/Honeycrisp.jpg"),
           })
         }, 
-        (_, error) => console.log(error)
+        (_, error) => console.log("IngredientTab updateIngre SQLite -> ", error)
       );
     },
     null,
@@ -187,12 +187,11 @@ function IngredientsTab(state) {
             // console.log("IngredientTab -> ", row)
           });
         },
-        (_, error) => console.log(error)
+        (_, error) => console.log("IngredientTab addIngre Redux -> ", error)
         );
       },
       null,
       forceUpdate);
-    console.log(ingredientsInFridge);
   }, []);
 
   return (
@@ -257,17 +256,16 @@ function IngredientsTab(state) {
               visible={modalVisible}
               onRequestClose={() => {
                 Alert.alert(
-                  "Save the Changes?",
-                  "Are you sure you want to save the changes?",
+                  "Exit Change Window?",
+                  "Are you sure you want to discard any changes made?",
                   [
                     {
-                      text: "Discard Changes",
-                      onPress: () => console.log("Canceled Pressed"),
-                      style: "cancel",
+                      text: "Yes",
+                      onPress: () => toggleModal(null),
                     },
                     {
-                      text: "Yes",
-                      onPress: () => console.log("Yes Pressed"),
+                      text: "No",
+                      style: "cancel",
                     },
                   ],
                   { cancelable: true }
@@ -285,6 +283,7 @@ function IngredientsTab(state) {
                     }}
                     source={selectedIngre.imageUrl}
                   />
+                  <Text>{selectedIngre.id}</Text>
                     <AppForm
                       initialValues={{
                         id: selectedIngre.id,
@@ -323,8 +322,14 @@ function IngredientsTab(state) {
                         placeholder="Days to Expiration"
                         keyboardType="numeric"
                       />
-                      <SubmitButton title="Close"/>
+                      <SubmitButton title="SAVE"/>
                     </AppForm>
+                    <AppButton 
+                      title="CANCEL"
+                      onPress={() => toggleModal(null)}
+                      borderColor={colors.medium}
+                      textColor={colors.medium}
+                      />
                   </ScrollView>
                 </View>
               </View>
