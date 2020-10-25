@@ -73,8 +73,7 @@ function ScanTab(state) {
                   unit: values.unit.label,
                   category: values.category.label,
                   expDate: expDate,
-                  // imageUri: values.images[0],
-                  imageUrl: require("../assets/appIcon/Honeycrisp.jpg"),
+                  imageUri: values.images[0],
                 })
               },
               (_, error) => console.log(error)

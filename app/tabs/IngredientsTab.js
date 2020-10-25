@@ -143,7 +143,6 @@ function IngredientsTab(state) {
             expDate: expDate,
             unit: values.unit.label,
             imageUri: values.imageUri,
-            imageUrl: values.imageUrl,
           })
         }, 
         (_, error) => console.log("IngredientTab updateIngre SQLite -> ", error)
@@ -185,7 +184,6 @@ function IngredientsTab(state) {
               expDate: row.expDate,
               unit: row.unit,
               imageUri: row.imageUri,
-              imageUrl: (require("../assets/appIcon/Honeycrisp.jpg")),
             })
             // console.log("IngredientTab -> ", row)
           });
@@ -296,7 +294,6 @@ function IngredientsTab(state) {
                         category: categories.find(category => category.label === selectedIngre.category),
                         dayToExp: expDateToColor(selectedIngre.expDate)[0].toString(),
                         imageUri: selectedIngre.imageUri,
-                        imageUrl: selectedIngre.imageUrl,
                         inFridge: 1,
                       }}
                       onSubmit={handleSubmit}
