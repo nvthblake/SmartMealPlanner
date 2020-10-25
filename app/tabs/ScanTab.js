@@ -58,8 +58,7 @@ function ScanTab(state) {
         "INSERT INTO FactFridge (ingredient, qty, unit, category, dayToExp, inFridge, expDate, imageUri) values (?, ?, ?, ?, ?, ?, ?, ?)",
         [values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1, expDate, values.images[0]],
         () => {
-          setSuccess(true)
-          console.log(values);
+          setSuccess(true);
           db.transaction(tx => {
             tx.executeSql(
               "SELECT MAX(ID) AS ID FROM FactFridge",

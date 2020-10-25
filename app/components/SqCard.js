@@ -3,9 +3,9 @@ import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import colors from "../config/colors";
 import AppText from "./AppText";
 
-function SqCard({ title, subTitle, image, expStatus, screenWidth, onPress }) {
+function SqCard({ title, subTitle, image, expStatus, screenWidth, onPress, onLongPress }) {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} onLongPress={onLongPress}>
       <View
         style={[
           styles.card,

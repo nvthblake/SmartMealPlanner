@@ -22,7 +22,7 @@ import Screen from "../components/Screen";
 import SqCard from "../components/SqCard";
 import colors from "../config/colors";
 
-import { addIngredientToFridge, clearIngredientsInFridge, updateIngredientInFridge } from "../../actions";
+import { addIngredientToFridge, clearIngredientsInFridge, updateIngredientInFridge, deleteIngredientInFridge } from "../../actions";
 import AppTextInput from "../components/AppTextInput";
 import {
   AppForm,
@@ -79,7 +79,7 @@ const inventoryFilter = [
 const screenWidth = Dimensions.get("window").width;
 
 function IngredientsTab(state) {
-  const { ingredients, addIngredientToFridge, clearIngredientsInFridge, updateIngredientInFridge } = state;
+  const { ingredients, addIngredientToFridge, clearIngredientsInFridge, updateIngredientInFridge, deleteIngredientInFridge } = state;
   const [forceUpdate, forceUpdateId] = useForceUpdate();
 
   const ingredientsInFridge = ingredients.fridge;
@@ -150,6 +150,39 @@ function IngredientsTab(state) {
     },
     null,
     forceUpdate);
+  }
+
+  const handleDelete = (ingredient) => {
+    Alert.alert(
+      "Delete Ingredient?",
+      "Are you sure you want to remove ingredient from your fridge?",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            console.log(ingredient);
+            // Delete ingredient from Redux
+            deleteIngredientInFridge(ingredient);
+            // Delete ingredient from SQLite
+            db.transaction(tx => {
+              tx.executeSql(
+                "DELETE FROM FactFridge WHERE id = ?", 
+                [ingredient.id], 
+                [], 
+                (_, error) => console.log(error)
+              );
+            },
+            null,
+            forceUpdate);
+          }
+        },
+        {
+          text: "No",
+          style: "cancel",
+        },
+      ],
+      { cancelable: true }
+    );
   }
 
   const categories = [
@@ -244,6 +277,8 @@ function IngredientsTab(state) {
                   screenWidth={screenWidth}
                   expStatus={expDateToColor(ingredientsInFridge[index].expDate)[1]}
                   onPress={() => toggleModal(ingredientsInFridge[index])}
+                  onLongPress={() => {handleDelete(ingredientsInFridge[index])}
+                }
                 ></SqCard>
               </>
             );
@@ -325,6 +360,12 @@ function IngredientsTab(state) {
                       />
                       <SubmitButton title="SAVE"/>
                     </AppForm>
+                    <AppButton
+                      title="DELETE"
+                      onPress={() => handleDelete(selectedIngre)}
+                      borderColor={colors.maroon}
+                      textColor={colors.maroon}
+                    />
                     <AppButton 
                       title="CANCEL"
                       onPress={() => toggleModal(null)}
@@ -420,7 +461,8 @@ const mapDispatchToProps = (dispatch) =>
     {
       addIngredientToFridge,
       clearIngredientsInFridge,
-      updateIngredientInFridge
+      updateIngredientInFridge, 
+      deleteIngredientInFridge
     },
     dispatch
   );
