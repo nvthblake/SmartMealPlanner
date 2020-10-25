@@ -21,6 +21,7 @@ import AppText from "../components/AppText";
 import Screen from "../components/Screen";
 import SqCard from "../components/SqCard";
 import colors from "../config/colors";
+import pickerOptions from "../config/pickerOptions";
 
 import { addIngredientToFridge, clearIngredientsInFridge, updateIngredientInFridge, deleteIngredientInFridge } from "../../actions";
 import AppTextInput from "../components/AppTextInput";
@@ -184,20 +185,7 @@ function IngredientsTab(state) {
       { cancelable: true }
     );
   }
-
-  const categories = [
-    { label: "Meat", value: 1, backgroundColor: "red", icon: "apps" },
-    { label: "Vegetable", value: 2, backgroundColor: "green", icon: "email" },
-    { label: "Condiments", value: 3, backgroundColor: "blue", icon: "lock" },
-    { label: "Snack", value: 4, backgroundColor: "blue", icon: "lock" },
-    { label: "Fruit", value: 5, backgroundColor: "blue", icon: "lock" },
-    { label: "Others", value: 6, backgroundColor: "blue", icon: "lock" },
-  ];
   
-  const units = [
-    { label: "Quartz", value: 1 },
-    { label: "Kg", value: 2 }
-  ]
 
   React.useEffect(() => {
     // Load ingredients from database
@@ -325,8 +313,8 @@ function IngredientsTab(state) {
                         id: selectedIngre.id,
                         ingredient: selectedIngre.ingredient,
                         qty: selectedIngre.qty.toString(),
-                        unit: units.find(unit => unit.label === selectedIngre.unit) ,
-                        category: categories.find(category => category.label === selectedIngre.category),
+                        unit: pickerOptions.units.find(unit => unit.label === selectedIngre.unit) ,
+                        category: pickerOptions.categories.find(category => category.label === selectedIngre.category),
                         dayToExp: expDateToColor(selectedIngre.expDate)[0].toString(),
                         imageUri: selectedIngre.imageUri,
                         inFridge: 1,
@@ -344,12 +332,12 @@ function IngredientsTab(state) {
                         keyboardType="numeric"
                       />
                       <AppFormPicker
-                        items={units}
+                        items={pickerOptions.units}
                         name="unit"
                         placeholder="Unit"
                       />
                       <AppFormPicker
-                        items={categories}
+                        items={pickerOptions.categories}
                         name="category"
                         placeholder="Category"
                       />

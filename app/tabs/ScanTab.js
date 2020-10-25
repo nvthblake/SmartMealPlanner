@@ -14,6 +14,7 @@ import {
 import Screen from "../components/Screen";
 import CategoryPickerItem from "../components/CategoryPickerItem";
 import FormImagePicker from "../components/forms/FormImagePicker";
+import pickerOptions from "../config/pickerOptions";
 
 import { addIngredientToFridge } from "../../actions";
 import { getFridgeSql } from "../components/database/queries";
@@ -29,19 +30,6 @@ const validationSchema = Yup.object().shape({
   images: Yup.array().min(1, "Please select at least 1 image."),
 });
 
-const categories = [
-  { label: "Meat", value: 1, backgroundColor: "red", icon: "apps" },
-  { label: "Vegetable", value: 2, backgroundColor: "green", icon: "email" },
-  { label: "Condiments", value: 3, backgroundColor: "blue", icon: "lock" },
-  { label: "Snack", value: 4, backgroundColor: "blue", icon: "lock" },
-  { label: "Fruit", value: 5, backgroundColor: "blue", icon: "lock" },
-  { label: "Others", value: 6, backgroundColor: "blue", icon: "lock" },
-];
-
-const units = [
-  { label: "Quartz", value: 1 },
-  { label: "Kg", value: 2 }
-]
 
 function ScanTab(state) {
   const { ingredients, addIngredientToFridge } = state;
@@ -121,12 +109,12 @@ function ScanTab(state) {
           keyboardType="numeric"
         />
         <AppFormPicker
-          items={units}
+          items={pickerOptions.units}
           name="unit"
           placeholder="Unit"
         />
         <AppFormPicker
-          items={categories}
+          items={pickerOptions.categories}
           name="category"
           placeholder="Category"
         />
