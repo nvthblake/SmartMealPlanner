@@ -1,6 +1,6 @@
 import React from "react";
 import { createStore } from 'redux';
-import ShoppingTab from "./app/tabs/ShoppingTab";
+import ProfileTab from "./app/tabs/ProfileTab";
 
 // Redux Territory
 import reducers from './reducers';
@@ -17,6 +17,6 @@ const store = createStore(reducers);
 //   );
 // }
 export default function App() {
-  return ( <ShoppingTab/> 
+  return ( <ProfileTab/> 
   );
 }

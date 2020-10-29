@@ -1,10 +1,13 @@
 import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { addIngredientToFridge } from '../../actions';
+import { StyleSheet, View, Text, TouchableOpacity, Image, ProgressBarAndroid} from "react-native";
 import CardView from "../components/CardView";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 
-function Profile(props) {
+function Profile(state) {
   return (
     <View style={styles.container}>
       <View style={styles.imageView}>
@@ -23,12 +26,15 @@ function Profile(props) {
             source={require("../assets/appIcon/fridge2.png")}
             style={styles.fridgelogo}
           />
-          <Image
-            source={require("../assets/appIcon/fridge-status.png")}
+          <ProgressBarAndroid 
             style={styles.fridgestatus}
+            color={colors.primary}  
+            styleAttr="Horizontal"  
+            indeterminate={false} 
+            progress={0.2} 
           />
         </View>
-        <Text style={styles.fridgetext}>Your fridge is 0% full</Text>
+        <Text style={styles.fridgetext}>Your fridge is 20% full</Text>
         <Text style={styles.fridgetext}>
           Need to go shopping in the next 10 days
         </Text>
@@ -121,7 +127,7 @@ const styles = StyleSheet.create({
     height: 60,
     width: "80%",
     marginLeft: 30,
-    marginTop: -20,
+    marginTop: -10,
     alignItems: "center",
   },
   seperatorline: {
@@ -140,4 +146,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
-export default Profile;
+
+const mapStateToProps = (state) => {
+  const { ingredients } = state
+  return { ingredients }
+};
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    addIngredientToFridge,
+  }, dispatch)
+)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
