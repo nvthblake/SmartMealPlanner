@@ -1,5 +1,7 @@
-import { StatusBar } from "expo-status-bar";
 import React from "react";
+import ProfileTab from "./app/tabs/ProfileTab";
+
+// Redux Territory
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 import { StyleSheet, Text, View } from "react-native";
@@ -19,7 +21,6 @@ import Icon from "./app/components/Icon";
 import colors from "./app/config/colors";
 import IngredientsTab from "./app/tabs/IngredientsTab";
 import ScanTab from "./app/tabs/ScanTab";
-import Profile from "./app/tabs/Profile";
 import CameraScreen from "./app/screens/CameraScreen";// Redux Territory
 import reducers from './reducers';
 
