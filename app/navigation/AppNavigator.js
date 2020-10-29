@@ -1,5 +1,6 @@
 import React from "react";
 
+<<<<<<< HEAD
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AccountScreen from "../screens/AccountScreen";
 import ListingEditScreen from "../screens/ListingEditScreen";
@@ -23,6 +24,26 @@ import ShoppingList from "../tabs/ShoppingList";
 import RecipeTab from "../tabs/RecipeTab";
 import ScanTab from "../tabs/ScanTab";
 import CamNavigation from "./CamNavigation";
+=======
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AccountScreen from '../screens/AccountScreen';
+import ListingEditScreen from '../screens/ListingEditScreen';
+import ListingsScreen from '../screens/ListingsScreen';
+import FeedNavigator from './FeedNavigator';
+import AccountNavigator from './AccountNavigator';
+import Profile from '../tabs/ProfileTab';
+
+import { MaterialCommunityIcons, Feather, MaterialIcons } from '@expo/vector-icons';
+import AddItemButton from './AddItemButton';
+import Icon from '../components/Icon';
+import ListingDetailsScreen from '../screens/ListingDetailsScreen';
+import ViewImageScreen from '../screens/ViewImageScreen';
+import colors from '../config/colors';
+import IngredientsTab from '../tabs/IngredientsTab';
+import ShoppingList from '../tabs/ShoppingTab';
+import RecipeTab from '../tabs/RecipeTab';
+import ScanTab from '../tabs/ScanTab';
+>>>>>>> testing-qa
 
 const Tab = createBottomTabNavigator();
 

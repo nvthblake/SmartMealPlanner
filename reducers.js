@@ -5,7 +5,8 @@ import {
   ADD_RECIPE,
   CLEAR_RECIPE,
   CLEAR_INGREDIENTS_IN_FRIDGE,
-  UPDATE_INGREDIENT_IN_FRIDGE
+  UPDATE_INGREDIENT_IN_FRIDGE,
+  DELETE_INGREDIENT_IN_FRIDGE,
 } from "./types";
 
 const today = new Date();
@@ -19,25 +20,7 @@ const INITIAL_STATE = {
     //   qty: 100,
     //   expDate: today,
     //   unit: "Kg",
-    //   imageUrl: require("./app/assets/appIcon/Honeycrisp.jpg"),
-    // },
-    // {
-    //   id: 2,
-    //   ingredient: "Banana",
-    //   category: "Fruit",
-    //   qty: 1000,
-    //   expDate: today,
-    //   unit: "Kg",
-    //   imageUrl: require("./app/assets/appIcon/bananas.jpg"),
-    // },
-    // {
-    //   id: 3,
-    //   ingredient: "Ground Beef",
-    //   category: "Meat",
-    //   qty: 10,
-    //   expDate: today,
-    //   unit: "Kg",
-    //   imageUrl: require("./app/assets/appIcon/steak.jpg"),
+    //   imageUri: "file:/data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FSmartMealPlanner-c7f11723-ddae-4ba6-97f3-0120a5d82b7e/ImagePicker/acface9b-60ad-40d8-886d-43347ba91603.jpg",
     // },
   ],
   cart: [],
@@ -83,13 +66,24 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
     case UPDATE_INGREDIENT_IN_FRIDGE:
 
       // Change value of ingredient chosen
-      const ingreIndex = fridge.findIndex((ingre => ingre.id === action.payload.id));
-      fridge[ingreIndex] = action.payload;
+      const ingreIndexUpdate = fridge.findIndex((ingre => ingre.id === action.payload.id));
+      fridge[ingreIndexUpdate] = action.payload;
 
       // Update the redux state
       newState = { fridge, cart, recipes };
 
       return newState;
+
+    case DELETE_INGREDIENT_IN_FRIDGE:
+
+        // Delete ingredient chosen
+        const ingreIndexDelete = fridge.findIndex((ingre => ingre.id === action.payload.id));
+        fridge.splice(ingreIndexDelete, 1);
+  
+        // Update the redux state
+        newState = { fridge, cart, recipes };
+  
+        return newState;
 
     default:
       return state;

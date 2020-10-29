@@ -1,5 +1,7 @@
-import { StatusBar } from "expo-status-bar";
 import React from "react";
+import ProfileTab from "./app/tabs/ProfileTab";
+
+// Redux Territory
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 import { StyleSheet, Text, View } from "react-native";
@@ -18,6 +20,7 @@ import navigationTheme from "./app/navigation/navigationTheme";
 import Icon from "./app/components/Icon";
 import colors from "./app/config/colors";
 import IngredientsTab from "./app/tabs/IngredientsTab";
+<<<<<<< HEAD
 // import ScanTab from "./app/tabs/ScanTab";
 import Profile from "./app/tabs/Profile";
 import CameraScreen from "./app/components/CameraButton"; // Redux Territory
@@ -25,6 +28,11 @@ import reducers from "./reducers";
 import ScanTab from "./app/tabs/newScanTab";
 import CameraButton from "./app/components/CameraButton";
 import CameraPage from "./app/tabs/pages/CameraPage";
+=======
+import ScanTab from "./app/tabs/ScanTab";
+import CameraScreen from "./app/screens/CameraScreen";// Redux Territory
+import reducers from './reducers';
+>>>>>>> testing-qa
 
 const store = createStore(reducers);
 const db = SQLite.openDatabase("db2.db");
@@ -40,6 +48,7 @@ export default function App() {
       tx.executeSql(
         `CREATE TABLE IF NOT EXISTS FactFridge \
         (id INTEGER PRIMARY KEY NOT NULL, \
+<<<<<<< HEAD
         createdTs DATETIME DEFAULT CURRENT_TIMESTAMP,
         ingredient VARCHAR NOT NULL,
         qty INTEGER NOT NULL,
@@ -48,6 +57,17 @@ export default function App() {
         dayToExp INTEGER NOT NULL,
         expDate DATETIME NULL,
         inFridge INT(1));`
+=======
+        createdTs DATETIME DEFAULT CURRENT_TIMESTAMP, \
+        ingredient VARCHAR NOT NULL, \
+        qty INTEGER NOT NULL, \
+        unit VARCHAR NOT NULL, \
+        category VARCHAR NOT NULL, \
+        dayToExp INTEGER NOT NULL, \
+        expDate DATETIME NULL, \
+        inFridge INT(1), \
+        imageUri VARCHAR);`
+>>>>>>> testing-qa
       );
     });
   }, []);

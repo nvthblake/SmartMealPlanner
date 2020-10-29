@@ -8,4 +8,5 @@ export default {
   light: "#F4F6F9",
   dark: "#292c3e",
   danger: "#ff5252",
+  maroon: "#BF181D",
 };

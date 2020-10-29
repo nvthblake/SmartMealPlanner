@@ -21,8 +21,9 @@ import AppText from "../components/AppText";
 import Screen from "../components/Screen";
 import SqCard from "../components/SqCard";
 import colors from "../config/colors";
+import pickerOptions from "../config/pickerOptions";
 
-import { addIngredientToFridge, clearIngredientsInFridge, updateIngredientInFridge } from "../../actions";
+import { addIngredientToFridge, clearIngredientsInFridge, updateIngredientInFridge, deleteIngredientInFridge } from "../../actions";
 import AppTextInput from "../components/AppTextInput";
 import {
   AppForm,
@@ -79,7 +80,7 @@ const inventoryFilter = [
 const screenWidth = Dimensions.get("window").width;
 
 function IngredientsTab(state) {
-  const { ingredients, addIngredientToFridge, clearIngredientsInFridge, updateIngredientInFridge } = state;
+  const { ingredients, addIngredientToFridge, clearIngredientsInFridge, updateIngredientInFridge, deleteIngredientInFridge } = state;
   const [forceUpdate, forceUpdateId] = useForceUpdate();
 
   const ingredientsInFridge = ingredients.fridge;
@@ -134,6 +135,7 @@ function IngredientsTab(state) {
         WHERE id = ?;", 
         [values.ingredient, values.qty, values.unit.label, values.category.label, values.inFridge, expDate, values.id], 
         () => {
+          console.log('Update Values -> ', values);
           updateIngredientInFridge({
             id: values.id,
             ingredient: values.ingredient,
@@ -141,7 +143,7 @@ function IngredientsTab(state) {
             qty: values.qty,
             expDate: expDate,
             unit: values.unit.label,
-            imageUrl: require("../assets/appIcon/Honeycrisp.jpg"),
+            imageUri: values.imageUri,
           })
         }, 
         (_, error) => console.log("IngredientTab updateIngre SQLite -> ", error)
@@ -151,19 +153,39 @@ function IngredientsTab(state) {
     forceUpdate);
   }
 
-  const categories = [
-    { label: "Meat", value: 1, backgroundColor: "red", icon: "apps" },
-    { label: "Vegetable", value: 2, backgroundColor: "green", icon: "email" },
-    { label: "Condiments", value: 3, backgroundColor: "blue", icon: "lock" },
-    { label: "Snack", value: 4, backgroundColor: "blue", icon: "lock" },
-    { label: "Fruit", value: 5, backgroundColor: "blue", icon: "lock" },
-    { label: "Others", value: 6, backgroundColor: "blue", icon: "lock" },
-  ];
+  const handleDelete = (ingredient) => {
+    Alert.alert(
+      "Delete Ingredient?",
+      "Are you sure you want to remove ingredient from your fridge?",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            console.log(ingredient);
+            // Delete ingredient from Redux
+            deleteIngredientInFridge(ingredient);
+            // Delete ingredient from SQLite
+            db.transaction(tx => {
+              tx.executeSql(
+                "DELETE FROM FactFridge WHERE id = ?", 
+                [ingredient.id], 
+                [], 
+                (_, error) => console.log(error)
+              );
+            },
+            null,
+            forceUpdate);
+          }
+        },
+        {
+          text: "No",
+          style: "cancel",
+        },
+      ],
+      { cancelable: true }
+    );
+  }
   
-  const units = [
-    { label: "Quartz", value: 1 },
-    { label: "Kg", value: 2 }
-  ]
 
   React.useEffect(() => {
     // Load ingredients from database
@@ -182,7 +204,7 @@ function IngredientsTab(state) {
               qty: row.qty,
               expDate: row.expDate,
               unit: row.unit,
-              imageUrl: require("../assets/appIcon/Honeycrisp.jpg"),
+              imageUri: row.imageUri,
             })
             // console.log("IngredientTab -> ", row)
           });
@@ -239,10 +261,12 @@ function IngredientsTab(state) {
                 <SqCard
                   title={ingredientsInFridge[index].ingredient}
                   subTitle={"QTY: " + ingredientsInFridge[index].qty}
-                  image={ingredientsInFridge[index].imageUrl}
+                  image={ingredientsInFridge[index].imageUri}
                   screenWidth={screenWidth}
                   expStatus={expDateToColor(ingredientsInFridge[index].expDate)[1]}
                   onPress={() => toggleModal(ingredientsInFridge[index])}
+                  onLongPress={() => {handleDelete(ingredientsInFridge[index])}
+                }
                 ></SqCard>
               </>
             );
@@ -281,7 +305,7 @@ function IngredientsTab(state) {
                       height: screenWidth - 200,
                       borderRadius: 15,
                     }}
-                    source={selectedIngre.imageUrl}
+                    source={{uri: selectedIngre.imageUri}}
                   />
                   <Text>{selectedIngre.id}</Text>
                     <AppForm
@@ -289,10 +313,10 @@ function IngredientsTab(state) {
                         id: selectedIngre.id,
                         ingredient: selectedIngre.ingredient,
                         qty: selectedIngre.qty.toString(),
-                        unit: units.find(unit => unit.label === selectedIngre.unit) ,
-                        category: categories.find(category => category.label === selectedIngre.category),
+                        unit: pickerOptions.units.find(unit => unit.label === selectedIngre.unit) ,
+                        category: pickerOptions.categories.find(category => category.label === selectedIngre.category),
                         dayToExp: expDateToColor(selectedIngre.expDate)[0].toString(),
-                        images: [],
+                        imageUri: selectedIngre.imageUri,
                         inFridge: 1,
                       }}
                       onSubmit={handleSubmit}
@@ -308,12 +332,12 @@ function IngredientsTab(state) {
                         keyboardType="numeric"
                       />
                       <AppFormPicker
-                        items={units}
+                        items={pickerOptions.units}
                         name="unit"
                         placeholder="Unit"
                       />
                       <AppFormPicker
-                        items={categories}
+                        items={pickerOptions.categories}
                         name="category"
                         placeholder="Category"
                       />
@@ -324,6 +348,12 @@ function IngredientsTab(state) {
                       />
                       <SubmitButton title="SAVE"/>
                     </AppForm>
+                    <AppButton
+                      title="DELETE"
+                      onPress={() => handleDelete(selectedIngre)}
+                      borderColor={colors.maroon}
+                      textColor={colors.maroon}
+                    />
                     <AppButton 
                       title="CANCEL"
                       onPress={() => toggleModal(null)}
@@ -419,7 +449,8 @@ const mapDispatchToProps = (dispatch) =>
     {
       addIngredientToFridge,
       clearIngredientsInFridge,
-      updateIngredientInFridge
+      updateIngredientInFridge, 
+      deleteIngredientInFridge
     },
     dispatch
   );
