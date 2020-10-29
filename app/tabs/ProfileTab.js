@@ -19,7 +19,7 @@ function Profile(state) {
   const ingredientsInFridge = ingredients.fridge;
   const Limit = 100;
   let Item = 0;
-  ingredientsInFridge.forEach(element => {
+  ingredientsInFridge.forEach((element) => {
     Item += parseInt(element.qty);
   });
   return (
@@ -45,10 +45,12 @@ function Profile(state) {
             color={colors.primary}
             styleAttr="Horizontal"
             indeterminate={false}
-            progress={Item/Limit}
+            progress={Item / Limit}
           />
         </View>
-        <Text style={styles.fridgetext}>Your fridge is {(Item/Limit)*100}% full</Text>
+        <Text style={styles.fridgetext}>
+          Your fridge is {(Item / Limit) * 100}% full
+        </Text>
         <Text style={styles.fridgetext}>
           Need to go shopping in the next 10 days
         </Text>
@@ -56,25 +58,34 @@ function Profile(state) {
         <View style={styles.minilogoview}>
           <View>
             <Image
-              source={require("../assets/appIcon/ava.png")}
+              source={require("../assets/appIcon/white.png")}
               style={styles.minilogo}
             />
+            <View style={styles.viewDemotext}>
+              <Text style={styles.demotext}>{ingredientsInFridge.length}</Text>
+            </View>
             <Text style={styles.minitext}>Item is expiring</Text>
             <Text style={styles.minitext}>in 3 days</Text>
           </View>
           <View>
             <Image
-              source={require("../assets/appIcon/ava.png")}
+              source={require("../assets/appIcon/white.png")}
               style={styles.minilogo}
             />
+            <View style={styles.viewDemotext}>
+              <Text style={styles.demotext}>{ingredientsInFridge.length}</Text>
+            </View>
             <Text style={styles.minitext}>Item is expiring</Text>
             <Text style={styles.minitext}>in 10 days</Text>
           </View>
           <View>
             <Image
-              source={require("../assets/appIcon/ava.png")}
+              source={require("../assets/appIcon/white.png")}
               style={styles.minilogo}
             />
+            <View style={styles.viewDemotext}>
+              <Text style={styles.demotext}>{ingredientsInFridge.length}</Text>
+            </View>
             <Text style={styles.minitext}>Item is already</Text>
             <Text style={styles.minitext}>expired</Text>
           </View>
@@ -158,6 +169,16 @@ const styles = StyleSheet.create({
     marginTop: 5,
     textAlign: "center",
     fontSize: 12,
+  },
+  viewDemotext: {
+    marginTop: 13,
+    marginLeft: 28,
+    position: "absolute",
+  },
+  demotext: {
+    fontSize: 35,
+    color: colors.primary,
+    fontWeight: "bold",
   },
 });
 
