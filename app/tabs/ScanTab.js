@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Button } from "react-native";
 import * as Yup from "yup";
-import { openDatabase } from 'expo-sqlite';
+import { openDatabase } from "expo-sqlite";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { useNavigation } from "@react-navigation/native";
 
 import {
   AppForm,
@@ -17,6 +18,7 @@ import FormImagePicker from "../components/forms/FormImagePicker";
 
 import { addIngredientToFridge } from "../../actions";
 import { getFridgeSql } from "../components/database/queries";
+import AppButton from "../components/AppButton";
 
 const db = openDatabase("db2.db");
 
@@ -40,8 +42,8 @@ const categories = [
 
 const units = [
   { label: "Quartz", value: 1 },
-  { label: "Kg", value: 2 }
-]
+  { label: "Kg", value: 2 },
+];
 
 function ScanTab(state) {
   const { ingredients, addIngredientToFridge } = state;
@@ -51,54 +53,74 @@ function ScanTab(state) {
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (values, { resetForm }) => {
-    var expDate = new Date(new Date().getTime() + (values.dayToExp * 24 * 60 * 60 * 1000)).toISOString();
+    var expDate = new Date(
+      new Date().getTime() + values.dayToExp * 24 * 60 * 60 * 1000
+    ).toISOString();
     // Insert new ingredient to SQLite database
-    db.transaction(tx => {
-      tx.executeSql(
-        "INSERT INTO FactFridge (ingredient, qty, unit, category, dayToExp, inFridge, expDate) values (?, ?, ?, ?, ?, ?, ?)",
-        [values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1, expDate],
-        () => {
-          setSuccess(true)
-          console.log(values);
-          db.transaction(tx => {
-            tx.executeSql(
-              "SELECT MAX(ID) AS ID FROM FactFridge",
-              [],
-              (_, { rows }) => {
-                const row = rows._array[0];
-                addIngredientToFridge({
-                  id: row.ID,
-                  ingredient: values.ingredient,
-                  qty: values.qty,
-                  unit: values.unit.label,
-                  category: values.category.label,
-                  expDate: expDate,
-                  imageUrl: require("../assets/appIcon/Honeycrisp.jpg"),
-                })
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          "INSERT INTO FactFridge (ingredient, qty, unit, category, dayToExp, inFridge, expDate) values (?, ?, ?, ?, ?, ?, ?)",
+          [
+            values.ingredient,
+            values.qty,
+            values.unit.label,
+            values.category.label,
+            values.dayToExp,
+            1,
+            expDate,
+          ],
+          () => {
+            setSuccess(true);
+            console.log(values);
+            db.transaction(
+              (tx) => {
+                tx.executeSql(
+                  "SELECT MAX(ID) AS ID FROM FactFridge",
+                  [],
+                  (_, { rows }) => {
+                    const row = rows._array[0];
+                    addIngredientToFridge({
+                      id: row.ID,
+                      ingredient: values.ingredient,
+                      qty: values.qty,
+                      unit: values.unit.label,
+                      category: values.category.label,
+                      expDate: expDate,
+                      imageUrl: require("../assets/appIcon/Honeycrisp.jpg"),
+                    });
+                  },
+                  (_, error) => console.log(error)
+                );
               },
-              (_, error) => console.log(error)
+              null,
+              forceUpdate
             );
           },
-            null,
-            forceUpdate);
-        },
-        (_, error) => {
-          setSuccess(false);
-          console.log(error);
-        }
-      );
-    },
+          (_, error) => {
+            setSuccess(false);
+            console.log(error);
+          }
+        );
+      },
       null,
-      forceUpdate);
+      forceUpdate
+    );
     if (success) {
       resetForm();
       setSuccess(false);
     }
     // console.log(getFridgeSql(db));
-  }
+  };
+
+  const navigation = useNavigation();
 
   return (
     <Screen style={styles.container}>
+      <Button
+        title={"Show Camera"}
+        onPress={() => navigation.navigate("Camera")}
+      />
       <AppForm
         initialValues={{
           ingredient: "",
@@ -112,20 +134,13 @@ function ScanTab(state) {
         validationSchema={validationSchema}
       >
         <FormImagePicker name="images" />
-        <AppFormField
-          name="ingredient"
-          placeholder="Ingredient"
-        />
+        <AppFormField name="ingredient" placeholder="Ingredient" />
         <AppFormField
           name="qty"
           placeholder="Quantity"
           keyboardType="numeric"
         />
-        <AppFormPicker
-          items={units}
-          name="unit"
-          placeholder="Unit"
-        />
+        <AppFormPicker items={units} name="unit" placeholder="Unit" />
         <AppFormPicker
           items={categories}
           name="category"
