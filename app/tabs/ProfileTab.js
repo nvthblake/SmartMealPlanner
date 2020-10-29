@@ -1,17 +1,31 @@
 import React from "react";
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { addIngredientToFridge } from '../../actions';
-import { StyleSheet, View, Text, TouchableOpacity, Image, ProgressBarAndroid} from "react-native";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { addIngredientToFridge } from "../../actions";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ProgressBarAndroid,
+} from "react-native";
 import CardView from "../components/CardView";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 
 function Profile(state) {
+  const { ingredients, addIngredientToFridge } = state;
+  const ingredientsInFridge = ingredients.fridge;
+  const Limit = 100;
+  let Item = 0;
+  ingredientsInFridge.forEach(element => {
+    Item += parseInt(element.qty);
+  });
   return (
     <View style={styles.container}>
       <View style={styles.imageView}>
-      <AppText style={styles.welcome} >{"Welcome to SmartFridge"}</AppText>
+        <AppText style={styles.welcome}>{"Welcome to SmartFridge"}</AppText>
         <TouchableOpacity>
           <Image
             source={require("../assets/appIcon/ava.png")}
@@ -26,15 +40,15 @@ function Profile(state) {
             source={require("../assets/appIcon/fridge2.png")}
             style={styles.fridgelogo}
           />
-          <ProgressBarAndroid 
+          <ProgressBarAndroid
             style={styles.fridgestatus}
-            color={colors.primary}  
-            styleAttr="Horizontal"  
-            indeterminate={false} 
-            progress={0.2} 
+            color={colors.primary}
+            styleAttr="Horizontal"
+            indeterminate={false}
+            progress={Item/Limit}
           />
         </View>
-        <Text style={styles.fridgetext}>Your fridge is 20% full</Text>
+        <Text style={styles.fridgetext}>Your fridge is {(Item/Limit)*100}% full</Text>
         <Text style={styles.fridgetext}>
           Need to go shopping in the next 10 days
         </Text>
@@ -101,7 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     padding: 20,
-    color: colors.primary
+    color: colors.primary,
   },
   fridgeheader: {
     marginTop: 20,
@@ -148,14 +162,16 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-  const { ingredients } = state
-  return { ingredients }
+  const { ingredients } = state;
+  return { ingredients };
 };
 
-const mapDispatchToProps = dispatch => (
-  bindActionCreators({
-    addIngredientToFridge,
-  }, dispatch)
-)
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      addIngredientToFridge,
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

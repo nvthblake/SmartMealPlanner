@@ -31,7 +31,7 @@ class RecipeTab extends Component {
 
   componentDidMount() {
     const params = this.props.ingredients.fridge
-      .map((ingredient) => ingredient.title.replace(" ", "%20"))
+      .map((ingredient) => ingredient.ingredient.replace(" ", "%20"))
       .join("%2C");
     // alert(params)
     return fetch(
@@ -126,39 +126,43 @@ class RecipeTab extends Component {
         });
       })
       .catch((err) => {
-        console.log("RecipeTab -> componentDidMount -> err", err);
+        // console.log("RecipeTab -> componentDidMount -> err", err);
         alert("Out of Spoonacular usage lol!");
       });
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.navBar}>
-          <Image
-            source={require("../assets/appIcon/fridge.png")}
-            style={{ width: 50, height: 50 }}
-          />
-          <View style={styles.rightNav}>
-            <TouchableOpacity>
-              <Icon style={styles.navItem} name="search" size={25} />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Icon style={styles.navItem} name="account-circle" size={25} />
-            </TouchableOpacity>
+      <Screen style={styles.screen}>
+        <View style={styles.container}>
+          <View style={styles.navBar}>
+            <Image
+              source={require("../assets/appIcon/fridge.png")}
+              style={{ width: 50, height: 50 }}
+            />
+            <View style={styles.rightNav}>
+              <TouchableOpacity>
+                <Icon style={styles.navItem} name="search" size={25} />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Icon style={styles.navItem} name="account-circle" size={25} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.body}>
+            <FlatList
+              data={this.props.ingredients.recipes}
+              renderItem={(recipe) => <RecipeCard recipe={recipe.item} />}
+              keyExtractor={(item) => item.id.toString()}
+              ItemSeparatorComponent={() => (
+                <View
+                  style={{ height: 0.5, backgroundColor: "#E5E5E5" }}
+                ></View>
+              )}
+            />
           </View>
         </View>
-        <View style={styles.body}>
-          <FlatList
-            data={this.props.ingredients.recipes}
-            renderItem={(recipe) => <RecipeCard recipe={recipe.item} />}
-            keyExtractor={(item) => item.id.toString()}
-            ItemSeparatorComponent={() => (
-              <View style={{ height: 0.5, backgroundColor: "#E5E5E5" }}></View>
-            )}
-          />
-        </View>
-      </View>
+      </Screen>
     );
   }
 }
