@@ -23,6 +23,8 @@ import ShoppingList from "../tabs/ShoppingTab";
 import RecipeTab from "../tabs/RecipeTab";
 import ScanTab from "../tabs/ScanTab";
 import CamNavigation from "./CamNavigation";
+import MealPlanTab from "../tabs/MealPlanTab";
+
 
 const Tab = createBottomTabNavigator();
 
@@ -42,7 +44,7 @@ const AppNavigator = () => (
       }}
     />
     <Tab.Screen
-      name="Recipes"
+      name="MealPlanTab"
       component={RecipeTab}
       options={{
         tabBarIcon: ({ color, size }) => (
