@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Button,
   FlatList,
+  Image,
 } from "react-native";
 import { Camera, requestPermissionsAsync } from "expo-camera";
 import * as Permissions from "expo-permissions";
@@ -17,11 +18,10 @@ import colors from "../../config/colors";
 // Redux
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { addIngredientToScan, deleteIngredientToScan } from "../../../actions";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const screenWidth = Dimensions.get("window").width;
-
-function CameraPage({ navigation }) {
-import { addIngredientToScan } from "../../../actions";
 
 function CameraPage(state, { navigation }) {
   const [camVisibility, setCamVisibility] = useState(false);
@@ -33,7 +33,7 @@ function CameraPage(state, { navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
 
-  const { ingredients , addIngredientToScan } = state;
+  const { ingredients, addIngredientToScan, deleteIngredientToScan } = state;
   const ingredientToScan = ingredients.ingredientToScan;
 
   useEffect(() => {
@@ -58,11 +58,11 @@ function CameraPage(state, { navigation }) {
       const data = await cameraRef.current.takePictureAsync(options);
       const source = data.uri;
       if (source) {
-        await cameraRef.current.pausePreview();
-        setIsPreview(true);
+        // await cameraRef.current.pausePreview();
+        // setIsPreview(true);
         console.log("picture source: ", source);
         addIngredientToScan({
-          imageUri: source
+          imageUri: source,
         });
         console.log("IMAGE URI -> ", ingredientToScan);
       }
@@ -86,7 +86,6 @@ function CameraPage(state, { navigation }) {
               flex: 1,
               backgroundColor: "transparent",
               flexDirection: "row",
-              justifyContent: "space-between",
             }}
           >
             <TouchableOpacity
@@ -113,9 +112,34 @@ function CameraPage(state, { navigation }) {
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
-          flexDirection: "row",
+          flexDirection: "column",
         }}
       >
+        <FlatList
+          data={ingredientToScan}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(ingreImage) => ingreImage.imageUri}
+          renderItem={({ item, index }) => {
+            return (
+              <TouchableWithoutFeedback
+                onPress={(ingredientToScan) =>
+                  deleteIngredientToScan(item.imageUri)
+                }
+              >
+                <Image
+                  style={{
+                    height: 100,
+                    width: 100,
+                    marginVertical: 5,
+                    marginHorizontal: 1,
+                  }}
+                  source={{ uri: ingredientToScan[index].imageUri }}
+                />
+              </TouchableWithoutFeedback>
+            );
+          }}
+        />
         <TouchableOpacity
           style={{
             height: 80,
@@ -148,6 +172,7 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       addIngredientToScan,
+      deleteIngredientToScan,
     },
     dispatch
   );
