@@ -7,6 +7,9 @@ import {
   CLEAR_INGREDIENTS_IN_FRIDGE,
   UPDATE_INGREDIENT_IN_FRIDGE,
   DELETE_INGREDIENT_IN_FRIDGE,
+  ADD_INGREDIENT_TO_SCAN,
+  DELETE_INGREDIENT_TO_SCAN,
+  CLEAR_INGREDIENTS_TO_SCAN,
 } from "./types";
 
 const today = new Date();
@@ -25,10 +28,15 @@ const INITIAL_STATE = {
   ],
   cart: [],
   recipes: [],
+  ingredientToScan: [
+    {
+      imageUri: "file:/data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FSmartMealPlanner-c7f11723-ddae-4ba6-97f3-0120a5d82b7e/ImagePicker/acface9b-60ad-40d8-886d-43347ba91603.jpg"
+    }
+  ]
 };
 
 const ingredientsReducer = (state = INITIAL_STATE, action) => {
-  let { fridge, cart, recipes } = state;
+  let { fridge, cart, recipes, ingredientToScan } = state;
   let newState;
   switch (action.type) {
     case ADD_INGREDIENT_TO_FRIDGE:
@@ -39,28 +47,28 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
       fridge.push(action.payload);
 
       // Finally, update the redux state
-      newState = { fridge, cart, recipes };
+      newState = { fridge, cart, recipes, ingredientToScan };
 
       return newState;
 
     case ADD_INGREDIENT_TO_CART:
       cart.push(action.payload);
-      newState = { fridge, cart, recipes };
+      newState = { fridge, cart, recipes, ingredientToScan };
       return newState;
 
     case ADD_RECIPE:
       recipes.push(action.payload);
-      newState = { fridge, cart, recipes };
+      newState = { fridge, cart, recipes, ingredientToScan };
       return newState;
 
     case CLEAR_RECIPE:
       recipes = [];
-      newState = { fridge, cart, recipes };
+      newState = { fridge, cart, recipes, ingredientToScan };
       return newState;
 
     case CLEAR_INGREDIENTS_IN_FRIDGE:
       fridge = [];
-      newState = { fridge, cart, recipes };
+      newState = { fridge, cart, recipes, ingredientToScan };
       return newState;
 
     case UPDATE_INGREDIENT_IN_FRIDGE:
@@ -70,20 +78,41 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
       fridge[ingreIndexUpdate] = action.payload;
 
       // Update the redux state
-      newState = { fridge, cart, recipes };
+      newState = { fridge, cart, recipes, ingredientToScan };
 
       return newState;
 
     case DELETE_INGREDIENT_IN_FRIDGE:
 
-        // Delete ingredient chosen
-        const ingreIndexDelete = fridge.findIndex((ingre => ingre.id === action.payload.id));
-        fridge.splice(ingreIndexDelete, 1);
-  
-        // Update the redux state
-        newState = { fridge, cart, recipes };
-  
-        return newState;
+      // Delete ingredient chosen
+      const ingreIndexDelete = fridge.findIndex((ingre => ingre.id === action.payload.id));
+      fridge.splice(ingreIndexDelete, 1);
+
+      // Update the redux state
+      newState = { fridge, cart, recipes, ingredientToScan };
+
+      return newState;
+
+    case ADD_INGREDIENT_TO_SCAN:
+      
+      ingredientToScan.push(action.payload);
+      newState = { fridge, cart, recipes, ingredientToScan };
+      return newState;
+
+    case DELETE_INGREDIENT_TO_SCAN:
+
+      // Delete ingredient chosen
+      const ingreScanIndexDelete = ingredientToScan.findIndex((ingre => ingre.imageUri === action.payload.imageUri));
+      ingredientToScan.splice(ingreScanIndexDelete, 1);
+
+      // Update the redux state
+      newState = { fridge, cart, recipes, ingredientToScan };
+      return newState
+
+    case CLEAR_INGREDIENTS_IN_FRIDGE:
+      ingredientToScan = [];
+      newState = { fridge, cart, recipes, ingredientToScan };
+      return newState;
 
     default:
       return state;
