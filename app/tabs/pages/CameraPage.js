@@ -6,8 +6,13 @@ import * as Permissions from "expo-permissions";
 import { ref } from "yup";
 // import AppButton from "./AppButton";
 import colors from "../../config/colors";
+// Redux
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
-function CameraPage({ navigation }) {
+import { addIngredientToScan } from "../../../actions";
+
+function CameraPage(state, { navigation }) {
   const [camVisibility, setCamVisibility] = useState(false);
   const showCameraView = () => {
     setCamVisibility(true);
@@ -16,6 +21,9 @@ function CameraPage({ navigation }) {
   const [isPreview, setIsPreview] = useState(false);
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
+
+  const { ingredients , addIngredientToScan } = state;
+  const ingredientToScan = ingredients.ingredientToScan;
 
   useEffect(() => {
     requestPermission();
@@ -56,6 +64,10 @@ function CameraPage({ navigation }) {
         await cameraRef.current.pausePreview();
         setIsPreview(true);
         console.log("picture source: ", source);
+        addIngredientToScan({
+          imageUri: source
+        });
+        console.log("IMAGE URI -> ", ingredientToScan);
       }
     }
   };
@@ -115,4 +127,17 @@ const styles = StyleSheet.create({
   container: {},
 });
 
-export default CameraPage;
+const mapStateToProps = (state) => {
+  const { ingredients } = state;
+  return { ingredients };
+};
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      addIngredientToScan,
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(CameraPage);
