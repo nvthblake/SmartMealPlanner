@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Button } from "react-native";
+import { StyleSheet, Button, Image, View, FlatList } from "react-native";
 import * as Yup from "yup";
 import { openDatabase } from "expo-sqlite";
 import { connect } from "react-redux";
@@ -35,6 +35,7 @@ const validationSchema = Yup.object().shape({
 function ScanTab(state) {
   const { ingredients, addIngredientToFridge } = state;
   const ingredientsInFridge = ingredients.fridge;
+  const ingredientToScan = ingredients.ingredientToScan;
 
   const [forceUpdate, forceUpdateId] = useForceUpdate();
   const [success, setSuccess] = useState(true);
@@ -104,46 +105,73 @@ function ScanTab(state) {
 
   return (
     <Screen style={styles.container}>
+      <View>
+        <FlatList
+          data={ingredientToScan}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(ingredientToScan) => ingredientToScan.imageUri}
+          renderItem={({ item, index }) => {
+            // console.log("item image ->", item.imageUri);
+            return (
+              <View
+                style={{height: 80, width: 80}}
+              >
+                <Image
+                  style={{ height: "85%", width: "100%" }}
+                  source={{ uri: ingredientToScan[index].imageUri}}
+                />
+              </View>
+            )
+          }}
+        >
+        </FlatList>
+      </View>
+      {/* <View >
+        <Image style={styles.logo} source={{uri: ingredientToScan[0].imageUri}} />
+      </View> */}
+      <View>
+        <AppForm
+          initialValues={{
+            ingredient: "",
+            qty: "",
+            unit: null,
+            category: null,
+            dayToExp: "",
+            // images: [],
+          }}
+          onSubmit={handleSubmit}
+          validationSchema={validationSchema}
+        >
+          {/* <FormImagePicker name="images" /> */}
+          <AppFormField name="ingredient" placeholder="Ingredient" />
+          <AppFormField
+            name="qty"
+            placeholder="Quantity"
+            keyboardType="numeric"
+          />
+          <AppFormPicker
+            items={pickerOptions.units}
+            name="unit"
+            placeholder="Unit"
+          />
+          <AppFormPicker
+            items={pickerOptions.categories}
+            name="category"
+            placeholder="Category"
+          />
+          <AppFormField
+            name="dayToExp"
+            placeholder="Days to Expiration"
+            keyboardType="numeric"
+          />
+          <SubmitButton title="ADD TO FRIDGE" />
+        </AppForm>
+      </View>
       <Button
-        title={"Show Camera"}
+        title={"SCAN FOOD"}
         onPress={() => navigation.navigate("Camera")}
       />
-      <AppForm
-        initialValues={{
-          ingredient: "",
-          qty: "",
-          unit: null,
-          category: null,
-          dayToExp: "",
-          images: [],
-        }}
-        onSubmit={handleSubmit}
-        validationSchema={validationSchema}
-      >
-        <FormImagePicker name="images" />
-        <AppFormField name="ingredient" placeholder="Ingredient" />
-        <AppFormField
-          name="qty"
-          placeholder="Quantity"
-          keyboardType="numeric"
-        />
-        <AppFormPicker
-          items={pickerOptions.units}
-          name="unit"
-          placeholder="Unit"
-        />
-        <AppFormPicker
-          items={pickerOptions.categories}
-          name="category"
-          placeholder="Category"
-        />
-        <AppFormField
-          name="dayToExp"
-          placeholder="Days to Expiration"
-          keyboardType="numeric"
-        />
-        <SubmitButton title="Post" />
-      </AppForm>
     </Screen>
   );
 }
@@ -156,6 +184,15 @@ function useForceUpdate() {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+  },
+  logoContainer: {
+    position: "absolute",
+    top: 70,
+    alignItems: "center",
+  },
+  logo: {
+    width: 100,
+    height: 100,
   },
 });
 
