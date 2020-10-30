@@ -1,11 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, StyleSheet, TouchableOpacity, Text, Button } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+  Button,
+  FlatList,
+} from "react-native";
 import { Camera, requestPermissionsAsync } from "expo-camera";
 import * as Permissions from "expo-permissions";
 // import Screen from "./Screen";
 import { ref } from "yup";
 // import AppButton from "./AppButton";
 import colors from "../../config/colors";
+
+const screenWidth = Dimensions.get("window").width;
 
 function CameraPage({ navigation }) {
   const [camVisibility, setCamVisibility] = useState(false);
@@ -27,20 +37,6 @@ function CameraPage({ navigation }) {
     if (!granted) alert("You need to enable permission to access the Camera.");
   };
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const { status } = await Camera.requestPermissionsAsync();
-  //     setHasPermission(status === "granted");
-  //   })();
-  // }, []);
-  //   if (hasPermission === null) {
-  //     return <View />;
-  //   }
-  //   if (hasPermission === false) {
-  //     return <Text>No access to camera</Text>;
-  //   }
-  //   const { isCameraVisible } = camVisibility;
-
   const onCameraReady = () => {
     setIsCameraReady(true);
   };
@@ -61,55 +57,70 @@ function CameraPage({ navigation }) {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: "center" }}>
-      <Camera
-        style={{ flex: 1 }}
-        type={type}
-        ref={cameraRef}
-        onCameraReady={onCameraReady}
+    <>
+      <View
+        style={{ height: screenWidth, width: "100%", justifyContent: "center" }}
       >
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "transparent",
-            flexDirection: "row",
-          }}
+        <Camera
+          style={{ flex: 1 }}
+          type={type}
+          ref={cameraRef}
+          onCameraReady={onCameraReady}
+          ratio={"1:1"}
         >
-          <TouchableOpacity
+          <View
             style={{
-              flex: 0.1,
-              alignSelf: "flex-end",
-              alignItems: "center",
-            }}
-            onPress={() => {
-              setType(
-                type === Camera.Constants.Type.back
-                  ? Camera.Constants.Type.front
-                  : Camera.Constants.Type.back
-              );
+              flex: 1,
+              backgroundColor: "transparent",
+              flexDirection: "row",
+              justifyContent: "space-between",
             }}
           >
-            <Text style={{ fontSize: 18, color: "white" }}>Flip</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{ alignItems: "center" }}>
-          <TouchableOpacity
-            style={{
-              height: 80,
-              width: 80,
-              borderRadius: 40,
-              backgroundColor: colors.white,
-              borderColor: colors.primary,
-              borderWidth: 10,
-              marginBottom: 30,
-            }}
-            onPress={takePicture}
-            onLongPress={() => navigation.navigate("ScanTab")}
-          />
-        </View>
-      </Camera>
-    </View>
+            <TouchableOpacity
+              style={{
+                flex: 0.1,
+                alignSelf: "flex-end",
+                alignItems: "center",
+              }}
+              onPress={() => {
+                setType(
+                  type === Camera.Constants.Type.back
+                    ? Camera.Constants.Type.front
+                    : Camera.Constants.Type.back
+                );
+              }}
+            >
+              <Text style={{ fontSize: 18, color: "white" }}>Flip</Text>
+            </TouchableOpacity>
+          </View>
+        </Camera>
+      </View>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "row",
+        }}
+      >
+        <TouchableOpacity
+          style={{
+            height: 80,
+            width: 80,
+            borderRadius: 40,
+            backgroundColor: colors.white,
+            borderColor: colors.primary,
+            borderWidth: 10,
+            marginBottom: 30,
+          }}
+          onPress={takePicture}
+          onLongPress={() => navigation.navigate("ScanTab")}
+        />
+      </View>
+    </>
   );
+}
+{
 }
 const styles = StyleSheet.create({
   container: {},

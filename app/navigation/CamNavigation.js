@@ -19,8 +19,8 @@ const CamNavigation = () => (
       component={CameraPage}
       options={{
         headerShown: true,
-        headerTransparent: true,
-        headerTintColor: colors.medium,
+        // headerTransparent: true,
+        headerTintColor: colors.primary,
       }}
     />
   </Stack.Navigator>
