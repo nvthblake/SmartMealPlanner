@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Button, Image, View, FlatList } from "react-native";
+import { StyleSheet, Button, Image, View, FlatList, Dimensions } from "react-native";
 import * as Yup from "yup";
 import { openDatabase } from "expo-sqlite";
 import { connect } from "react-redux";
@@ -22,6 +22,8 @@ import { getFridgeSql } from "../components/database/queries";
 import AppButton from "../components/AppButton";
 
 const db = openDatabase("db2.db");
+
+const screenWidth = Dimensions.get("window").width;
 
 const validationSchema = Yup.object().shape({
   ingredient: Yup.string().required().min(1).label("Ingredient"),
@@ -115,12 +117,47 @@ function ScanTab(state) {
             // console.log("item image ->", item.imageUri);
             return (
               <View
-                style={{height: 80, width: 80}}
+                style={{height: 1000, width: screenWidth*0.85}}
               >
                 <Image
-                  style={{ height: "85%", width: "100%" }}
+                  style={{ height: 80, width: 80 }}
                   source={{ uri: ingredientToScan[index].imageUri}}
                 />
+                <AppForm
+                  initialValues={{
+                    ingredient: "",
+                    qty: "",
+                    unit: null,
+                    category: null,
+                    dayToExp: "",
+                    images: item.imageUri,
+                  }}
+                  onSubmit={handleSubmit}
+                  validationSchema={validationSchema}
+                >
+                  <AppFormField name="ingredient" placeholder="Ingredient" />
+                  <AppFormField
+                    name="qty"
+                    placeholder="Quantity"
+                    keyboardType="numeric"
+                  />
+                  <AppFormPicker
+                    items={pickerOptions.units}
+                    name="unit"
+                    placeholder="Unit"
+                  />
+                  <AppFormPicker
+                    items={pickerOptions.categories}
+                    name="category"
+                    placeholder="Category"
+                  />
+                  <AppFormField
+                    name="dayToExp"
+                    placeholder="Days to Expiration"
+                    keyboardType="numeric"
+                  />
+                  <SubmitButton title="ADD TO FRIDGE" />
+                </AppForm>
               </View>
             )
           }}
@@ -131,42 +168,6 @@ function ScanTab(state) {
         <Image style={styles.logo} source={{uri: ingredientToScan[0].imageUri}} />
       </View> */}
       <View>
-        <AppForm
-          initialValues={{
-            ingredient: "",
-            qty: "",
-            unit: null,
-            category: null,
-            dayToExp: "",
-            // images: [],
-          }}
-          onSubmit={handleSubmit}
-          validationSchema={validationSchema}
-        >
-          {/* <FormImagePicker name="images" /> */}
-          <AppFormField name="ingredient" placeholder="Ingredient" />
-          <AppFormField
-            name="qty"
-            placeholder="Quantity"
-            keyboardType="numeric"
-          />
-          <AppFormPicker
-            items={pickerOptions.units}
-            name="unit"
-            placeholder="Unit"
-          />
-          <AppFormPicker
-            items={pickerOptions.categories}
-            name="category"
-            placeholder="Category"
-          />
-          <AppFormField
-            name="dayToExp"
-            placeholder="Days to Expiration"
-            keyboardType="numeric"
-          />
-          <SubmitButton title="ADD TO FRIDGE" />
-        </AppForm>
       </View>
       <Button
         title={"SCAN FOOD"}
