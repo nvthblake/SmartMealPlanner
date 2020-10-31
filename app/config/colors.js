@@ -9,4 +9,6 @@ export default {
   dark: "#292c3e",
   danger: "#ff5252",
   maroon: "#BF181D",
+  lightGrey: "#d0d0d0",
+  background: "#F4F6F9",
 };
