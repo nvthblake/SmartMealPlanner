@@ -12,6 +12,7 @@ import defaultStyles from "../config/styles";
 import AppText from "./AppText";
 import Screen from "./Screen";
 import PickerItem from "./PickerItem";
+import colors from "../config/colors";
 
 function AppPicker({
   icon,
@@ -20,15 +21,24 @@ function AppPicker({
   onSelectItem,
   placeholder,
   selectedItem,
+  width = "100%",
+  marginHorizontal = 0,
+  marginLeft = 0,
+  marginRight = 0,
   PickerItemComponent = PickerItem,
   ...otherProps
 }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <React.Fragment>
+    <>
       <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
-        <View style={styles.container}>
+        <View
+          style={[
+            styles.container,
+            { width, marginHorizontal, marginLeft, marginRight },
+          ]}
+        >
           {icon && (
             <MaterialCommunityIcons
               name={icon}
@@ -69,7 +79,7 @@ function AppPicker({
           />
         </Screen>
       </Modal>
-    </React.Fragment>
+    </>
   );
 }
 
@@ -77,10 +87,11 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: defaultStyles.colors.light,
     borderRadius: 25,
+    borderColor: colors.lightGrey,
+    borderWidth: 2,
     flexDirection: "row",
-    width: "100%",
     padding: 15,
-    marginVertical: 10,
+    marginVertical: 15,
   },
   icon: {
     marginRight: 10,

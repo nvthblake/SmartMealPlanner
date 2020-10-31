@@ -35,6 +35,7 @@
     "react-native-cardview": "^2.0.5",
     "react-native-cli": "^2.0.1",
     "react-native-elements": "^2.3.2",
+    "react-native-floating-label-input": "^1.2.8",
     "react-native-geocoding": "^0.4.0",
     "react-native-gesture-handler": "^1.8.0",
     "react-native-google-places-autocomplete": "^2.0.3",
