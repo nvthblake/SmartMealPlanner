@@ -44,8 +44,8 @@ const AppNavigator = () => (
       }}
     />
     <Tab.Screen
-      name="MealPlanTab"
-      component={RecipeTab}
+      name="Meal Plan"
+      component={MealPlanTab}
       options={{
         tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons
