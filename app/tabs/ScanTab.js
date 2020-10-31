@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { StyleSheet, Button, Image, View, FlatList, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Button,
+  Image,
+  View,
+  FlatList,
+  Dimensions,
+  ScrollView,
+} from "react-native";
 import * as Yup from "yup";
 import { openDatabase } from "expo-sqlite";
 import { connect } from "react-redux";
@@ -16,14 +24,17 @@ import Screen from "../components/Screen";
 import CategoryPickerItem from "../components/CategoryPickerItem";
 import FormImagePicker from "../components/forms/FormImagePicker";
 import pickerOptions from "../config/pickerOptions";
+import AppText from "../components/AppText";
 
 import { addIngredientToFridge } from "../../actions";
 import { getFridgeSql } from "../components/database/queries";
 import AppButton from "../components/AppButton";
+import colors from "../config/colors";
 
 const db = openDatabase("db2.db");
 
 const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 
 const validationSchema = Yup.object().shape({
   ingredient: Yup.string().required().min(1).label("Ingredient"),
@@ -111,65 +122,94 @@ function ScanTab(state) {
         <FlatList
           data={ingredientToScan}
           horizontal
+          snapToAlignment={"center"}
+          snapToInterval={screenWidth - 30}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(ingredientToScan) => ingredientToScan.imageUri}
           renderItem={({ item, index }) => {
             // console.log("item image ->", item.imageUri);
             return (
-              <View
-                style={{height: 1000, width: screenWidth*0.85}}
-              >
+              <View style={styles.cardContainer}>
                 <Image
-                  style={{ height: 80, width: 80 }}
-                  source={{ uri: ingredientToScan[index].imageUri}}
-                />
-                <AppForm
-                  initialValues={{
-                    ingredient: "",
-                    qty: "",
-                    unit: null,
-                    category: null,
-                    dayToExp: "",
-                    images: item.imageUri,
+                  style={{
+                    width: "100%",
+                    height: 0.5 * screenWidth,
+                    borderRadius: 25,
                   }}
-                  onSubmit={handleSubmit}
-                  validationSchema={validationSchema}
-                >
-                  <AppFormField name="ingredient" placeholder="Ingredient" />
-                  <AppFormField
-                    name="qty"
-                    placeholder="Quantity"
-                    keyboardType="numeric"
-                  />
-                  <AppFormPicker
-                    items={pickerOptions.units}
-                    name="unit"
-                    placeholder="Unit"
-                  />
-                  <AppFormPicker
-                    items={pickerOptions.categories}
-                    name="category"
-                    placeholder="Category"
-                  />
-                  <AppFormField
-                    name="dayToExp"
-                    placeholder="Days to Expiration"
-                    keyboardType="numeric"
-                  />
-                  <SubmitButton title="ADD TO FRIDGE" />
-                </AppForm>
+                  source={{ uri: ingredientToScan[index].imageUri }}
+                  // resizeMode="stretch"
+                  // resizeMethod=""
+                />
+                <ScrollView style={{ flex: 1 }}>
+                  <AppForm
+                    initialValues={{
+                      ingredient: "",
+                      qty: "",
+                      unit: null,
+                      category: null,
+                      dayToExp: "",
+                      images: item.imageUri,
+                    }}
+                    onSubmit={handleSubmit}
+                    validationSchema={validationSchema}
+                  >
+                    {/* <AppText style={{ alignSelf: "flex-start" }}>
+                        Ingredient
+                      </AppText> */}
+                    <AppFormField
+                      icon="food-variant"
+                      name="ingredient"
+                      placeholder="Ingredient"
+                      clearButtonMode="while-editing"
+                    />
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-evenly",
+                      }}
+                    >
+                      <AppFormField
+                        icon="pound"
+                        name="qty"
+                        placeholder="Quantity"
+                        keyboardType="numeric"
+                        width={150}
+                        marginRight={20}
+                      />
+                      <AppFormPicker
+                        icon="beaker"
+                        items={pickerOptions.units}
+                        name="unit"
+                        placeholder="Unit"
+                        width={150}
+                        marginLeft={20}
+                      />
+                    </View>
+                    <AppFormPicker
+                      icon="menu"
+                      items={pickerOptions.categories}
+                      name="category"
+                      placeholder="Category"
+                    />
+                    <AppFormField
+                      icon="calendar-remove"
+                      name="dayToExp"
+                      placeholder="Days to Expiration"
+                      keyboardType="numeric"
+                    />
+                    <SubmitButton title="ADD TO FRIDGE" />
+                  </AppForm>
+                </ScrollView>
               </View>
-            )
+            );
           }}
-        >
-        </FlatList>
+        ></FlatList>
       </View>
       {/* <View >
         <Image style={styles.logo} source={{uri: ingredientToScan[0].imageUri}} />
       </View> */}
-      <View>
-      </View>
-      <Button
+      <View></View>
+      <AppButton
         title={"SCAN FOOD"}
         onPress={() => navigation.navigate("Camera")}
       />
@@ -183,6 +223,19 @@ function useForceUpdate() {
 }
 
 const styles = StyleSheet.create({
+  cardContainer: {
+    borderRadius: 25,
+    borderWidth: 4,
+    borderColor: colors.primary,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 50,
+    marginHorizontal: 10,
+    width: screenWidth * 0.85,
+    height: screenHeight * 0.75,
+    backgroundColor: "white",
+    overflow: "hidden",
+  },
   container: {
     padding: 10,
   },
