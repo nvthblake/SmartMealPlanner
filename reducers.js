@@ -100,7 +100,6 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
     //   return newState;
 
     // case DELETE_INGREDIENT_TO_SCAN:
-
     //   // Delete ingredient chosen
     //   const ingreScanIndexDelete = ingredientToScan.findIndex((ingre => ingre.imageUri === action.payload.imageUri));
     //   ingredientToScan.splice(ingreScanIndexDelete, 1);

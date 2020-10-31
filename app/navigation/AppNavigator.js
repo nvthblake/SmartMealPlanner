@@ -57,6 +57,19 @@ const AppNavigator = () => (
       }}
     />
     <Tab.Screen
+      name="Recipes"
+      component={RecipeTab}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <MaterialCommunityIcons
+            name="silverware-variant"
+            color={color}
+            size={size}
+          />
+        ),
+      }}
+    />
+    <Tab.Screen
       name="ScanTab"
       component={CamNavigation}
       options={({ navigation }) => ({

@@ -42,6 +42,7 @@ import { capitalize } from '../utils/TextFormatting';
 
 /* Copied from IngredientsTab */
 const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 
 const INITIAL_CATEGORIES_STATE = [
   {
@@ -210,7 +211,7 @@ function RecipeTab(state) {
           )}
         ></FlatList>
       </View>
-      {isLoading && <LoadingAnimation show={isLoading} label={'Finding the best recipes for you...'} />}
+      {isLoading && <View style={{ width: screenWidth, height: screenHeight / 1.5 }}><LoadingAnimation show={isLoading} label={'Finding the best recipes for you...'} /></View>}
       {!isLoading &&
         <ScrollView>
           {veryPopularRecipes.length > 0 &&

@@ -7,6 +7,10 @@ const BASE_URL = 'https://rapidapi.p.rapidapi.com';
 
 function getRecipes(ingredients, limit) {
     return new Promise((resolve, reject) => {
+        if (ingredients.length === 0) {
+            resolve([]);
+            return;
+        }
         // %20 is for spaces, and %2C is for seperating differet ingredient
         const params = ingredients
             .map((ingredient) => ingredient.name.replace(" ", "%20"))
