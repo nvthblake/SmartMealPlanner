@@ -9,4 +9,12 @@ export default {
   dark: "#292c3e",
   danger: "#ff5252",
   maroon: "#BF181D",
+  shadow: "#D5DDFB",
+  light_primary: "#7A98FD",
+
+  //font
+  font_dark: "#373737",
+  font_light: "#AFAFAF",
+  font_red: "#FF5757",
+  font_green: "#00C2CB"
 };
