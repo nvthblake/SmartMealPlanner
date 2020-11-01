@@ -39,12 +39,14 @@ function ScanTab(state) {
   const [success, setSuccess] = useState(true);
 
   const handleSubmit = async (values, { resetForm }) => {
+    console.log(values);
+    const images =  "file:/data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FSmartMealPlanner-c7f11723-ddae-4ba6-97f3-0120a5d82b7e/ImagePicker/893d8e21-600b-493c-b041-010012287bc4.jpg";
     var expDate = new Date(new Date().getTime() + (values.dayToExp * 24 * 60 * 60 * 1000)).toISOString();
     // Insert new ingredient to SQLite database
     db.transaction(tx => {
       tx.executeSql(
         "INSERT INTO FactFridge (ingredient, qty, unit, category, dayToExp, inFridge, expDate, imageUri) values (?, ?, ?, ?, ?, ?, ?, ?)",
-        [values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1, expDate, values.images[0]],
+        [values.ingredient, values.qty, values.unit.label, values.category.label, values.dayToExp, 1, expDate, images],
         () => {
           setSuccess(true);
           db.transaction(tx => {
@@ -60,7 +62,7 @@ function ScanTab(state) {
                   unit: values.unit.label,
                   category: values.category.label,
                   expDate: expDate,
-                  imageUri: values.images[0],
+                  imageUri: images,
                 })
               },
               (_, error) => console.log(error)
@@ -88,17 +90,17 @@ function ScanTab(state) {
     <Screen style={styles.container}>
       <AppForm
         initialValues={{
-          ingredient: "",
-          qty: "",
+          ingredient: "Meoa",
+          qty: "44",
           unit: null,
           category: null,
-          dayToExp: "",
-          images: [],
+          dayToExp: "5",
+          // images: "file:/data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FSmartMealPlanner-c7f11723-ddae-4ba6-97f3-0120a5d82b7e/ImagePicker/893d8e21-600b-493c-b041-010012287bc4.jpg",
         }}
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
       >
-        <FormImagePicker name="images" />
+        {/* <FormImagePicker name="images" /> */}
         <AppFormField
           name="ingredient"
           placeholder="Ingredient"
