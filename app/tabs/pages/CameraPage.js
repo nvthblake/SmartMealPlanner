@@ -20,8 +20,11 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { addIngredientToScan, deleteIngredientToScan } from "../../../actions";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Screen from "../../components/Screen";
 
 const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 
 function CameraPage(state, { navigation }) {
   const [camVisibility, setCamVisibility] = useState(false);
@@ -84,7 +87,6 @@ function CameraPage(state, { navigation }) {
           <View
             style={{
               flex: 1,
-              backgroundColor: "transparent",
               flexDirection: "row",
             }}
           >
@@ -102,45 +104,107 @@ function CameraPage(state, { navigation }) {
                 );
               }}
             >
-              <Text style={{ fontSize: 18, color: "white" }}>Flip</Text>
+              <MaterialCommunityIcons
+                name="camera-retake"
+                size={30}
+                color="white"
+              />
+              {/* <Text style={{ fontSize: 18, color: "white" }}>Flip</Text> */}
             </TouchableOpacity>
           </View>
         </Camera>
       </View>
       <View
         style={{
-          flex: 1,
           alignItems: "center",
-          justifyContent: "center",
+          //   backgroundColor: colors.lightGrey,
+          //   justifyContent: "space-between",
           flexDirection: "column",
+          height: screenHeight - screenWidth - 130,
         }}
       >
-        <FlatList
-          data={ingredientToScan}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(ingreImage) => ingreImage.imageUri}
-          renderItem={({ item, index }) => {
-            return (
-              <TouchableWithoutFeedback
-                onPress={(ingredientToScan) =>
-                  deleteIngredientToScan(item.imageUri)
-                }
-              >
-                <Image
-                  style={{
-                    height: 100,
-                    width: 100,
-                    marginVertical: 5,
-                    marginHorizontal: 1,
-                  }}
-                  source={{ uri: ingredientToScan[index].imageUri }}
-                />
-              </TouchableWithoutFeedback>
-            );
+        <View style={{ flex: 1 }}>
+          <FlatList
+            data={ingredientToScan}
+            horizontal
+            showsHorizontalScrollIndicator={true}
+            keyExtractor={(ingreImage) => ingreImage.imageUri}
+            renderItem={({ item, index }) => {
+              return (
+                <TouchableWithoutFeedback
+                  onPress={(ingredientToScan) =>
+                    deleteIngredientToScan(item.imageUri)
+                  }
+                >
+                  <Image
+                    style={{
+                      height: screenWidth / 4,
+                      width: screenWidth / 4,
+                      marginVertical: 5,
+                      marginHorizontal: 1,
+                    }}
+                    source={{ uri: ingredientToScan[index].imageUri }}
+                  />
+                </TouchableWithoutFeedback>
+              );
+            }}
+          />
+        </View>
+        <View
+          style={{
+            flex: 1.5,
+            // marginTop: 10,
+            flexDirection: "row",
+            alignItems: "center",
           }}
-        />
-        <TouchableOpacity
+        >
+          <TouchableOpacity
+            style={{
+              padding: 10,
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 10,
+            }}
+          >
+            <MaterialCommunityIcons
+              name="folder-image"
+              size={35}
+              color={colors.primary}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              height: 80,
+              width: 80,
+              borderRadius: 40,
+              backgroundColor: colors.white,
+              borderColor: colors.primary,
+              borderWidth: 10,
+              //   marginBottom: 30,
+            }}
+            onPress={takePicture}
+            onLongPress={() => navigation.navigate("ScanTab")}
+          />
+          <TouchableOpacity
+            style={{
+              padding: 10,
+              //   width: 50,
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              //   backgroundColor: colors.primary,
+              marginBottom: 10,
+            }}
+          >
+            <MaterialCommunityIcons
+              name="content-save-all-outline"
+              size={35}
+              color={colors.primary}
+            />
+          </TouchableOpacity>
+        </View>
+        {/* <TouchableOpacity
           style={{
             height: 80,
             width: 80,
@@ -152,12 +216,10 @@ function CameraPage(state, { navigation }) {
           }}
           onPress={takePicture}
           onLongPress={() => navigation.navigate("ScanTab")}
-        />
+        /> */}
       </View>
     </>
   );
-}
-{
 }
 const styles = StyleSheet.create({
   container: {},
