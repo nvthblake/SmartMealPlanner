@@ -13,7 +13,6 @@ import { openDatabase } from "expo-sqlite";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { useNavigation } from "@react-navigation/native";
-import NumericInput from 'react-native-numeric-input';
 
 import {
   AppForm,
@@ -28,7 +27,7 @@ import FormImageStatic from "../components/forms/FormImageStatic";
 import pickerOptions from "../config/pickerOptions";
 import AppText from "../components/AppText";
 
-import { addIngredientToFridge } from "../../actions";
+import { addIngredientToFridge, deleteIngredientToScan } from "../../actions";
 import { getFridgeSql } from "../components/database/queries";
 import AppButton from "../components/AppButton";
 import colors from "../config/colors";
@@ -111,7 +110,9 @@ function ScanTab(state) {
       forceUpdate
     );
     if (success) {
-      resetForm();
+      console.log("ScanTab deleted uri -> ", values.imageUri);
+      deleteIngredientToScan(values.imageUri);
+      console.log("Ingredient to scan -> ", ingredientToScan);
       setSuccess(false);
     }
     // console.log(getFridgeSql(db));
@@ -135,18 +136,17 @@ function ScanTab(state) {
                 <ScrollView style={{ flex: 1 }}>
                   <AppForm
                     initialValues={{
-                      ingredient: "Al",
-                      qty: "1",
+                      ingredient: "",
+                      qty: "",
                       unit: null,
                       category: null,
-                      dayToExp: "9",
+                      dayToExp: "",
                       imageUri: item.imageUri,
                     }}
                     onSubmit={handleSubmit}
                     validationSchema={validationSchema}
                   >
                     <FormImageStatic name="imageUri" />
-                    <NumericInput onChange={value => console.log(value)} />
                     <AppFormField
                       icon="food-variant"
                       name="ingredient"

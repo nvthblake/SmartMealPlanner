@@ -10,7 +10,6 @@ function FormImageStatic({ name }) {
   const imageUris = values[name];
 
   const screenWidth = Dimensions.get("window").width;
-  console.log(values);
 
 
   return (
