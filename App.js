@@ -25,6 +25,7 @@ import reducers from "./reducers";
 // import ScanTab from "./app/tabs/newScanTab";
 import CameraButton from "./app/components/CameraButton";
 import CameraPage from "./app/tabs/pages/CameraPage";
+import MealPlanTab from "./app/tabs/MealPlanTab"
 
 const store = createStore(reducers);
 const db = SQLite.openDatabase("db2.db");
