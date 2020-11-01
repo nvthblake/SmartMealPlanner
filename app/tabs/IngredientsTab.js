@@ -44,43 +44,7 @@ import { date } from "yup";
 
 const db = openDatabase("db2.db");
 
-const inventoryFilter = [
-  {
-    id: 1,
-    title: "All",
-    select: true,
-  },
-  {
-    id: 2,
-    title: "Meat",
-    select: false,
-  },
-  {
-    id: 3,
-    title: "Vegetable",
-    select: false,
-  },
-  {
-    id: 4,
-    title: "Snack",
-    select: false,
-  },
-  {
-    id: 5,
-    title: "Condiments",
-    select: false,
-  },
-  {
-    id: 6,
-    title: "Fruit",
-    select: false,
-  },
-  {
-    id: 7,
-    title: "Others",
-    select: false,
-  },
-];
+const inventoryFilter = pickerOptions.inventoryFilter;
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -97,32 +61,74 @@ function IngredientsTab(state) {
   const ingredientsInFridge = ingredients.fridge;
 
   const [ingrFilter, setIngrFilter] = useState(inventoryFilter);
+  
+  const updateFilter = () => {
+    let sqlQuery = "SELECT * FROM FactFridge";
+    if (inventoryFilter[0].select === false) {
+      sqlQuery = sqlQuery.concat(" WHERE Category IN (");
+      const categoryFiltered = inventoryFilter.filter(c => c.select === true).map(c => `'${c.title}'`);
+      sqlQuery = sqlQuery.concat(categoryFiltered.join(",")).concat(");");
+    }
+    // Load ingredients from database
+    clearIngredientsInFridge();
+
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          sqlQuery,
+          [],
+          (_, { rows }) => {
+            rows._array.forEach((row) => {
+              addIngredientToFridge({
+                id: row.id,
+                ingredient: row.ingredient,
+                category: row.category,
+                qty: row.qty,
+                expDate: row.expDate,
+                unit: row.unit,
+                imageUri: row.imageUri,
+              });
+            });
+          },
+          (_, error) => console.log("IngredientTab addIngre Redux -> ", error)
+        );
+      },
+      null,
+      forceUpdate
+    );
+  }
+
   const toggleOnOff = (item) => {
     let temp = [...ingrFilter];
-    temp = temp.map((invFilter) => {
-      if (item.id === 1 && invFilter.select === true) {
-        for (let i = 2; i < temp.length; i++) {
-          ingrFilter[i].select === false;
+    if (item.id === 0) {
+      for (let i = 0; i < temp.length; i++) {
+        if (item.id === i) {
+          temp[i].select = true;
         }
-        return {
-          id: invFilter.id,
-          select: !invFilter.select,
-          title: invFilter.title,
-        };
+        else {
+          temp[i].select = false;
+        }
       }
-      if (item.id === invFilter.id)
-        return {
-          id: invFilter.id,
-          select: !invFilter.select,
-          title: invFilter.title,
-        };
-      else return invFilter;
-    });
+    }
+    else if (item.id !== 0) {
+      for (let i = 0; i < temp.length; i++) {
+        if (i === item.id) {
+          temp[i].select = !temp[i].select;
+        }
+      }
+      let countSelected = temp.filter(t => t.select === true).length;
+      if ( countSelected === 0 ) {
+        temp[0].select = true;
+      }
+      else {
+        temp[0].select = false;
+      }
+    }
     setIngrFilter(temp);
+    updateFilter();
   };
 
   const [modalVisible, setModalVisible] = useState(false);
-  // console.log(modalVisible);
   const toggleModal = (ingredient) => {
     setModalVisible(!modalVisible);
     setSelectedIngre(ingredient);
@@ -130,7 +136,6 @@ function IngredientsTab(state) {
   const [selectedIngre, setSelectedIngre] = useState(null);
 
   const handleSubmit = async (values) => {
-    // console.log("handleSubmit -> ", values);
     toggleModal(null);
     var expDate = new Date(
       new Date().getTime() +
@@ -141,13 +146,13 @@ function IngredientsTab(state) {
       (tx) => {
         tx.executeSql(
           "UPDATE FactFridge\
-        SET ingredient = ?,\
+          SET ingredient = ?,\
           qty = ?,\
           unit = ?,\
           category = ?,\
           inFridge = ?,\
           expDate = ?\
-        WHERE id = ?;",
+          WHERE id = ?;",
           [
             values.ingredient,
             values.qty,
@@ -202,6 +207,7 @@ function IngredientsTab(state) {
               null,
               forceUpdate
             );
+            toggleModal(null);
           },
         },
         {
@@ -213,36 +219,7 @@ function IngredientsTab(state) {
     );
   };
 
-  React.useEffect(() => {
-    // Load ingredients from database
-    clearIngredientsInFridge();
-
-    db.transaction(
-      (tx) => {
-        tx.executeSql(
-          "SELECT * FROM FactFridge",
-          [],
-          (_, { rows }) => {
-            rows._array.forEach((row) => {
-              addIngredientToFridge({
-                id: row.id,
-                ingredient: row.ingredient,
-                category: row.category,
-                qty: row.qty,
-                expDate: row.expDate,
-                unit: row.unit,
-                imageUri: row.imageUri,
-              });
-              // console.log("IngredientTab -> ", row)
-            });
-          },
-          (_, error) => console.log("IngredientTab addIngre Redux -> ", error)
-        );
-      },
-      null,
-      forceUpdate
-    );
-  }, []);
+  React.useEffect(updateFilter, []);
 
   return (
     <Screen style={styles.screen}>

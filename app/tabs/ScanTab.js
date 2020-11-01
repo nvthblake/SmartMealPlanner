@@ -13,6 +13,7 @@ import { openDatabase } from "expo-sqlite";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { useNavigation } from "@react-navigation/native";
+import NumericInput from 'react-native-numeric-input';
 
 import {
   AppForm,
@@ -145,6 +146,7 @@ function ScanTab(state) {
                     validationSchema={validationSchema}
                   >
                     <FormImageStatic name="imageUri" />
+                    <NumericInput onChange={value => console.log(value)} />
                     <AppFormField
                       icon="food-variant"
                       name="ingredient"
