@@ -23,10 +23,11 @@ import {
 import Screen from "../components/Screen";
 import CategoryPickerItem from "../components/CategoryPickerItem";
 import FormImagePicker from "../components/forms/FormImagePicker";
+import FormImageStatic from "../components/forms/FormImageStatic";
 import pickerOptions from "../config/pickerOptions";
 import AppText from "../components/AppText";
 
-import { addIngredientToFridge } from "../../actions";
+import { addIngredientToFridge, deleteIngredientToScan } from "../../actions";
 import { getFridgeSql } from "../components/database/queries";
 import AppButton from "../components/AppButton";
 import colors from "../config/colors";
@@ -54,6 +55,7 @@ function ScanTab(state) {
   const [success, setSuccess] = useState(true);
 
   const handleSubmit = async (values, { resetForm }) => {
+    // const imageUri = "file:/data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FSmartMealPlanner-c7f11723-ddae-4ba6-97f3-0120a5d82b7e/ImagePicker/acface9b-60ad-40d8-886d-43347ba91603.jpg";
     var expDate = new Date(
       new Date().getTime() + values.dayToExp * 24 * 60 * 60 * 1000
     ).toISOString();
@@ -70,7 +72,7 @@ function ScanTab(state) {
             values.dayToExp,
             1,
             expDate,
-            values.images[0],
+            values.imageUri,
           ],
           () => {
             setSuccess(true);
@@ -88,7 +90,7 @@ function ScanTab(state) {
                       unit: values.unit.label,
                       category: values.category.label,
                       expDate: expDate,
-                      imageUri: values.images[0],
+                      imageUri: values.imageUri,
                     });
                   },
                   (_, error) => console.log(error)
@@ -108,7 +110,9 @@ function ScanTab(state) {
       forceUpdate
     );
     if (success) {
-      resetForm();
+      console.log("ScanTab deleted uri -> ", values.imageUri);
+      deleteIngredientToScan(values.imageUri);
+      console.log("Ingredient to scan -> ", ingredientToScan);
       setSuccess(false);
     }
     // console.log(getFridgeSql(db));
@@ -127,19 +131,8 @@ function ScanTab(state) {
           showsHorizontalScrollIndicator={false}
           keyExtractor={(ingredientToScan) => ingredientToScan.imageUri}
           renderItem={({ item, index }) => {
-            // console.log("item image ->", item.imageUri);
             return (
               <View style={styles.cardContainer}>
-                <Image
-                  style={{
-                    width: "100%",
-                    height: 0.5 * screenWidth,
-                    borderRadius: 25,
-                  }}
-                  source={{ uri: ingredientToScan[index].imageUri }}
-                  // resizeMode="stretch"
-                  // resizeMethod=""
-                />
                 <ScrollView style={{ flex: 1 }}>
                   <AppForm
                     initialValues={{
@@ -148,14 +141,12 @@ function ScanTab(state) {
                       unit: null,
                       category: null,
                       dayToExp: "",
-                      images: item.imageUri,
+                      imageUri: item.imageUri,
                     }}
                     onSubmit={handleSubmit}
                     validationSchema={validationSchema}
                   >
-                    {/* <AppText style={{ alignSelf: "flex-start" }}>
-                        Ingredient
-                      </AppText> */}
+                    <FormImageStatic name="imageUri" />
                     <AppFormField
                       icon="food-variant"
                       name="ingredient"
@@ -205,9 +196,6 @@ function ScanTab(state) {
           }}
         ></FlatList>
       </View>
-      {/* <View >
-        <Image style={styles.logo} source={{uri: ingredientToScan[0].imageUri}} />
-      </View> */}
       <View></View>
       <AppButton
         title={"SCAN FOOD"}

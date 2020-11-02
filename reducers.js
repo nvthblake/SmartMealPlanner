@@ -16,15 +16,15 @@ const today = new Date();
 
 const INITIAL_STATE = {
   fridge: [
-    // {
-    //   id: 1,
-    //   ingredient: "Apple",
-    //   category: "Fruit",
-    //   qty: 100,
-    //   expDate: today,
-    //   unit: "Kg",
-    //   imageUri: "file:/data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FSmartMealPlanner-c7f11723-ddae-4ba6-97f3-0120a5d82b7e/ImagePicker/acface9b-60ad-40d8-886d-43347ba91603.jpg",
-    // },
+    {
+      id: 1,
+      name: "Apple",
+      category: "Fruit",
+      qty: 100,
+      expDate: today,
+      unit: "Kg",
+      imageUri: "file:/data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FSmartMealPlanner-c7f11723-ddae-4ba6-97f3-0120a5d82b7e/ImagePicker/acface9b-60ad-40d8-886d-43347ba91603.jpg",
+    }
   ],
   cart: [],
   recipes: [],
@@ -94,13 +94,12 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
       return newState;
 
     case ADD_INGREDIENT_TO_SCAN:
-      
+
       ingredientToScan.push(action.payload);
       newState = { fridge, cart, recipes, ingredientToScan };
       return newState;
 
     case DELETE_INGREDIENT_TO_SCAN:
-
       // Delete ingredient chosen
       const ingreScanIndexDelete = ingredientToScan.findIndex((ingre => ingre.imageUri === action.payload.imageUri));
       ingredientToScan.splice(ingreScanIndexDelete, 1);
@@ -109,7 +108,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
       newState = { fridge, cart, recipes, ingredientToScan };
       return newState
 
-    case CLEAR_INGREDIENTS_IN_FRIDGE:
+    case CLEAR_INGREDIENTS_TO_SCAN:
       ingredientToScan = [];
       newState = { fridge, cart, recipes, ingredientToScan };
       return newState;

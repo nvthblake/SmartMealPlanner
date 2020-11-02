@@ -1,4 +1,13 @@
 export default {
+    inventoryFilter: [
+        { id: 0, title: "All", select: true, },
+        { id: 1, title: "Meat", select: false, },
+        { id: 2, title: "Vegetable", select: false, },
+        { id: 3, title: "Snack", select: false, },
+        { id: 4, title: "Condiments", select: false, },
+        { id: 5, title: "Fruit", select: false, },
+        { id: 6, title: "Others", select: false, },
+      ],
     categories: [
         { label: "Meat", value: 1, backgroundColor: "red", icon: "apps" },
         { label: "Vegetable", value: 2, backgroundColor: "green", icon: "email" },

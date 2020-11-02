@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
     backgroundColor: colors.background,
     flex: 1,
-    marginBottom: 50,
+    // marginBottom: 20,
   },
 });
 

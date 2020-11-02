@@ -19,6 +19,7 @@ import navigationTheme from "./app/navigation/navigationTheme";
 import Icon from "./app/components/Icon";
 import colors from "./app/config/colors";
 import IngredientsTab from "./app/tabs/IngredientsTab";
+import ShoppingTab from "./app/tabs/ShoppingTab";
 import ScanTab from "./app/tabs/ScanTab";
 import CameraScreen from "./app/components/CameraButton"; // Redux Territory
 import reducers from "./reducers";
