@@ -20,7 +20,7 @@ import navigationTheme from "./app/navigation/navigationTheme";
 import Icon from "./app/components/Icon";
 import colors from "./app/config/colors";
 import IngredientsTab from "./app/tabs/IngredientsTab";
-import ScanTab from "./app/tabs/ScanTab";
+import ShoppingTab from "./app/tabs/ShoppingTab";
 import CameraScreen from "./app/screens/CameraScreen";// Redux Territory
 import reducers from './reducers';
 
@@ -61,6 +61,6 @@ export default function App() {
   );
 }
 // export default function App() {
-//   return ( <IngredientsTab/>
+//   return ( <ShoppingTab/>
 //   );
 // }
