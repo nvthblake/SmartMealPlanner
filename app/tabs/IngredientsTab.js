@@ -12,7 +12,6 @@ import {
   Text,
   Modal,
   Alert,
-  TouchableHighlight,
   ScrollView,
 } from "react-native";
 import AppButton from "../components/AppButton";
@@ -29,13 +28,11 @@ import {
   updateIngredientInFridge,
   deleteIngredientInFridge,
 } from "../../actions";
-import AppTextInput from "../components/AppTextInput";
 import {
   AppForm,
   AppFormField,
   AppFormPicker,
   SubmitButton,
-  AppTextFormField,
 } from "../components/forms";
 
 // Database imports

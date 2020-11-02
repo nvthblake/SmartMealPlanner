@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import {
   StyleSheet,
-  Button,
-  Image,
   View,
   FlatList,
   Dimensions,
   ScrollView,
+  Modal,
 } from "react-native";
 import * as Yup from "yup";
 import { openDatabase } from "expo-sqlite";
@@ -21,16 +20,14 @@ import {
   SubmitButton,
 } from "../components/forms";
 import Screen from "../components/Screen";
-import CategoryPickerItem from "../components/CategoryPickerItem";
-import FormImagePicker from "../components/forms/FormImagePicker";
 import FormImageStatic from "../components/forms/FormImageStatic";
 import pickerOptions from "../config/pickerOptions";
-import AppText from "../components/AppText";
 
 import { addIngredientToFridge, deleteIngredientToScan } from "../../actions";
 import { getFridgeSql } from "../components/database/queries";
 import AppButton from "../components/AppButton";
 import colors from "../config/colors";
+import CameraPage from "./pages/CameraPage";
 
 const db = openDatabase("db2.db");
 
@@ -48,8 +45,8 @@ const validationSchema = Yup.object().shape({
 
 function ScanTab(state) {
   const { ingredients, addIngredientToFridge, deleteIngredientToScan } = state;
-  const ingredientsInFridge = ingredients.fridge;
   const ingredientToScan = ingredients.ingredientToScan;
+
 
   const [forceUpdate, forceUpdateId] = useForceUpdate();
   const [success, setSuccess] = useState(true);
@@ -194,11 +191,8 @@ function ScanTab(state) {
           }}
         ></FlatList>
       </View>
-      <View></View>
-      <AppButton
-        title={"SCAN FOOD"}
-        onPress={() => navigation.navigate("Camera")}
-      />
+      {/* <View></View> */}
+      <CameraPage/>
     </Screen>
   );
 }
