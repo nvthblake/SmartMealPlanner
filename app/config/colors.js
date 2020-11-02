@@ -9,8 +9,11 @@ export default {
   dark: "#292c3e",
   danger: "#ff5252",
   maroon: "#BF181D",
+  lightGrey: "#d0d0d0",
+  background: "#F4F6F9",
+  
   shadow: "#D5DDFB",
-  light_primary: "#7A98FD",
+  light_primary: "#7A98FD", // for calendar
 
   //font
   font_dark: "#373737",
