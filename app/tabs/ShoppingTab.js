@@ -7,16 +7,22 @@ import {
   TouchableHighlight,
   TextInput,
   Alert,
+  Dimensions, 
 } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import Screen from "../components/Screen";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 import ShoppingItem from "../components/ShoppingItem";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import Map from "../components/GoogleMap";
 
+// Dimensions 
+const windowHeight = Dimensions.get('window').height;
+
 function ShoppingList(props) {
   
+
 
   // Item states
   const [todos, setTodos] = useState([
@@ -44,7 +50,7 @@ function ShoppingList(props) {
 
   // HTML constructor
   return (
-    <View style={styles.container}>
+    <Screen>
       <View style={styles.content}>
         <View style={styles.header}>
           <View>
@@ -137,7 +143,7 @@ function ShoppingList(props) {
           </Modal>
         </View>
       </View>
-    </View>
+    </Screen>
   );
 }
 
@@ -164,8 +170,8 @@ const styles = StyleSheet.create({
     width: 205,
   },
   list: {
-    marginTop: 20,
-    height: 450
+    marginTop: 20, 
+    height: windowHeight * 0.4
   },
   plusButton: {
     marginTop: 10,
