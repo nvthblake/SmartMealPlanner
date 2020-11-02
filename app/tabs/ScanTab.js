@@ -47,7 +47,7 @@ const validationSchema = Yup.object().shape({
 });
 
 function ScanTab(state) {
-  const { ingredients, addIngredientToFridge } = state;
+  const { ingredients, addIngredientToFridge, deleteIngredientToScan } = state;
   const ingredientsInFridge = ingredients.fridge;
   const ingredientToScan = ingredients.ingredientToScan;
 
@@ -110,12 +110,10 @@ function ScanTab(state) {
       forceUpdate
     );
     if (success) {
-      console.log("ScanTab deleted uri -> ", values.imageUri);
       deleteIngredientToScan(values.imageUri);
-      console.log("Ingredient to scan -> ", ingredientToScan);
+      resetForm();
       setSuccess(false);
     }
-    // console.log(getFridgeSql(db));
   };
 
   const navigation = useNavigation();
@@ -247,6 +245,7 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       addIngredientToFridge,
+      deleteIngredientToScan,
     },
     dispatch
   );
