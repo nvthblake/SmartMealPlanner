@@ -21,8 +21,14 @@ import AppText from "../components/AppText";
 import Screen from "../components/Screen";
 import SqCard from "../components/SqCard";
 import colors from "../config/colors";
+import pickerOptions from "../config/pickerOptions";
 
-import { addIngredientToFridge, clearIngredientsInFridge, updateIngredientInFridge, deleteIngredientInFridge } from "../../actions";
+import {
+  addIngredientToFridge,
+  clearIngredientsInFridge,
+  updateIngredientInFridge,
+  deleteIngredientInFridge,
+} from "../../actions";
 import AppTextInput from "../components/AppTextInput";
 import {
   AppForm,
@@ -33,124 +39,149 @@ import {
 } from "../components/forms";
 
 // Database imports
-import { openDatabase } from 'expo-sqlite';
+import { openDatabase } from "expo-sqlite";
 import { date } from "yup";
 
 const db = openDatabase("db2.db");
 
-const inventoryFilter = [
-  {
-    id: 1,
-    title: "All",
-    select: true,
-  },
-  {
-    id: 2,
-    title: "Meat",
-    select: false,
-  },
-  {
-    id: 3,
-    title: "Vegetable",
-    select: false,
-  },
-  {
-    id: 4,
-    title: "Snack",
-    select: false,
-  },
-  {
-    id: 5,
-    title: "Condiments",
-    select: false,
-  },
-  {
-    id: 6,
-    title: "Fruit",
-    select: false,
-  },
-  {
-    id: 7,
-    title: "Others",
-    select: false,
-  },
-];
+const inventoryFilter = pickerOptions.inventoryFilter;
 
 const screenWidth = Dimensions.get("window").width;
 
 function IngredientsTab(state) {
-  const { ingredients, addIngredientToFridge, clearIngredientsInFridge, updateIngredientInFridge, deleteIngredientInFridge } = state;
+  const {
+    ingredients,
+    addIngredientToFridge,
+    clearIngredientsInFridge,
+    updateIngredientInFridge,
+    deleteIngredientInFridge,
+  } = state;
   const [forceUpdate, forceUpdateId] = useForceUpdate();
 
   const ingredientsInFridge = ingredients.fridge;
 
   const [ingrFilter, setIngrFilter] = useState(inventoryFilter);
+  
+  const updateFilter = () => {
+    let sqlQuery = "SELECT * FROM FactFridge";
+    if (inventoryFilter[0].select === false) {
+      sqlQuery = sqlQuery.concat(" WHERE Category IN (");
+      const categoryFiltered = inventoryFilter.filter(c => c.select === true).map(c => `'${c.title}'`);
+      sqlQuery = sqlQuery.concat(categoryFiltered.join(",")).concat(");");
+    }
+    // Load ingredients from database
+    clearIngredientsInFridge();
+
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          sqlQuery,
+          [],
+          (_, { rows }) => {
+            rows._array.forEach((row) => {
+              addIngredientToFridge({
+                id: row.id,
+                ingredient: row.ingredient,
+                category: row.category,
+                qty: row.qty,
+                expDate: row.expDate,
+                unit: row.unit,
+                imageUri: row.imageUri,
+              });
+            });
+          },
+          (_, error) => console.log("IngredientTab addIngre Redux -> ", error)
+        );
+      },
+      null,
+      forceUpdate
+    );
+  }
+
   const toggleOnOff = (item) => {
     let temp = [...ingrFilter];
-    temp = temp.map((invFilter) => {
-      if (item.id === 1 && invFilter.select === true) {
-        for (let i = 2; i < temp.length; i++) {
-          ingrFilter[i].select === false;
+    if (item.id === 0) {
+      for (let i = 0; i < temp.length; i++) {
+        if (item.id === i) {
+          temp[i].select = true;
         }
-        return {
-          id: invFilter.id,
-          select: !invFilter.select,
-          title: invFilter.title,
-        };
+        else {
+          temp[i].select = false;
+        }
       }
-      if (item.id === invFilter.id)
-        return {
-          id: invFilter.id,
-          select: !invFilter.select,
-          title: invFilter.title,
-        };
-      else return invFilter;
-    });
+    }
+    else if (item.id !== 0) {
+      for (let i = 0; i < temp.length; i++) {
+        if (i === item.id) {
+          temp[i].select = !temp[i].select;
+        }
+      }
+      let countSelected = temp.filter(t => t.select === true).length;
+      if ( countSelected === 0 ) {
+        temp[0].select = true;
+      }
+      else {
+        temp[0].select = false;
+      }
+    }
     setIngrFilter(temp);
+    updateFilter();
   };
 
   const [modalVisible, setModalVisible] = useState(false);
-  // console.log(modalVisible);
   const toggleModal = (ingredient) => {
     setModalVisible(!modalVisible);
     setSelectedIngre(ingredient);
   };
   const [selectedIngre, setSelectedIngre] = useState(null);
 
-  
   const handleSubmit = async (values) => {
-    // console.log("handleSubmit -> ", values);
     toggleModal(null);
-    var expDate = new Date(new Date().getTime() + (values.dayToExp * 24 * 60 * 60 * 1000) + (24 * 60 * 60 * 1000)).toISOString();
-    db.transaction(tx => {
-      tx.executeSql(
-        "UPDATE FactFridge\
-        SET ingredient = ?,\
+    var expDate = new Date(
+      new Date().getTime() +
+        values.dayToExp * 24 * 60 * 60 * 1000 +
+        24 * 60 * 60 * 1000
+    ).toISOString();
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          "UPDATE FactFridge\
+          SET ingredient = ?,\
           qty = ?,\
           unit = ?,\
           category = ?,\
           inFridge = ?,\
           expDate = ?\
-        WHERE id = ?;", 
-        [values.ingredient, values.qty, values.unit.label, values.category.label, values.inFridge, expDate, values.id], 
-        () => {
-          console.log('Update Values -> ', values);
-          updateIngredientInFridge({
-            id: values.id,
-            ingredient: values.ingredient,
-            category: values.category.label,
-            qty: values.qty,
-            expDate: expDate,
-            unit: values.unit.label,
-            imageUri: values.imageUri,
-          })
-        }, 
-        (_, error) => console.log("IngredientTab updateIngre SQLite -> ", error)
-      );
-    },
-    null,
-    forceUpdate);
-  }
+          WHERE id = ?;",
+          [
+            values.ingredient,
+            values.qty,
+            values.unit.label,
+            values.category.label,
+            values.inFridge,
+            expDate,
+            values.id,
+          ],
+          () => {
+            console.log("Update Values -> ", values);
+            updateIngredientInFridge({
+              id: values.id,
+              ingredient: values.ingredient,
+              category: values.category.label,
+              qty: values.qty,
+              expDate: expDate,
+              unit: values.unit.label,
+              imageUri: values.imageUri,
+            });
+          },
+          (_, error) =>
+            console.log("IngredientTab updateIngre SQLite -> ", error)
+        );
+      },
+      null,
+      forceUpdate
+    );
+  };
 
   const handleDelete = (ingredient) => {
     Alert.alert(
@@ -164,17 +195,20 @@ function IngredientsTab(state) {
             // Delete ingredient from Redux
             deleteIngredientInFridge(ingredient);
             // Delete ingredient from SQLite
-            db.transaction(tx => {
-              tx.executeSql(
-                "DELETE FROM FactFridge WHERE id = ?", 
-                [ingredient.id], 
-                [], 
-                (_, error) => console.log(error)
-              );
-            },
-            null,
-            forceUpdate);
-          }
+            db.transaction(
+              (tx) => {
+                tx.executeSql(
+                  "DELETE FROM FactFridge WHERE id = ?",
+                  [ingredient.id],
+                  [],
+                  (_, error) => console.log(error)
+                );
+              },
+              null,
+              forceUpdate
+            );
+            toggleModal(null);
+          },
         },
         {
           text: "No",
@@ -183,50 +217,9 @@ function IngredientsTab(state) {
       ],
       { cancelable: true }
     );
-  }
+  };
 
-  const categories = [
-    { label: "Meat", value: 1, backgroundColor: "red", icon: "apps" },
-    { label: "Vegetable", value: 2, backgroundColor: "green", icon: "email" },
-    { label: "Condiments", value: 3, backgroundColor: "blue", icon: "lock" },
-    { label: "Snack", value: 4, backgroundColor: "blue", icon: "lock" },
-    { label: "Fruit", value: 5, backgroundColor: "blue", icon: "lock" },
-    { label: "Others", value: 6, backgroundColor: "blue", icon: "lock" },
-  ];
-  
-  const units = [
-    { label: "Quartz", value: 1 },
-    { label: "Kg", value: 2 }
-  ]
-
-  React.useEffect(() => {
-    // Load ingredients from database
-    clearIngredientsInFridge();
-    
-    db.transaction(tx => {
-      tx.executeSql(
-        "SELECT * FROM FactFridge",
-        [],
-        (_, { rows }) => {
-          rows._array.forEach((row) => {
-            addIngredientToFridge({
-              id: row.id,
-              ingredient: row.ingredient,
-              category: row.category,
-              qty: row.qty,
-              expDate: row.expDate,
-              unit: row.unit,
-              imageUri: row.imageUri,
-            })
-            // console.log("IngredientTab -> ", row)
-          });
-        },
-        (_, error) => console.log("IngredientTab addIngre Redux -> ", error)
-        );
-      },
-      null,
-      forceUpdate);
-  }, []);
+  React.useEffect(updateFilter, []);
 
   return (
     <Screen style={styles.screen}>
@@ -275,10 +268,13 @@ function IngredientsTab(state) {
                   subTitle={"QTY: " + ingredientsInFridge[index].qty}
                   image={ingredientsInFridge[index].imageUri}
                   screenWidth={screenWidth}
-                  expStatus={expDateToColor(ingredientsInFridge[index].expDate)[1]}
+                  expStatus={
+                    expDateToColor(ingredientsInFridge[index].expDate)[1]
+                  }
                   onPress={() => toggleModal(ingredientsInFridge[index])}
-                  onLongPress={() => {handleDelete(ingredientsInFridge[index])}
-                }
+                  onLongPress={() => {
+                    handleDelete(ingredientsInFridge[index]);
+                  }}
                 ></SqCard>
               </>
             );
@@ -311,23 +307,30 @@ function IngredientsTab(state) {
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                   <ScrollView>
-                  <Image
-                    style={{
-                      width: screenWidth - 150,
-                      height: screenWidth - 200,
-                      borderRadius: 15,
-                    }}
-                    source={{uri: selectedIngre.imageUri}}
-                  />
-                  <Text>{selectedIngre.id}</Text>
+                    <Image
+                      style={{
+                        width: screenWidth - 150,
+                        height: screenWidth - 200,
+                        borderRadius: 15,
+                      }}
+                      source={{ uri: selectedIngre.imageUri }}
+                    />
+                    <Text>{selectedIngre.id}</Text>
                     <AppForm
                       initialValues={{
                         id: selectedIngre.id,
                         ingredient: selectedIngre.ingredient,
                         qty: selectedIngre.qty.toString(),
-                        unit: units.find(unit => unit.label === selectedIngre.unit) ,
-                        category: categories.find(category => category.label === selectedIngre.category),
-                        dayToExp: expDateToColor(selectedIngre.expDate)[0].toString(),
+                        unit: pickerOptions.units.find(
+                          (unit) => unit.label === selectedIngre.unit
+                        ),
+                        category: pickerOptions.categories.find(
+                          (category) =>
+                            category.label === selectedIngre.category
+                        ),
+                        dayToExp: expDateToColor(
+                          selectedIngre.expDate
+                        )[0].toString(),
                         imageUri: selectedIngre.imageUri,
                         inFridge: 1,
                       }}
@@ -344,12 +347,12 @@ function IngredientsTab(state) {
                         keyboardType="numeric"
                       />
                       <AppFormPicker
-                        items={units}
+                        items={pickerOptions.units}
                         name="unit"
                         placeholder="Unit"
                       />
                       <AppFormPicker
-                        items={categories}
+                        items={pickerOptions.categories}
                         name="category"
                         placeholder="Category"
                       />
@@ -358,7 +361,7 @@ function IngredientsTab(state) {
                         placeholder="Days to Expiration"
                         keyboardType="numeric"
                       />
-                      <SubmitButton title="SAVE"/>
+                      <SubmitButton title="SAVE" />
                     </AppForm>
                     <AppButton
                       title="DELETE"
@@ -366,20 +369,20 @@ function IngredientsTab(state) {
                       borderColor={colors.maroon}
                       textColor={colors.maroon}
                     />
-                    <AppButton 
+                    <AppButton
                       title="CANCEL"
                       onPress={() => toggleModal(null)}
                       borderColor={colors.medium}
                       textColor={colors.medium}
-                      />
+                    />
                   </ScrollView>
                 </View>
               </View>
             </Modal>
           </View>
         ) : (
-            <></>
-          )}
+          <></>
+        )}
       </View>
     </Screen>
   );
@@ -444,7 +447,7 @@ function useForceUpdate() {
 function expDateToColor(expDateStr) {
   const today = new Date();
   const expDate = Date.parse(expDateStr);
-  var dateDiff = Math.floor((expDate - today) / (1000*60*60*24));
+  var dateDiff = Math.floor((expDate - today) / (1000 * 60 * 60 * 24));
   if (dateDiff <= 4) return [dateDiff, "red"];
   else if (dateDiff <= 8) return [dateDiff, "orange"];
   else if (dateDiff <= 14) return [dateDiff, "yellow"];
@@ -461,8 +464,8 @@ const mapDispatchToProps = (dispatch) =>
     {
       addIngredientToFridge,
       clearIngredientsInFridge,
-      updateIngredientInFridge, 
-      deleteIngredientInFridge
+      updateIngredientInFridge,
+      deleteIngredientInFridge,
     },
     dispatch
   );
