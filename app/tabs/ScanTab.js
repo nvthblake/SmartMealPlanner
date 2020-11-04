@@ -128,7 +128,7 @@ function ScanTab(state) {
           renderItem={({ item, index }) => {
             return (
               <View style={styles.cardContainer}>
-                <ScrollView style={{ flex: 1 }}>
+                <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
                   <AppForm
                     initialValues={{
                       ingredient: "",
@@ -159,16 +159,16 @@ function ScanTab(state) {
                         name="qty"
                         placeholder="Quantity"
                         keyboardType="numeric"
-                        width={150}
-                        marginRight={20}
+                        width={screenWidth*0.36}
+                        marginRight={10}
                       />
                       <AppFormPicker
                         icon="beaker"
                         items={pickerOptions.units}
                         name="unit"
                         placeholder="Unit"
-                        width={150}
-                        marginLeft={20}
+                        width={screenWidth*0.36}
+                        marginLeft={10}
                       />
                     </View>
                     <AppFormPicker
@@ -191,7 +191,6 @@ function ScanTab(state) {
           }}
         ></FlatList>
       </View>
-      {/* <View></View> */}
       <CameraPage/>
     </Screen>
   );
@@ -205,16 +204,25 @@ function useForceUpdate() {
 const styles = StyleSheet.create({
   cardContainer: {
     borderRadius: 25,
-    borderWidth: 4,
-    borderColor: colors.primary,
+    padding: 10,
+    // borderWidth: 4,
+    // borderColor: colors.primary,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 50,
+    marginBottom: 10,
     marginHorizontal: 10,
     width: screenWidth * 0.85,
     height: screenHeight * 0.75,
     backgroundColor: "white",
     overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   container: {
     padding: 10,

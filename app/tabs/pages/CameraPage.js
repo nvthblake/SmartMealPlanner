@@ -69,11 +69,11 @@ function CameraPage(state, { navigation }) {
       if (source) {
         // await cameraRef.current.pausePreview();
         // setIsPreview(true);
-        console.log("picture source: ", source);
+        // console.log("picture source: ", source);
         addIngredientToScan({
           imageUri: source,
         });
-        console.log("IMAGE URI -> ", ingredientToScan);
+        // console.log("IMAGE URI -> ", ingredientToScan);
       }
     }
   };
