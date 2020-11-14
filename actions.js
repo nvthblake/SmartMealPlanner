@@ -9,6 +9,8 @@ import {
     ADD_INGREDIENT_TO_SCAN,
     DELETE_INGREDIENT_TO_SCAN,
     CLEAR_INGREDIENTS_TO_SCAN,
+    CLEAR_CART,
+    DELETE_INGREDIENT_IN_CART
 } from './types';
 
 export const addIngredientToFridge = (ingredient) => (
@@ -38,6 +40,12 @@ export const clearRecipe = () => (
     }
 )
 
+export const clearCart = () => (
+    {
+        type: CLEAR_CART
+    }
+)
+
 export const clearIngredientsInFridge = () => (
     {
         type: CLEAR_INGREDIENTS_IN_FRIDGE
@@ -54,6 +62,13 @@ export const updateIngredientInFridge = (ingredient) => (
 export const deleteIngredientInFridge = (ingredient) => (
     {
         type: DELETE_INGREDIENT_IN_FRIDGE,
+        payload: ingredient
+    }
+)
+
+export const deleteIngredientInCart = (ingredient) => (
+    {
+        type: DELETE_INGREDIENT_IN_CART,
         payload: ingredient
     }
 )

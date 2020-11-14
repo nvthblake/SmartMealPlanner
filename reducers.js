@@ -10,6 +10,8 @@ import {
   ADD_INGREDIENT_TO_SCAN,
   DELETE_INGREDIENT_TO_SCAN,
   CLEAR_INGREDIENTS_TO_SCAN,
+  CLEAR_CART,
+  DELETE_INGREDIENT_IN_CART
 } from "./types";
 
 const today = new Date();
@@ -111,6 +113,21 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
     case CLEAR_INGREDIENTS_TO_SCAN:
       ingredientToScan = [];
       newState = { fridge, cart, recipes, ingredientToScan };
+      return newState;
+
+    case CLEAR_CART:
+      cart = [];
+      newState = { fridge, cart, recipes, ingredientToScan };
+      return newState;
+
+    case DELETE_INGREDIENT_IN_CART:
+      // Delete ingredient chosen
+      const spliceIndex = cart.findIndex((ingre => ingre.id === action.payload.id));
+      cart.splice(spliceIndex, 1);
+
+      // Update the redux state
+      newState = { fridge, cart, recipes, ingredientToScan };
+
       return newState;
 
     default:

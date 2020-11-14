@@ -34,10 +34,10 @@ function ShoppingItem({ item, pressHandler }) {
           }}
           color={colors.primary}
         />
-        <Text style={style}>{item.text}</Text>
+        <Text style={style}>{item.name}</Text>
       </View>
       <View style={hidden}>
-        <ListItemDeleteAction onPress={() => pressHandler(item.key)} />
+        <ListItemDeleteAction onPress={() => pressHandler(item)} />
       </View>
     </TouchableOpacity>
   );

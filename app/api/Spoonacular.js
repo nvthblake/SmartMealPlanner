@@ -110,7 +110,7 @@ function getRecipes(ingredients, limit) {
             .catch((err) => {
                 // console.log("RecipeTab -> componentDidMount -> err", err);
                 reject(err);
-                alert("Out of Spoonacular usage lol!");
+                // alert("Out of Spoonacular usage lol!");
             });
     });
 }
@@ -167,7 +167,7 @@ function getRecipeInfoInBulk(recipes) {
             .catch((err) => {
                 // console.log("RecipeTab -> componentDidMount -> err", err);
                 reject(err);
-                alert("Out of Spoonacular usage lol!");
+                // alert("Out of Spoonacular usage lol!");
             });
     });
 }
