@@ -220,16 +220,6 @@ function IngredientsTab(state) {
 
   return (
     <Screen style={styles.screen} headerTitle="Ingredients">
-      {/* <AppText
-        style={{
-          fontSize: 30,
-          color: colors.primary,
-          fontWeight: "bold",
-          marginLeft: screenWidth * 0.05,
-        }}
-      >
-        {"My Ingredients"}
-      </AppText> */}
       <View
         style={{
           marginLeft: screenWidth * 0.05,
