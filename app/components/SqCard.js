@@ -15,12 +15,15 @@ function SqCard({ title, subTitle, image, expStatus, screenWidth, onPress, onLon
             height: (0.8 * screenWidth) / 3,
             width: (0.8 * screenWidth) / 3,
             marginBottom: 0.05 * screenWidth,
-            borderColor: expStatus,
+            // borderColor: expStatus,
           },
         ]}
       >
         <Image style={styles.image} source={{uri: image}} />
         <View style={styles.detailsContainer}>
+          <AppText style={[styles.title, {fontSize: 0.06 * screenWidth }]}>
+            {title}
+          </AppText>
           <AppText style={[styles.subTitle, { fontSize: 0.03 * screenWidth }]}>
             {subTitle}
           </AppText>
@@ -33,8 +36,8 @@ function SqCard({ title, subTitle, image, expStatus, screenWidth, onPress, onLon
 const styles = StyleSheet.create({
   card: {
     borderRadius: 15,
-    borderWidth: 2,
-    backgroundColor: colors.primary,
+    // borderWidth: 2,
+    backgroundColor: colors.white,
     overflow: "hidden",
     alignItems: "center",
     elevation: 10,
@@ -44,20 +47,27 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: "85%",
+    height: "50%",
+    // margin: 5,
+    flex: 1,
     overflow: "hidden",
   },
   title: {
-    fontSize: 10,
-    marginBottom: 7,
+    // fontSize: 10,
+    marginVertical: 5,
+    // flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    color: colors.black,
+    fontWeight: "bold",
   },
   subTitle: {
     flex: 1,
     alignItems: "center",
-    alignContent: "center",
+    justifyContent: "center",
     // backgroundColor: colors.primary,
-    color: colors.white,
-    fontWeight: "bold",
+    color: colors.black,
+    // fontWeight: "bold",
   },
 });
 export default SqCard;
