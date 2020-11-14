@@ -1,14 +1,31 @@
 import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { addIngredientToFridge } from "../../actions";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ProgressBarAndroid,
+} from "react-native";
 import CardView from "../components/CardView";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 
-function Profile(props) {
+function Profile(state) {
+  const { ingredients, addIngredientToFridge } = state;
+  const ingredientsInFridge = ingredients.fridge;
+  const Limit = 100;
+  let Item = 0;
+  ingredientsInFridge.forEach((element) => {
+    Item += parseInt(element.qty);
+  });
   return (
     <View style={styles.container}>
       <View style={styles.imageView}>
-      <AppText style={styles.welcome} >{"Welcome to SmartFridge"}</AppText>
+        <AppText style={styles.welcome}>{"Welcome to SmartFridge"}</AppText>
         <TouchableOpacity>
           <Image
             source={require("../assets/appIcon/ava.png")}
@@ -23,12 +40,17 @@ function Profile(props) {
             source={require("../assets/appIcon/fridge2.png")}
             style={styles.fridgelogo}
           />
-          <Image
-            source={require("../assets/appIcon/fridge-status.png")}
+          <ProgressBarAndroid
             style={styles.fridgestatus}
+            color={colors.primary}
+            styleAttr="Horizontal"
+            indeterminate={false}
+            progress={Item / Limit}
           />
         </View>
-        <Text style={styles.fridgetext}>Your fridge is 0% full</Text>
+        <Text style={styles.fridgetext}>
+          Your fridge is {(Item / Limit) * 100}% full
+        </Text>
         <Text style={styles.fridgetext}>
           Need to go shopping in the next 10 days
         </Text>
@@ -36,25 +58,34 @@ function Profile(props) {
         <View style={styles.minilogoview}>
           <View>
             <Image
-              source={require("../assets/appIcon/ava.png")}
+              source={require("../assets/appIcon/white.png")}
               style={styles.minilogo}
             />
+            <View style={styles.viewDemotext}>
+              <Text style={styles.demotext}>{ingredientsInFridge.length}</Text>
+            </View>
             <Text style={styles.minitext}>Item is expiring</Text>
             <Text style={styles.minitext}>in 3 days</Text>
           </View>
           <View>
             <Image
-              source={require("../assets/appIcon/ava.png")}
+              source={require("../assets/appIcon/white.png")}
               style={styles.minilogo}
             />
+            <View style={styles.viewDemotext}>
+              <Text style={styles.demotext}>{ingredientsInFridge.length}</Text>
+            </View>
             <Text style={styles.minitext}>Item is expiring</Text>
             <Text style={styles.minitext}>in 10 days</Text>
           </View>
           <View>
             <Image
-              source={require("../assets/appIcon/ava.png")}
+              source={require("../assets/appIcon/white.png")}
               style={styles.minilogo}
             />
+            <View style={styles.viewDemotext}>
+              <Text style={styles.demotext}>{ingredientsInFridge.length}</Text>
+            </View>
             <Text style={styles.minitext}>Item is already</Text>
             <Text style={styles.minitext}>expired</Text>
           </View>
@@ -95,7 +126,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     padding: 20,
-    color: colors.primary
+    color: colors.primary,
   },
   fridgeheader: {
     marginTop: 20,
@@ -121,7 +152,7 @@ const styles = StyleSheet.create({
     height: 60,
     width: "80%",
     marginLeft: 30,
-    marginTop: -20,
+    marginTop: -10,
     alignItems: "center",
   },
   seperatorline: {
@@ -139,5 +170,29 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 12,
   },
+  viewDemotext: {
+    marginTop: 13,
+    marginLeft: 28,
+    position: "absolute",
+  },
+  demotext: {
+    fontSize: 35,
+    color: colors.primary,
+    fontWeight: "bold",
+  },
 });
-export default Profile;
+
+const mapStateToProps = (state) => {
+  const { ingredients } = state;
+  return { ingredients };
+};
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      addIngredientToFridge,
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

@@ -2,20 +2,28 @@ import React, { useState } from "react";
 import {
   StyleSheet,
   View,
-  Dimensions,
   Modal,
   Text,
   TouchableHighlight,
   TextInput,
   Alert,
+  Dimensions, 
 } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import Screen from "../components/Screen";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 import ShoppingItem from "../components/ShoppingItem";
 import { AntDesign, Feather } from "@expo/vector-icons";
+import Map from "../components/GoogleMap";
+
+// Dimensions 
+const windowHeight = Dimensions.get('window').height;
 
 function ShoppingList(props) {
+  
+
+
   // Item states
   const [todos, setTodos] = useState([
     { text: "buy coffee", key: "1" },
@@ -36,10 +44,13 @@ function ShoppingList(props) {
       return [{ text: text, key: Math.random().toString() }, ...prevCheck];
     });
   };
+
   // Modal states
   const [modalVisible, setModalVisible] = useState(false);
+
+  // HTML constructor
   return (
-    <View style={styles.container}>
+    <Screen>
       <View style={styles.content}>
         <View style={styles.header}>
           <View>
@@ -84,14 +95,17 @@ function ShoppingList(props) {
             />
           </TouchableOpacity>
         </View>
-        <View style={styles.list}>
-          <FlatList
-            data={todos}
-            renderItem={({ item }) => (
-              <ShoppingItem item={item} pressHandler={pressHandler} />
-            )}
-          />
+        <View style={styles.mapContainer}>
+          <Map/>
         </View>
+
+        <FlatList
+          style={styles.list}
+          data={todos}
+          renderItem={({ item }) => (
+            <ShoppingItem item={item} pressHandler={pressHandler} />
+          )}
+        />
         <View style={styles.centeredView}>
           <Modal
             animationType="slide"
@@ -129,7 +143,7 @@ function ShoppingList(props) {
           </Modal>
         </View>
       </View>
-    </View>
+    </Screen>
   );
 }
 
@@ -156,7 +170,8 @@ const styles = StyleSheet.create({
     width: 205,
   },
   list: {
-    marginTop: 20,
+    marginTop: 20, 
+    height: windowHeight * 0.4
   },
   plusButton: {
     marginTop: 10,
@@ -205,6 +220,16 @@ const styles = StyleSheet.create({
     elevation: 2,
     width: 110,
     marginLeft: 50,
+  },
+  mapStyle: {
+    height: 300,
+  },
+  mapContainer: {
+    marginTop: 20,
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: colors.primary,
+    overflow: "hidden",
   },
 });
 
