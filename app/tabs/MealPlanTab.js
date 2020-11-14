@@ -57,7 +57,7 @@ function MealPlanTab(state) {
       date: curDate,
       dots: [
         {
-          color: 'white',
+          color: colors.primary,
         },
       ],
     },
@@ -148,25 +148,21 @@ function MealPlanTab(state) {
   })
 
   const filteredRecipes = getRecipesBasedOnFilter(recipes);
-  const veryPopularRecipes = filteredRecipes.filter((recipe) => recipe.veryPopular);
+  const breakfastRecipes = filteredRecipes.filter((recipe) => recipe.dishType === 'breakfast');
 
   return (
-    <Fragment>
-      <SafeAreaView style={{ flex: 0, backgroundColor: colors.primary }} />
       <Screen style={styles.screen}>
-
         {/* Calendar */}
-        <View style={styles.container}>
           <CalendarStrip
             calendarAnimation={{ type: 'sequence', duration: 30 }}
             daySelectionAnimation={{ type: 'border', duration: 200, borderWidth: 2, borderHighlightColor: 'white' }}
-            style={{ height: 100, paddingBottom: 10 }}
-            calendarHeaderStyle={{ color: 'white' }}
-            calendarColor={colors.primary}
-            dateNumberStyle={{ color: 'white' }}
-            dateNameStyle={{ color: 'white' }}
-            highlightDateNumberStyle={{ color: 'white' }}
-            highlightDateNameStyle={{ color: 'white' }}
+            style={{ height: 100, paddingTop: 10 }}
+            calendarHeaderStyle={colors.primary}
+            calendarColor={colors.white}
+            dateNumberStyle={{ color: 'black' }}
+            dateNameStyle={{ color: 'black' }}
+            highlightDateNumberStyle={{ color: colors.primary }}
+            highlightDateNameStyle={{ color: colors.primary }}
             disabledDateNameStyle={{ color: 'black' }}
             disabledDateNumberStyle={{ color: 'black' }}
             datesWhitelist={datesWhitelist}
@@ -175,34 +171,33 @@ function MealPlanTab(state) {
             iconContainer={{ flex: 0.1 }}
             markedDates={markedCurDate}
           />
-        </View>
 
         {/* Meal Plan */}
         {isLoading && <View style={{ width: screenWidth, height: screenHeight / 1.5 }}><LoadingAnimation show={isLoading} label={'Finding the best recipes for you...'} /></View>}
         {!isLoading &&
           <ScrollView>
-            {veryPopularRecipes.length > 0 &&
+            {breakfastRecipes.length > 0 &&
               <View>
                 <View style={{ padding: 16 }}>
                   <Text style={{ fontSize: 22, fontWeight: 'bold' }}>Very Popular</Text>
                 </View>
                 <View>
                   <FlatList
-                    data={veryPopularRecipes}
+                    data={breakfastRecipes}
                     horizontal={true}
                     keyExtractor={(recipe) => recipe.id.toString()}
                     renderItem={({ recipe, index }) => {
                       return (
                         <View style={{ paddingBottom: 5 }}>
                           <View style={styles.recipeCard}>
-                            <TouchableOpacity onPress={() => openURLInDefaultBrowser(veryPopularRecipes[index].sourceUrl)}>
+                            <TouchableOpacity onPress={() => openURLInDefaultBrowser(breakfastRecipes[index].sourceUrl)}>
                               <View style={{ padding: 10 }}>
                                 <View style={{ flexDirection: 'column' }}>
-                                  <Image source={{ uri: veryPopularRecipes[index].image }} style={{ width: '100%', marginRight: 14, height: 140, borderRadius: 10, marginRight: 8 }}></Image>
-                                  <Text numberOfLines={2} style={styles.recipeTitle}>{veryPopularRecipes[index].title}</Text>
-                                  <Text numberOfLines={1} style={styles.recipeLikes}>{nFormatter(veryPopularRecipes[index].likes, 1)} likes</Text>
-                                  <Text numberOfLines={1} style={styles.recipeUsedIngredients}>{veryPopularRecipes[index].usedIngredients.length} ingredients</Text>
-                                  <Text numberOfLines={1} style={styles.recipeMissingIngredients}>{veryPopularRecipes[index].missedIngredients.length} missings</Text>
+                                  <Image source={{ uri: breakfastRecipes[index].image }} style={{ width: '100%', marginRight: 14, height: 140, borderRadius: 10, marginRight: 8 }}></Image>
+                                  <Text numberOfLines={2} style={styles.recipeTitle}>{breakfastRecipes[index].title}</Text>
+                                  <Text numberOfLines={1} style={styles.recipeLikes}>{nFormatter(breakfastRecipes[index].likes, 1)} likes</Text>
+                                  <Text numberOfLines={1} style={styles.recipeUsedIngredients}>{breakfastRecipes[index].usedIngredients.length} ingredients</Text>
+                                  <Text numberOfLines={1} style={styles.recipeMissingIngredients}>{breakfastRecipes[index].missedIngredients.length} missings</Text>
                                 </View>
                               </View>
                             </TouchableOpacity>
@@ -216,8 +211,6 @@ function MealPlanTab(state) {
           </ScrollView>
         }
       </Screen>
-
-    </Fragment>
   );
 }
 
