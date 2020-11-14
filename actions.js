@@ -1,3 +1,4 @@
+import { any } from '@tensorflow/tfjs';
 import { 
     ADD_INGREDIENT_TO_FRIDGE, 
     ADD_INGREDIENT_TO_CART, 
@@ -9,6 +10,12 @@ import {
     ADD_INGREDIENT_TO_SCAN,
     DELETE_INGREDIENT_TO_SCAN,
     CLEAR_INGREDIENTS_TO_SCAN,
+    ADD_MEAL_PLAN,
+    DELETE_MEAL_PLAN,
+    CLEAR_MEAL_PLAN,
+    ADD_FAVORITE_RECIPE,
+    DELETE_FAVORITE_RECIPE,
+    CLEAR_FAVORITE_RECIPE,
 } from './types';
 
 export const addIngredientToFridge = (ingredient) => (
@@ -53,7 +60,7 @@ export const updateIngredientInFridge = (ingredient) => (
 
 export const deleteIngredientInFridge = (ingredient) => (
     {
-        type: DELETE_INGREDIENT_IN_FRIDGE,
+        type: ADD_INGREDIENT_TO_FRIDGE,
         payload: ingredient
     }
 )
@@ -75,5 +82,47 @@ export const deleteIngredientToScan = (ingredientToScan) => (
 export const clearIngredientsToScan = () => (
     {
         type: CLEAR_INGREDIENTS_TO_SCAN
+    }
+)
+
+// Meal Plan
+export const addMealPlan = (mealplan) => (
+    {
+        type: ADD_MEAL_PLAN,
+        payload: mealplan
+    }
+)
+
+export const deleteMealPlan = (mealplan) => (
+    {
+        type: DELETE_MEAL_PLAN,
+        payload: mealplan
+    }
+)
+
+export const clearMealPlan = () => (
+    {
+        type: CLEAR_MEAL_PLAN,
+    }
+)
+
+// Favorite Recipe
+export const addFavoriteRecipe = (recipe) => (
+    {
+        type: ADD_FAVORITE_RECIPE,
+        payload: recipe
+    }
+)
+
+export const deleteFavoriteRecipe = (recipe) => (
+    {
+        type: DELETE_FAVORITE_RECIPE,
+        payload: recipe
+    }
+)
+
+export const clearFavoriteRecipe = () => (
+    {
+        type: CLEAR_FAVORITE_RECIPE,
     }
 )
