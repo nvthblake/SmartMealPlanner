@@ -1,105 +1,125 @@
-// import React, { Component } from 'react'
-// import { connect } from 'react-redux';
-// import { bindActionCreators } from 'redux';
-// import { Text, View, Image, StyleSheet, FlatList } from 'react-native'
-// import Icon from 'react-native-vector-icons/MaterialIcons'
-// import { addRecipe } from '../../actions';
-// import { TouchableOpacity } from 'react-native-gesture-handler';
+import React, { Component } from 'react'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Text, View, Image, StyleSheet, FlatList, Platform, Dimensions } from 'react-native'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import { addRecipe } from '../../actions';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-// class RecipeCard extends Component {
-//     constructor(props) {
-//         super(props);
-//     }
+import { nFormatter } from '../utils/NumberFormatting';
 
-//     render() {
-//         const recipe = this.props.recipe;
-//         // console.log("RecipeCard -> render -> recipes", recipe)
-//         const isMan = Math.floor(Math.random() * Math.floor(2));
-//         const randomNumber = Math.floor(Math.random() * Math.floor(99));
-//         const avaUrl = `https://randomuser.me/api/portraits/${isMan ? 'men' : 'women'}/${randomNumber}.jpg`;
+/* Copied from IngredientsTab */
+const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 
-//         return (
-//             <View style={styles.container}>
-//                 <Image source={{ uri: recipe.image }} style={{ height: 200 }} />
-//                 <View style={styles.descContainer}>
-//                     <Image source={{ uri: avaUrl }} style={{ width: 50, height: 50, borderRadius: 25 }} />
-//                     <View style={styles.recipeDetails}>
-//                         <Text numberOfLines={1} style={styles.recipeTitle}>{recipe.title}</Text>
-//                         <Text numberOfLines={1} style={styles.recipeUsedIngredients}>Used: {recipe.usedIngredients.map(usedIngredient => capitalize(usedIngredient.name)).join(", ") + " · " + nFormatter(recipe.likes, 1)} likes</Text>
-//                         <Text numberOfLines={1} style={styles.recipeMissingIngredients}>Missing: {recipe.missedIngredients.map(missedIngredient => capitalize(missedIngredient.name)).join(", ")}</Text>
-//                     </View>
-//                     <TouchableOpacity>
-//                         <Icon name="more-vert" size={20} color="#999999" />
-//                     </TouchableOpacity>
-//                 </View>
-//             </View>
-//         )
-//     }
-// }
+class RecipeCard extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            recipe: this.props.recipe
+        }
+    }
 
-// const capitalize = (s) => {
-//     if (typeof s !== 'string') return ''
-//     return s.charAt(0).toUpperCase() + s.slice(1)
-// }
+    componentDidMount() {
+        this.setState({
+            recipe: this.props.recipe
+        })
+    };
 
-// function nFormatter(num, digits) {
-//     var si = [
-//         { value: 1, symbol: "" },
-//         { value: 1E3, symbol: "k" },
-//         { value: 1E6, symbol: "M" },
-//         { value: 1E9, symbol: "G" },
-//         { value: 1E12, symbol: "T" },
-//         { value: 1E15, symbol: "P" },
-//         { value: 1E18, symbol: "E" }
-//     ];
-//     var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-//     var i;
-//     for (i = si.length - 1; i > 0; i--) {
-//         if (num >= si[i].value) {
-//             break;
-//         }
-//     }
-//     return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
-// }
+    openURLInDefaultBrowser = (url) => {
+        Linking.canOpenURL(url).then(supported => {
+          if (supported) {
+            Linking.openURL(url);
+          } else {
+            alert("Don't know how to open URI: " + url);
+          }
+        });
+      };
 
-// const styles = StyleSheet.create({
-//     container: {
-//         padding: 15
-//     },
-//     descContainer: {
-//         flexDirection: "row",
-//         paddingTop: 15
-//     },
-//     recipeTitle: {
-//         fontSize: 16,
-//         color: "#3c3c3c",
-//         fontWeight: "bold"
-//     },
-//     recipeDetails: {
-//         paddingHorizontal: 15,
-//         flex: 1
-//     },
-//     recipeUsedIngredients: {
-//         fontSize: 15,
-//         paddingTop: 3,
-//         color: "#2e7d32"
-//     },
-//     recipeMissingIngredients: {
-//         fontSize: 15,
-//         paddingTop: 3,
-//         color: "#c2185b"
-//     }
-// });
+    render() {
+        const recipe = this.props.recipe;
+        // console.log("RecipeCard -> render -> recipes", recipe)
+        const isMan = Math.floor(Math.random() * Math.floor(2));
+        const randomNumber = Math.floor(Math.random() * Math.floor(99));
+        const avaUrl = `https://randomuser.me/api/portraits/${isMan ? 'men' : 'women'}/${randomNumber}.jpg`;
 
-// const mapStateToProps = (state) => {
-//     const { ingredients } = state
-//     return { ingredients }
-// };
+        return (
+            <View style={{ paddingBottom: 5 }}>
+                <View style={styles.recipeCard}>
+                    <TouchableOpacity onPress={() => openURLInDefaultBrowser(recipe.sourceUrl)}>
+                        <View style={{ padding: 10 }}>
+                            <View style={{ flexDirection: 'column' }}>
+                                <Image source={{ uri: recipe.image }} style={{ width: '100%', marginRight: 14, height: 140, borderRadius: 10, marginRight: 8 }}></Image>
+                                <Text numberOfLines={2} style={styles.recipeTitle}>{recipe.title}</Text>
+                                <Text numberOfLines={1} style={styles.recipeLikes}>{nFormatter(recipe.likes, 1)} likes</Text>
+                                <Text numberOfLines={1} style={styles.recipeUsedIngredients}>{recipe.usedIngredients.length} ingredients</Text>
+                                <Text numberOfLines={1} style={styles.recipeMissingIngredients}>{recipe.missedIngredients.length} missings</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )
+    }
+}
 
-// const mapDispatchToProps = dispatch => (
-//     bindActionCreators({
-//         addRecipe,
-//     }, dispatch)
-// )
+const styles = StyleSheet.create({
+    container: {
+        padding: 15
+    },
+    descContainer: {
+        flexDirection: "row",
+        paddingTop: 15
+    },
+    recipeTitle: {
+        fontSize: 16,
+        marginTop: 6,
+        color: "#3c3c3c",
+        fontWeight: "bold"
+    },
+    recipeLikes: {
+        fontSize: 15,
+        marginTop: 3,
+        color: "#B3B3B5"
+    },
+    recipeUsedIngredients: {
+        fontSize: 15,
+        marginTop: 12,
+        color: "#5BCBC5"
+    },
+    recipeMissingIngredients: {
+        fontSize: 15,
+        marginTop: 3,
+        color: "#D76774"
+    },
+    recipeCard: {
+        marginLeft: 16,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        width: screenWidth / 2,
+        ...Platform.select({
+            ios: {
+                shadowColor: '#000',
+                shadowOffset: { width: 2, height: 2 },
+                shadowOpacity: 0.2,
+                shadowRadius: 2,
+            },
+            android: {
+                elevation: 3,
+            },
+        })
+    }
+});
 
-// export default connect(mapStateToProps, mapDispatchToProps)(RecipeCard);
+const mapStateToProps = (state) => {
+    const { ingredients } = state
+    return { ingredients }
+};
+
+const mapDispatchToProps = dispatch => (
+    bindActionCreators({
+        addRecipe,
+    }, dispatch)
+)
+
+export default connect(mapStateToProps, mapDispatchToProps)(RecipeCard);
