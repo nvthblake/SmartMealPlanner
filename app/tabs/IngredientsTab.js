@@ -15,6 +15,7 @@ import {
   ScrollView,
 } from "react-native";
 import AppButton from "../components/AppButton";
+import CustomButton from "../components/CustomButton";
 import AppText from "../components/AppText";
 
 import Screen from "../components/Screen";
@@ -366,19 +367,21 @@ function IngredientsTab(state) {
                           keyboardType="numeric"
                         />
                       </ScrollView>
-                      <SubmitButton title="SAVE" />
-                      <AppButton
-                        title="DELETE"
-                        onPress={() => handleDelete(selectedIngre)}
-                        borderColor={colors.maroon}
-                        textColor={colors.maroon}
-                      />
-                      <AppButton
-                        title="CANCEL"
-                        onPress={() => toggleModal(null)}
-                        borderColor={colors.medium}
-                        textColor={colors.medium}
-                      />
+                      <View style={styles.buttonContainer}>
+                        <SubmitButton title="SAVE" />
+                        <CustomButton
+                          title="DELETE"
+                          onPress={() => handleDelete(selectedIngre)}
+                          borderColor={colors.maroon}
+                          textColor={colors.maroon}
+                        />
+                        <CustomButton
+                          title="CANCEL"
+                          onPress={() => toggleModal(null)}
+                          borderColor={colors.medium}
+                          textColor={colors.medium}
+                        />
+                      </View>
                     </AppForm>
                 </View>
               </View>
@@ -393,9 +396,16 @@ function IngredientsTab(state) {
 }
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    alignItems: "center",
+    // flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    // backgroundColor: "red",
+  },
   centeredView: {
-    flex: 0.85,
-    // alignSelf: "baseline",
+    flex: 0.65,
+    alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -404,6 +414,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20,
     padding: 10,
+    justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -418,29 +429,18 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
   },
-  modalButton: {
-    alignSelf: "center",
-    backgroundColor: colors.primary,
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    width: 150,
-    marginTop: 10,
-  },
   modalImg: {
     borderRadius: 15,
   },
   screen: {
-    paddingVertical: 20,
+    paddingTop: 20,
     backgroundColor: colors.light,
   },
   gridView: {
     flex: 1,
     justifyContent: "space-evenly",
   },
-  AppButton: {
-    borderRadius: 10,
-  },
+
 });
 
 function useForceUpdate() {

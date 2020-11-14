@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     overflow: "hidden",
     alignItems: "center",
+    justifyContent: "center",
     elevation: 10,
   },
   detailsContainer: {
@@ -52,22 +53,18 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "95%",
-    height: "58%",
+    height: "65%",
     borderRadius: 12,
     borderColor: colors.white,
     overflow: "hidden",
   },
   title: {
-    // fontSize: 4,
-    // marginVertical: 5,
-    // flex: 1,
     alignItems: "center",
     justifyContent: "center",
     color: colors.black,
     fontWeight: "bold",
   },
   subTitle: {
-    // flex: 1,
     alignItems: "center",
     justifyContent: "center",
     // backgroundColor: colors.primary,
