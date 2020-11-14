@@ -219,17 +219,7 @@ function IngredientsTab(state) {
   React.useEffect(updateFilter, []);
 
   return (
-    <Screen style={styles.screen}>
-      <AppText
-        style={{
-          fontSize: 30,
-          color: colors.primary,
-          fontWeight: "bold",
-          marginLeft: screenWidth * 0.05,
-        }}
-      >
-        {"My Ingredients"}
-      </AppText>
+    <Screen style={styles.screen} headerTitle="Ingredients">
       <View
         style={{
           marginLeft: screenWidth * 0.05,
