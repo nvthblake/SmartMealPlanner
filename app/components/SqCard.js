@@ -4,27 +4,32 @@ import { View, StyleSheet, Image, TouchableWithoutFeedback } from "react-native"
 import colors from "../config/colors";
 import AppText from "./AppText";
 
-function SqCard({ title, subTitle, image, expStatus, screenWidth, onPress, onLongPress }) {
+function SqCard({ title, subTitle1, subTitle2, image, expStatus, screenWidth, onPress, onLongPress }) {
   return (
     <TouchableWithoutFeedback onPress={onPress} onLongPress={onLongPress}>
       <View
         style={[
           styles.card,
           {
-            height: (0.8 * screenWidth) / 3,
-            width: (0.8 * screenWidth) / 3,
+            height: (0.85 * screenWidth) / 3,
+            width: (0.85 * screenWidth) / 3,
             marginBottom: 0.05 * screenWidth,
             // borderColor: expStatus,
           },
         ]}
       >
-        <Image style={styles.image} source={{uri: image}} />
+        <Image 
+          style={[styles.image, { marginTop: ((0.85 * screenWidth) / 3)*0.025 }]} 
+          source={{uri: image}} />
         <View style={styles.detailsContainer}>
-          <AppText style={[styles.title, {fontSize: 0.06 * screenWidth }]}>
+          <AppText style={[styles.title, { fontSize: 0.03 * screenWidth }]}>
             {title}
           </AppText>
-          <AppText style={[styles.subTitle, { fontSize: 0.03 * screenWidth }]}>
-            {subTitle}
+          <AppText style={[styles.subTitle, { fontSize: 0.025 * screenWidth }]}>
+            {subTitle1}
+          </AppText>
+          <AppText style={[styles.subTitle, { fontSize: 0.025 * screenWidth, color: expStatus }]}>
+            {subTitle2}
           </AppText>
         </View>
       </View>
@@ -42,18 +47,19 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   detailsContainer: {
-    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center"
   },
   image: {
-    width: "100%",
-    height: "50%",
-    // margin: 5,
-    flex: 1,
+    width: "95%",
+    height: "58%",
+    borderRadius: 12,
+    borderColor: colors.white,
     overflow: "hidden",
   },
   title: {
-    // fontSize: 10,
-    marginVertical: 5,
+    // fontSize: 4,
+    // marginVertical: 5,
     // flex: 1,
     alignItems: "center",
     justifyContent: "center",
@@ -61,12 +67,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   subTitle: {
-    flex: 1,
+    // flex: 1,
     alignItems: "center",
     justifyContent: "center",
     // backgroundColor: colors.primary,
-    color: colors.black,
-    // fontWeight: "bold",
+    color: colors.dark,
   },
 });
 export default SqCard;
