@@ -10,7 +10,7 @@ import {
   Text,
   Platform,
   Linking,
-  Button
+  Alert
 } from "react-native";
 import { render } from "react-dom";
 
@@ -175,7 +175,14 @@ function RecipeTab(state) {
       addIngredientToCart(missedIngredient);
     });
 
-    
+    Alert.alert(
+      `Success`,
+      `Added ${missedIngredients.length} items to your shopping list 🤩`,
+      [
+        { text: "OK", onPress: () => console.log("OK Pressed") }
+      ],
+      { cancelable: false }
+    );
   }
 
   useEffect(() => {
