@@ -64,7 +64,7 @@ function MealPlanTab(state) {
   ];
 
   // State vars
-  const [isLoading, a ] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [categories, setCategory] = useState(INITIAL_CATEGORIES_STATE);
   const numMealPlans = 14;
 
