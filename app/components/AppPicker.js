@@ -90,8 +90,8 @@ const styles = StyleSheet.create({
     borderColor: colors.lightGrey,
     borderWidth: 2,
     flexDirection: "row",
-    padding: 15,
-    marginVertical: 15,
+    padding: 8,
+    marginVertical: 5,
   },
   icon: {
     marginRight: 10,

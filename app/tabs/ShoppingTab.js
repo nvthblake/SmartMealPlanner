@@ -8,8 +8,9 @@ import {
   TextInput,
   Alert,
   Dimensions,
+  FlatList,
+  TouchableOpacity
 } from "react-native";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import Screen from "../components/Screen";
 import AppText from "../components/AppText";
 import colors from "../config/colors";

@@ -236,16 +236,20 @@ function RecipeTab(state) {
 
   return (
     <Screen style={styles.screen}>
-      <AppText
-        style={{
-          fontSize: 30,
-          color: colors.primary,
-          fontWeight: "bold",
-          marginLeft: screenWidth * 0.05,
-        }}
-      >
-        {"Recipes"}
-      </AppText>
+      {/* <View>
+        <Container>
+          <Tabs>
+            <Tab heading='Recipes'>
+              <View style={styles.topNavContainer}>
+                <Text style={styles.topNavTitle}>Recipes</Text>
+              </View>
+            </Tab>
+            <Tab heading='Meal Planner'>
+              <MealPlanTab/>
+            </Tab>
+          </Tabs>
+        </Container>
+      </View> */}
       <View
         style={{
           marginLeft: screenWidth * 0.05,
