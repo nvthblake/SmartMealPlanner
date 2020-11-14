@@ -88,7 +88,6 @@ function MealPlanTab(state) {
       const neededNumMealPlan = numMealPlans - mealPlanner.length();
 
     }
-
     return mealPlans;
   }
 
@@ -158,11 +157,10 @@ function MealPlanTab(state) {
             markedDates={markedCurDate}
           />
 
-
         {isLoading && <View style={{ width: screenWidth, height: screenHeight / 1.5 }}><LoadingAnimation show={isLoading} label={'Finding the best recipes for you...'} /></View>}
         {!isLoading &&
           <ScrollView>
-            
+
             {/* Meal Plan */}
             {breakfastRecipes.length > 0 &&
               <View>
@@ -183,7 +181,6 @@ function MealPlanTab(state) {
                 </View>
               </View>}
 
-
               {/* Favourite */}
               {breakfastRecipes.length > 0 &&
                 <View>
@@ -198,8 +195,6 @@ function MealPlanTab(state) {
               }
           </ScrollView>
         } 
-
-        
       </Screen>
   );
 }
