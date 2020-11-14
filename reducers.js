@@ -18,7 +18,7 @@ const INITIAL_STATE = {
   fridge: [
     {
       id: 1,
-      name: "Apple",
+      ingredient: "Apple",
       category: "Fruit",
       qty: 100,
       expDate: today,
