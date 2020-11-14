@@ -18,7 +18,7 @@ function FormImageStatic({ name }) {
         style={{
             width: "100%",
             height: 0.5 * screenWidth,
-            borderRadius: 25,
+            borderRadius: 20,
         }}
         source={{ uri: imageUris }}
       />

@@ -12,7 +12,6 @@ import {
   Text,
   Modal,
   Alert,
-  TouchableHighlight,
   ScrollView,
 } from "react-native";
 import AppButton from "../components/AppButton";
@@ -29,13 +28,11 @@ import {
   updateIngredientInFridge,
   deleteIngredientInFridge,
 } from "../../actions";
-import AppTextInput from "../components/AppTextInput";
 import {
   AppForm,
   AppFormField,
   AppFormPicker,
   SubmitButton,
-  AppTextFormField,
 } from "../components/forms";
 
 // Database imports
@@ -309,8 +306,8 @@ function IngredientsTab(state) {
                   <ScrollView>
                     <Image
                       style={{
-                        width: screenWidth - 150,
-                        height: screenWidth - 200,
+                        width: screenWidth*0.85,
+                        height: screenWidth*0.85*0.66,
                         borderRadius: 15,
                       }}
                       source={{ uri: selectedIngre.imageUri }}

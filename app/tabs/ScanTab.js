@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import {
   StyleSheet,
-  Button,
-  Image,
   View,
   FlatList,
   Dimensions,
   ScrollView,
+  Modal,
 } from "react-native";
 import * as Yup from "yup";
 import { openDatabase } from "expo-sqlite";
@@ -21,16 +20,14 @@ import {
   SubmitButton,
 } from "../components/forms";
 import Screen from "../components/Screen";
-import CategoryPickerItem from "../components/CategoryPickerItem";
-import FormImagePicker from "../components/forms/FormImagePicker";
 import FormImageStatic from "../components/forms/FormImageStatic";
 import pickerOptions from "../config/pickerOptions";
-import AppText from "../components/AppText";
 
 import { addIngredientToFridge, deleteIngredientToScan } from "../../actions";
 import { getFridgeSql } from "../components/database/queries";
 import AppButton from "../components/AppButton";
 import colors from "../config/colors";
+import CameraPage from "./pages/CameraPage";
 
 const db = openDatabase("db2.db");
 
@@ -47,9 +44,9 @@ const validationSchema = Yup.object().shape({
 });
 
 function ScanTab(state) {
-  const { ingredients, addIngredientToFridge } = state;
-  const ingredientsInFridge = ingredients.fridge;
+  const { ingredients, addIngredientToFridge, deleteIngredientToScan } = state;
   const ingredientToScan = ingredients.ingredientToScan;
+
 
   const [forceUpdate, forceUpdateId] = useForceUpdate();
   const [success, setSuccess] = useState(true);
@@ -110,12 +107,10 @@ function ScanTab(state) {
       forceUpdate
     );
     if (success) {
-      console.log("ScanTab deleted uri -> ", values.imageUri);
       deleteIngredientToScan(values.imageUri);
-      console.log("Ingredient to scan -> ", ingredientToScan);
+      resetForm();
       setSuccess(false);
     }
-    // console.log(getFridgeSql(db));
   };
 
   const navigation = useNavigation();
@@ -133,7 +128,7 @@ function ScanTab(state) {
           renderItem={({ item, index }) => {
             return (
               <View style={styles.cardContainer}>
-                <ScrollView style={{ flex: 1 }}>
+                <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
                   <AppForm
                     initialValues={{
                       ingredient: "",
@@ -164,16 +159,16 @@ function ScanTab(state) {
                         name="qty"
                         placeholder="Quantity"
                         keyboardType="numeric"
-                        width={150}
-                        marginRight={20}
+                        width={screenWidth*0.36}
+                        marginRight={10}
                       />
                       <AppFormPicker
                         icon="beaker"
                         items={pickerOptions.units}
                         name="unit"
                         placeholder="Unit"
-                        width={150}
-                        marginLeft={20}
+                        width={screenWidth*0.36}
+                        marginLeft={10}
                       />
                     </View>
                     <AppFormPicker
@@ -196,11 +191,7 @@ function ScanTab(state) {
           }}
         ></FlatList>
       </View>
-      <View></View>
-      <AppButton
-        title={"SCAN FOOD"}
-        onPress={() => navigation.navigate("Camera")}
-      />
+      <CameraPage/>
     </Screen>
   );
 }
@@ -213,16 +204,25 @@ function useForceUpdate() {
 const styles = StyleSheet.create({
   cardContainer: {
     borderRadius: 25,
-    borderWidth: 4,
-    borderColor: colors.primary,
+    padding: 10,
+    // borderWidth: 4,
+    // borderColor: colors.primary,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 50,
+    marginBottom: 10,
     marginHorizontal: 10,
     width: screenWidth * 0.85,
     height: screenHeight * 0.75,
     backgroundColor: "white",
     overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   container: {
     padding: 10,
@@ -247,6 +247,7 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       addIngredientToFridge,
+      deleteIngredientToScan,
     },
     dispatch
   );

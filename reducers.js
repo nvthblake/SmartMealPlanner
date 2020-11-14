@@ -27,7 +27,7 @@ const INITIAL_STATE = {
   fridge: [
     {
       id: 1,
-      name: "Apple",
+      ingredient: "Apple",
       category: "Fruit",
       qty: 100,
       expDate: today,
@@ -123,7 +123,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
 
     case DELETE_INGREDIENT_TO_SCAN:
       // Delete ingredient chosen
-      const ingreScanIndexDelete = ingredientToScan.findIndex((ingre => ingre.imageUri === action.payload.imageUri));
+      const ingreScanIndexDelete = ingredientToScan.findIndex((ingre => ingre.imageUri === action.payload));
       ingredientToScan.splice(ingreScanIndexDelete, 1);
 
       // Update the redux state

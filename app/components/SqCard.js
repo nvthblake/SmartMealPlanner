@@ -1,11 +1,13 @@
 import React from "react";
-import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Image, TouchableWithoutFeedback } from "react-native";
+import {  } from "react-native-gesture-handler";
+// import {  } from "react-native-gesture-handler";
 import colors from "../config/colors";
 import AppText from "./AppText";
 
 function SqCard({ title, subTitle, image, expStatus, screenWidth, onPress, onLongPress }) {
   return (
-    <TouchableOpacity onPress={onPress} onLongPress={onLongPress}>
+    <TouchableWithoutFeedback onPress={onPress} onLongPress={onLongPress}>
       <View
         style={[
           styles.card,
@@ -24,7 +26,7 @@ function SqCard({ title, subTitle, image, expStatus, screenWidth, onPress, onLon
           </AppText>
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 }
 
