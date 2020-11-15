@@ -1,13 +1,20 @@
 import React from "react";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 
 import Constants from "expo-constants";
 import colors from "../config/colors";
 
-function Screen({ children, style }) {
+function Screen({ children, style, headerTitle }) {
   return (
     <SafeAreaView style={[styles.screen, style]}>
-      <View style={[styles.view, style]}>{children}</View>
+      <View style={[styles.view, style]}>
+        {headerTitle && 
+          <Text style={styles.title}>
+            {headerTitle}
+          </Text>}
+        {children}
+      </View>
+      
     </SafeAreaView>
   );
 }
@@ -19,6 +26,14 @@ const styles = StyleSheet.create({
     flex: 1,
     // marginBottom: 20,
   },
+  title: {
+    // fontStyle: 'Avenir',
+    textAlign: 'center', // <-- the magic
+    fontWeight: 'bold',
+    fontSize: 28,
+    color: colors.font_dark,
+    marginBottom: 10
+  }
 });
 
 export default Screen;

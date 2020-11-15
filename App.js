@@ -53,6 +53,20 @@ export default function App() {
         imageUri VARCHAR);`
       );
     });
+    // db.transaction(tx => {
+    //   tx.executeSql(
+    //     `DROP TABLE IF EXISTS ShoppingList;`
+    //   );
+    //   });
+    db.transaction((tx) => {
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS ShoppingList \
+        (id INTEGER PRIMARY KEY NOT NULL, \
+        createdTs DATETIME DEFAULT CURRENT_TIMESTAMP, \
+        ingredient VARCHAR NOT NULL, \
+        checked INT(1) NOT NULL);`
+      );
+    });
   }, []);
 
   return (
