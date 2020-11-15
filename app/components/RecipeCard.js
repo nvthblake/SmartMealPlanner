@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { addRecipe } from '../../actions';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import colors from "../config/colors";
 import { nFormatter } from '../utils/NumberFormatting';
 
 /* Copied from IngredientsTab */
@@ -44,15 +45,14 @@ class RecipeCard extends Component {
         const avaUrl = `https://randomuser.me/api/portraits/${isMan ? 'men' : 'women'}/${randomNumber}.jpg`;
 
         return (
-            <View style={{ paddingBottom: 5 }}>
+            <View style={{ margin: 5 }}>
                 <View style={styles.recipeCard}>
                     <TouchableOpacity onPress={() => openURLInDefaultBrowser(recipe.sourceUrl)}>
-                        <View style={{ padding: 10 }}>
+                        <View style={{ padding: 8 }}>
                             <View style={{ flexDirection: 'column' }}>
                                 <Image source={{ uri: recipe.image }} style={{ width: '100%', marginRight: 14, height: 140, borderRadius: 10, marginRight: 8 }}></Image>
                                 <Text numberOfLines={2} style={styles.recipeTitle}>{recipe.title}</Text>
                                 <Text numberOfLines={1} style={styles.recipeLikes}>{nFormatter(recipe.likes, 1)} likes</Text>
-                                <Text numberOfLines={1} style={styles.recipeUsedIngredients}>{recipe.usedIngredients.length} ingredients</Text>
                                 <Text numberOfLines={1} style={styles.recipeMissingIngredients}>{recipe.missedIngredients.length} missings</Text>
                             </View>
                         </View>
@@ -72,37 +72,33 @@ const styles = StyleSheet.create({
         paddingTop: 15
     },
     recipeTitle: {
-        fontSize: 16,
+        fontSize: 15,
         marginTop: 6,
         color: "#3c3c3c",
         fontWeight: "bold"
     },
     recipeLikes: {
-        fontSize: 15,
+        fontSize: 12,
         marginTop: 3,
         color: "#B3B3B5"
     },
-    recipeUsedIngredients: {
-        fontSize: 15,
-        marginTop: 12,
-        color: "#5BCBC5"
-    },
     recipeMissingIngredients: {
-        fontSize: 15,
-        marginTop: 3,
-        color: "#D76774"
+        fontSize: 12,
+        marginTop: 12,
+        fontWeight: "bold",
+        color: "#FF5757"
     },
     recipeCard: {
         marginLeft: 16,
         backgroundColor: 'white',
         borderRadius: 20,
-        width: screenWidth / 2,
+        width: screenWidth / 2.4,
         ...Platform.select({
             ios: {
-                shadowColor: '#000',
+                shadowColor: colors.primary ,
                 shadowOffset: { width: 2, height: 2 },
-                shadowOpacity: 0.2,
-                shadowRadius: 2,
+                shadowOpacity: 0.4,
+                shadowRadius: 5,
             },
             android: {
                 elevation: 3,
