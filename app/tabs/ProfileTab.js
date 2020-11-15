@@ -22,16 +22,21 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 function Profile(state) {
   // Camera logic
   const [selectedImage, setSelectedImage] = useState("");
-  const cameraRef = useRef();
   const takePicture = async () => {
-    if (cameraRef.current) {
-      const options = { quality: 0.5, base64: true, skipProcessing: true };
-      const data = await cameraRef.current.takePictureAsync(options);
-      console.log(data.uri);
+    let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert("Permission to access camera roll is required!");
+      return;
     }
-    else {
-      console.log("Hello", cameraRef.current)
+
+    let pickerResult = await ImagePicker.launchCameraAsync();
+
+    if (pickerResult.cancelled === true) {
+      return;
     }
+
+    setSelectedImage({ localUri: pickerResult.uri });
   }
 
   let openImagePickerAsync = async () => {
@@ -141,7 +146,7 @@ function Profile(state) {
               <TouchableHighlight
                 style={styles.takePhotoButton}
                 onPress={() => {
-                  setModalVisible1(!modalVisible1);
+                  takePicture();
                   setModalVisible(!modalVisible);
                 }}
               >
@@ -167,7 +172,7 @@ function Profile(state) {
             </View>
           </View>
         </Modal>
-        <Modal
+        {/* <Modal
           animationType="slide"
           transparent={false}
           visible={modalVisible1}
@@ -223,7 +228,7 @@ function Profile(state) {
               ></TouchableOpacity>
             </View>
           </View>
-        </Modal>
+        </Modal> */}
       </View>
     </View>
   );
