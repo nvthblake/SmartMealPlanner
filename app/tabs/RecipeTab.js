@@ -9,7 +9,8 @@ import {
   Dimensions,
   Text,
   Platform,
-  Linking
+  Linking,
+  Alert
 } from "react-native";
 import { render } from "react-dom";
 
@@ -18,6 +19,7 @@ import AppButton from "../components/AppButton";
 import AppText from "../components/AppText";
 import Screen from "../components/Screen";
 import LoadingAnimation from '../components/LoadingAnimation';
+import CircularOverview from '../components/CircularOverview';
 
 /* Models */
 import Recipe from "../models/Recipe";
@@ -26,13 +28,14 @@ import SpoonacularIngredient from "../models/SpoonacularIngredient";
 /* Redux */
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { addRecipe, clearRecipe } from "../../actions";
+import { addRecipe, clearRecipe, addIngredientToCart } from "../../actions";
 
 /* APIs */
 import { getRecipes, getRecipeInfoInBulk } from '../api/Spoonacular';
 
 /* 3rd party */
 import Icon from "react-native-vector-icons/MaterialIcons";
+import Modal from 'react-native-modal';
 
 /* Miscellaneous */
 import colors from "../config/colors";
@@ -52,13 +55,15 @@ const INITIAL_CATEGORIES_STATE = [
 ];
 
 function RecipeTab(state) {
-  const { ingredients, addRecipe, clearRecipe } = state;
+  const { ingredients, addRecipe, clearRecipe, addIngredientToCart } = state;
 
   const ingredientsInFridge = ingredients.fridge;
   const recipes = ingredients.recipes;
 
   const [categories, setCategory] = useState(INITIAL_CATEGORIES_STATE);
   const [isLoading, setIsLoading] = useState(true);
+  const [isResultEmpty, setIsResultEmpty] = useState(false);
+  const [chosenRecipe, setChosenRecipe] = useState(null);
 
   resetCategories = () => {
     setCategory(INITIAL_CATEGORIES_STATE);
@@ -147,9 +152,54 @@ function RecipeTab(state) {
     });
   };
 
+  const getAllNeededIngredientsForRecipe = (recipe) => {
+    const result = [];
+    recipe.usedIngredients.forEach((usedIngredient) => {
+      result.push({
+        isMissing: false,
+        ingredient: usedIngredient
+      })
+    });
+    recipe.missedIngredients.forEach((missedIngredient) => {
+      result.push({
+        isMissing: true,
+        ingredient: missedIngredient
+      })
+    });
+    return result;
+  }
+
+  const addMissedIngredientsToCard = (missedIngredients) => {
+    console.log("addMissedIngredientsToCard -> missedIngredients", missedIngredients)
+    missedIngredients.forEach((missedIngredient) => {
+      addIngredientToCart(missedIngredient);
+    });
+
+    Alert.alert(
+      `Success`,
+      `Added ${missedIngredients.length} items to your shopping list 🤩`,
+      [
+        { text: "OK", onPress: () => console.log("OK Pressed") }
+      ],
+      { cancelable: false }
+    );
+  }
+
   useEffect(() => {
     getRecipes(ingredientsInFridge, 10).then((step1_recipes) => {
+      if (step1_recipes.length === 0) {
+        setIsResultEmpty(true);
+        setIsLoading(false);
+        return;
+      }
+
       getRecipeInfoInBulk(step1_recipes).then((final_recipes) => {
+        if (final_recipes.length === 0) {
+          setIsResultEmpty(true);
+          setIsLoading(false);
+          return;
+        }
+
         final_recipes.sort((a, b) => {
           return b.likes - a.likes;
         });
@@ -168,7 +218,13 @@ function RecipeTab(state) {
         addCategories(allDishTypes);
         console.log("RecipeTab -> recipes", recipes.length)
         setIsLoading(false);
+      }).catch((err) => {
+        setIsResultEmpty(true);
+        setIsLoading(false);
       });
+    }).catch((err) => {
+      setIsResultEmpty(true);
+      setIsLoading(false);
     });
   }, [ingredientsInFridge]);
 
@@ -215,6 +271,41 @@ function RecipeTab(state) {
           )}
         ></FlatList>
       </View>
+
+      <Modal isVisible={!!chosenRecipe} coverScreen={true} onBackdropPress={() => setChosenRecipe(null)} backdropColor={"#F2F5F8"} backdropOpacity={0.9}>
+        <View style={styles.modalCard}>
+          {!!chosenRecipe && <View style={{ flex: 1, justifyContent: 'space-between' }}>
+            <View>
+              <Image resizeMode={"cover"} source={{ uri: chosenRecipe.image }} style={{ width: '100%', marginRight: 14, height: 160, borderRadius: 10, marginRight: 8 }}></Image>
+              <Text style={{ color: '#4F555E', fontSize: 20, paddingHorizontal: 8, fontWeight: '600', paddingVertical: 12, textAlign: 'center' }}>{chosenRecipe.title}</Text>
+              <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8 }}>
+                <CircularOverview stat={chosenRecipe.servings.toString()} title={"Servings"} size={Math.floor(screenWidth / 5.5)} />
+                <CircularOverview stat={chosenRecipe.readyInMinutes.toString() + " mins"} title={"Time"} size={Math.floor(screenWidth / 5.5)} />
+                <CircularOverview stat={(Math.floor(chosenRecipe.spoonacularScore * 0.05)).toString() + "/5"} title={"Ratings"} size={Math.floor(screenWidth / 5.5)} />
+              </View>
+              <View style={{ height: 1, marginHorizontal: 8, backgroundColor: 'lightgrey', marginVertical: 12 }}></View>
+              <Text style={{ marginHorizontal: 8, fontWeight: '500', fontSize: 15 }}>Ingredients</Text>
+              <FlatList
+                data={getAllNeededIngredientsForRecipe(chosenRecipe)}
+                keyExtractor={(ingredient) => ingredient.ingredient.id.toString() + "-chosen"}
+                renderItem={({ ingredient, index }) => {
+                  return (
+                    <View>
+                      <Text style={{ marginHorizontal: 8, color: getAllNeededIngredientsForRecipe(chosenRecipe)[index].isMissing ? '#D76774' : '#4F555E', fontSize: 16, marginVertical: 4 }}>{capitalize(getAllNeededIngredientsForRecipe(chosenRecipe)[index].ingredient.name)}</Text>
+                    </View>
+                  )
+                }}>
+              </FlatList>
+            </View>
+            <View style={{ display: 'flex', flexDirection: 'row', backgroundColor: 'white', justifyContent: 'space-between' }}>
+              <TouchableOpacity style={{ borderColor: '#3E73FB', width: Math.floor(screenWidth / 4), borderRadius: 8, paddingVertical: 8, borderWidth: 1 }} onPress={() => setChosenRecipe(null)}><Text style={{ color: '#3E73FB', fontSize: 16, textAlign: 'center' }}>Cancel</Text></TouchableOpacity>
+              <TouchableOpacity style={{ backgroundColor: '#3E73FB', width: Math.floor(screenWidth / 4), borderRadius: 8, paddingVertical: 8 }} onPress={() => openURLInDefaultBrowser(chosenRecipe.sourceUrl)}><Text style={{ color: 'white', fontSize: 16, textAlign: 'center' }}>See Details</Text></TouchableOpacity>
+              <TouchableOpacity style={{ backgroundColor: '#FFBE6A', width: Math.floor(screenWidth / 4), borderRadius: 8, paddingVertical: 8 }} onPress={() => addMissedIngredientsToCard(chosenRecipe.missedIngredients)}><Text style={{ color: 'white', fontSize: 16, textAlign: 'center' }}>Add to 🛒</Text></TouchableOpacity>
+            </View>
+          </View>}
+        </View>
+      </Modal>
+      {(!isLoading && isResultEmpty) && <View style={{ width: screenWidth, height: screenHeight / 1.5 }}><View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text style={{ fontSize: 17, textAlign: 'center' }}>{"I can't find any recipes 😢\nTry adding more ingredients"}</Text></View></View>}
       {isLoading && <View style={{ width: screenWidth, height: screenHeight / 1.5 }}><LoadingAnimation show={isLoading} label={'Finding the best recipes for you...'} /></View>}
       {!isLoading &&
         <ScrollView>
@@ -232,7 +323,10 @@ function RecipeTab(state) {
                     return (
                       <View style={{ paddingBottom: 5 }}>
                         <View style={styles.recipeCard}>
-                          <TouchableOpacity onPress={() => openURLInDefaultBrowser(veryPopularRecipes[index].sourceUrl)}>
+                          <TouchableOpacity onPress={() => {
+                            console.log(veryPopularRecipes[index])
+                            setChosenRecipe(veryPopularRecipes[index])
+                          }}>
                             <View style={{ padding: 10 }}>
                               <View style={{ flexDirection: 'column' }}>
                                 <Image source={{ uri: veryPopularRecipes[index].image }} style={{ width: '100%', marginRight: 14, height: 140, borderRadius: 10, marginRight: 8 }}></Image>
@@ -264,7 +358,7 @@ function RecipeTab(state) {
                     return (
                       <View style={{ paddingBottom: 5 }}>
                         <View style={styles.recipeCard}>
-                          <TouchableOpacity onPress={() => openURLInDefaultBrowser(veryHealthyRecipes[index].sourceUrl)}>
+                          <TouchableOpacity onPress={() => setChosenRecipe(veryHealthyRecipes[index])}>
                             <View style={{ padding: 10 }}>
                               <View style={{ flexDirection: 'column' }}>
                                 <Image source={{ uri: veryHealthyRecipes[index].image }} style={{ width: '100%', marginRight: 14, height: 140, borderRadius: 10, marginRight: 8 }}></Image>
@@ -297,7 +391,7 @@ function RecipeTab(state) {
                     return (
                       <View style={{ paddingBottom: 5 }}>
                         <View style={styles.recipeCard}>
-                          <TouchableOpacity onPress={() => openURLInDefaultBrowser(vegetarianRecipes[index].sourceUrl)}>
+                          <TouchableOpacity onPress={() => setChosenRecipe(vegetarianRecipes[index])}>
                             <View style={{ padding: 10 }}>
                               <View style={{ flexDirection: 'column' }}>
                                 <Image source={{ uri: vegetarianRecipes[index].image }} style={{ width: '100%', marginRight: 14, height: 140, borderRadius: 10, marginRight: 8 }}></Image>
@@ -330,7 +424,7 @@ function RecipeTab(state) {
                     return (
                       <View style={{ paddingBottom: 5 }}>
                         <View style={styles.recipeCard}>
-                          <TouchableOpacity onPress={() => openURLInDefaultBrowser(otherRecipes[index].sourceUrl)}>
+                          <TouchableOpacity onPress={() => setChosenRecipe(otherRecipes[index])}>
                             <View style={{ padding: 10 }}>
                               <View style={{ flexDirection: 'column' }}>
                                 <Image source={{ uri: otherRecipes[index].image }} style={{ width: '100%', marginRight: 14, height: 140, borderRadius: 10, marginRight: 8 }}></Image>
@@ -419,6 +513,24 @@ const styles = StyleSheet.create({
         elevation: 3,
       },
     })
+  },
+  modalCard: {
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    marginTop: screenHeight / 7,
+    padding: 12
   }
 });
 
@@ -432,6 +544,7 @@ const mapDispatchToProps = (dispatch) =>
     {
       addRecipe,
       clearRecipe,
+      addIngredientToCart
     },
     dispatch
   );

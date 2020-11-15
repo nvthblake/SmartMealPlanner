@@ -45,8 +45,8 @@ const styles = StyleSheet.create({
     borderColor: colors.lightGrey,
     borderRadius: 25,
     flexDirection: "row",
-    padding: 10,
-    marginVertical: 15,
+    padding: 8,
+    marginVertical: 5,
   },
   icon: {
     marginRight: 10,

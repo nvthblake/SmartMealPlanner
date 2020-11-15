@@ -11,6 +11,8 @@ import {
   ADD_INGREDIENT_TO_SCAN,
   DELETE_INGREDIENT_TO_SCAN,
   CLEAR_INGREDIENTS_TO_SCAN,
+  CLEAR_CART,
+  DELETE_INGREDIENT_IN_CART,
   // Meal Plan
   ADD_MEAL_PLAN,
   DELETE_MEAL_PLAN,
@@ -138,6 +140,21 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
     case ADD_MEAL_PLAN:
       mealPlanner.push(action.payload);
       newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      return newState;
+
+    case CLEAR_CART:
+      cart = [];
+      newState = { fridge, cart, recipes, ingredientToScan };
+      return newState;
+
+    case DELETE_INGREDIENT_IN_CART:
+      // Delete ingredient chosen
+      const spliceIndex = cart.findIndex((ingre => ingre.id === action.payload.id));
+      cart.splice(spliceIndex, 1);
+
+      // Update the redux state
+      newState = { fridge, cart, recipes, ingredientToScan };
+
       return newState;
 
     case DELETE_MEAL_PLAN:
