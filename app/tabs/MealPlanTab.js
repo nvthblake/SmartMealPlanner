@@ -185,7 +185,7 @@ function MealPlanTab(state) {
               {breakfastRecipes.length > 0 &&
                 <View>
                   {/* Header */}
-                  <View style={{ padding: 16 }}>
+                  <View style={{ marginLeft: 20 }}>
                     <Text style={{ fontSize: 22, fontWeight: 'bold' }}>Favourite</Text>
                   </View>
 
@@ -202,7 +202,7 @@ function MealPlanTab(state) {
 const styles = StyleSheet.create({
   screen: {
     paddingTop: 0,
-    backgroundColor: colors.backgroundColor,
+    backgroundColor: colors.background,
     flex: 1,
   },
   container: {
