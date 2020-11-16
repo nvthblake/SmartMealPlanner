@@ -32,6 +32,7 @@ const store = createStore(reducers);
 const db = SQLite.openDatabase("db2.db");
 
 export default function App() {
+  
   React.useEffect(() => {
     // db.transaction(tx => {
     //   tx.executeSql(
