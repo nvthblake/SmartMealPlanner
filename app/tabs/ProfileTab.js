@@ -16,8 +16,6 @@ import CardView from "../components/CardView";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 import * as ImagePicker from "expo-image-picker";
-import { Camera } from "expo-camera";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 function Profile(state) {
   // Camera logic
@@ -37,7 +35,7 @@ function Profile(state) {
     }
 
     setSelectedImage({ localUri: pickerResult.uri });
-  }
+  };
 
   let openImagePickerAsync = async () => {
     let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
@@ -64,10 +62,24 @@ function Profile(state) {
   ingredientsInFridge.forEach((element) => {
     Item += parseInt(element.qty);
   });
+  let Expirein3 = 0;
+  let Expirein10 = 0;
+  let Expired = 0;
+  ingredientsInFridge.forEach((element) => {
+    const today = new Date();
+    const expDate = Date.parse(element.expDate);
+    var dateDiff = Math.floor((expDate - today) / (1000 * 60 * 60 * 24));
+    if (dateDiff <= 3 && dateDiff > 1) {
+      Expirein3 += 1;
+    } else if (dateDiff > 3) {
+      Expirein10 += 1;
+    } else if (dateDiff <= 0) {
+      Expired += 1;
+    }
+  });
 
   // Model State
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalVisible1, setModalVisible1] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -110,7 +122,7 @@ function Profile(state) {
               style={styles.minilogo}
             />
             <View style={styles.viewDemotext}>
-              <Text style={styles.demotext}>{ingredientsInFridge.length}</Text>
+              <Text style={styles.demotext}>{Expirein3}</Text>
             </View>
             <Text style={styles.minitext}>Item is expiring</Text>
             <Text style={styles.minitext}>in 3 days</Text>
@@ -121,7 +133,7 @@ function Profile(state) {
               style={styles.minilogo}
             />
             <View style={styles.viewDemotext}>
-              <Text style={styles.demotext}>{ingredientsInFridge.length}</Text>
+              <Text style={styles.demotext}>{Expirein10}</Text>
             </View>
             <Text style={styles.minitext}>Item is expiring</Text>
             <Text style={styles.minitext}>in 10 days</Text>
@@ -132,7 +144,7 @@ function Profile(state) {
               style={styles.minilogo}
             />
             <View style={styles.viewDemotext}>
-              <Text style={styles.demotext}>{ingredientsInFridge.length}</Text>
+              <Text style={styles.demotext}>{Expired}</Text>
             </View>
             <Text style={styles.minitext}>Item is already</Text>
             <Text style={styles.minitext}>expired</Text>
@@ -172,72 +184,12 @@ function Profile(state) {
             </View>
           </View>
         </Modal>
-        {/* <Modal
-          animationType="slide"
-          transparent={false}
-          visible={modalVisible1}
-        >
-          <View style={{ flex: 1, backgroundColor: colors.white }}>
-            <Camera style={styles.camera}>
-            </Camera>
-            <View
-              style={{
-                flex: 1.5,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <TouchableOpacity
-                style={{
-                  padding: 10,
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginBottom: 10,
-                }}
-                onPress={() => setModalVisible1(!modalVisible1)}
-              >
-                <MaterialCommunityIcons
-                  name="arrow-left-bold-circle"
-                  size={35}
-                  color={colors.primary}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  height: 80,
-                  width: 80,
-                  borderRadius: 40,
-                  backgroundColor: colors.white,
-                  borderColor: colors.primary,
-                  borderWidth: 10,
-                }}
-                onPress={() => {
-                  takePicture();
-                  setModalVisible1(!modalVisible1);
-                }}
-              />
-              <TouchableOpacity
-                style={{
-                  padding: 10,
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginBottom: 10,
-                }}
-              ></TouchableOpacity>
-            </View>
-          </View>
-        </Modal> */}
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  camera: {
-    height: "80%",
-  },
   modalView: {
     margin: 20,
     backgroundColor: "white",
