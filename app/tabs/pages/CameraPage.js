@@ -26,6 +26,7 @@ import { addIngredientToScan, clearIngredientsToScan, deleteIngredientToScan } f
 import {  } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Screen from "../../components/Screen";
+import * as ImagePicker from "expo-image-picker";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -76,6 +77,22 @@ function CameraPage(state, { navigation }) {
         // console.log("IMAGE URI -> ", ingredientToScan);
       }
     }
+  };
+  let openImagePickerAsync = async () => {
+    let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert("Permission to access camera roll is required!");
+      return;
+    }
+
+    let pickerResult = await ImagePicker.launchImageLibraryAsync();
+
+    if (pickerResult.cancelled === true) {
+      return;
+    }
+
+    addIngredientToScan({ imageUri: pickerResult.uri });
   };
 
   const handleQuickExit = () => {
@@ -209,6 +226,7 @@ function CameraPage(state, { navigation }) {
                 alignItems: "center",
                 marginBottom: 10,
               }}
+              onPress={openImagePickerAsync}
             >
               <MaterialCommunityIcons
                 name="folder-image"

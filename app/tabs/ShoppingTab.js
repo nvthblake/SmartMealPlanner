@@ -61,7 +61,6 @@ function ShoppingList(props) {
         <View style={styles.header}>
           <View>
             <AppText style={styles.textformat}>{"Shopping List"}</AppText>
-            <View style={styles.underline} />
           </View>
           <TouchableOpacity
             onPress={() => {

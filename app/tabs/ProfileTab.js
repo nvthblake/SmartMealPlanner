@@ -11,6 +11,7 @@ import {
   ProgressBarAndroid,
   Modal,
   TouchableHighlight,
+  ScrollView,
 } from "react-native";
 import CardView from "../components/CardView";
 import AppText from "../components/AppText";
@@ -151,6 +152,14 @@ function Profile(state) {
           </View>
         </View>
       </CardView>
+      <Text style={styles.suggestHeader}>Suggested Meals</Text>
+      <CardView>
+        <Text style={styles.suggestHeader}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua
+          aliquip ex ea commodo consequat.{" "}
+        </Text>
+      </CardView>
       <View style={styles.centeredView}>
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
           <View style={styles.centeredView}>
@@ -190,6 +199,13 @@ function Profile(state) {
 }
 
 const styles = StyleSheet.create({
+  suggestHeader: {
+    marginLeft: 20,
+    fontSize: 12,
+    fontWeight: "bold",
+    marginBottom: 10,
+    marginTop: 10
+  },
   modalView: {
     margin: 20,
     backgroundColor: "white",
@@ -250,8 +266,8 @@ const styles = StyleSheet.create({
     borderColor: "#537aff",
     overflow: "hidden",
     borderWidth: 2,
-    marginTop: 30,
-    marginBottom: 30,
+    marginTop: 20,
+    marginBottom: 20,
   },
   minilogo: {
     height: 80,
@@ -265,7 +281,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   welcome: {
-    marginTop: 70,
+    marginTop: 20,
     fontSize: 30,
     fontWeight: "bold",
     padding: 20,
@@ -293,7 +309,7 @@ const styles = StyleSheet.create({
   },
   fridgestatus: {
     height: 60,
-    width: "80%",
+    width: "75%",
     marginLeft: 30,
     marginTop: -10,
     alignItems: "center",
