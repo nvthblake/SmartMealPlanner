@@ -68,7 +68,7 @@ export const updateIngredientInFridge = (ingredient) => (
 
 export const deleteIngredientInFridge = (ingredient) => (
     {
-        type: ADD_INGREDIENT_TO_FRIDGE,
+        type: DELETE_INGREDIENT_IN_FRIDGE,
         payload: ingredient
     }
 )
