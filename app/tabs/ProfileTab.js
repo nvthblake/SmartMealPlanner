@@ -8,7 +8,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  ProgressBarAndroid,
+  Dimensions,
   Modal,
   TouchableHighlight,
   ScrollView,
@@ -17,6 +17,7 @@ import CardView from "../components/CardView";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 import * as ImagePicker from "expo-image-picker";
+import ProgressBarAnimated from "react-native-progress-bar-animated";
 
 function Profile(state) {
   // Camera logic
@@ -56,6 +57,7 @@ function Profile(state) {
   };
 
   // Progress bar logic
+  const barWidth = Dimensions.get("screen").width - 150;
   const { ingredients, addIngredientToFridge } = state;
   const ingredientsInFridge = ingredients.fridge;
   const Limit = 100;
@@ -101,13 +103,15 @@ function Profile(state) {
             source={require("../assets/appIcon/fridge2.png")}
             style={styles.fridgelogo}
           />
-          <ProgressBarAndroid
-            style={styles.fridgestatus}
-            color={colors.primary}
-            styleAttr="Horizontal"
-            indeterminate={false}
-            progress={Item / Limit}
-          />
+          <View style={styles.fridgestatus}>
+            <ProgressBarAnimated
+              width={barWidth}
+              height={18}
+              backgroundColor={colors.primary}
+              // value={50}
+              value={(Item / Limit) * 100}
+            />
+          </View>
         </View>
         <Text style={styles.fridgetext}>
           Your fridge is {(Item / Limit) * 100}% full
@@ -156,8 +160,8 @@ function Profile(state) {
       <CardView>
         <Text style={styles.suggestHeader}>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua
-          aliquip ex ea commodo consequat.{" "}
+          eiusmod tempor incididunt ut labore et dolore magna aliqua aliquip ex
+          ea commodo consequat.{" "}
         </Text>
       </CardView>
       <View style={styles.centeredView}>
@@ -204,7 +208,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
     marginBottom: 10,
-    marginTop: 10
+    marginTop: 10,
   },
   modalView: {
     margin: 20,
@@ -308,10 +312,8 @@ const styles = StyleSheet.create({
     width: 40,
   },
   fridgestatus: {
-    height: 60,
-    width: "75%",
-    marginLeft: 30,
-    marginTop: -10,
+    marginLeft: 20,
+    marginTop: 10,
     alignItems: "center",
   },
   seperatorline: {
