@@ -6,6 +6,8 @@ import {
   TouchableWithoutFeedback,
   View,
   FlatList,
+  TouchableHighlight,
+  Text
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import defaultStyles from "../config/styles";
@@ -59,31 +61,69 @@ function AppPicker({
           />
         </View>
       </TouchableWithoutFeedback>
-      <Modal visible={modalVisible} animationType="slide">
-        <Screen>
-          <Button title="Close" onPress={() => setModalVisible(false)} />
-          <FlatList
-            data={items}
-            keyExtractor={(item) => item.value.toString()}
-            numColumns={numberOfColumns}
-            renderItem={({ item }) => (
-              <PickerItemComponent
-                item={item}
-                label={item.label}
-                onPress={() => {
-                  setModalVisible(false);
-                  onSelectItem(item);
-                }}
-              />
-            )}
-          />
-        </Screen>
+      <Modal transparent={true} visible={modalVisible} animationType="slide">
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TouchableHighlight style={styles.button} onPress={() => setModalVisible(false)} >
+            <Text style={styles.textStyle}>CLOSE</Text>
+            </TouchableHighlight>
+            <FlatList
+              data={items}
+              keyExtractor={(item) => item.value.toString()}
+              numColumns={numberOfColumns}
+              renderItem={({ item }) => (
+                <PickerItemComponent
+                  item={item}
+                  label={item.label}
+                  onPress={() => {
+                    setModalVisible(false);
+                    onSelectItem(item);
+                  }}
+                />
+              )}
+            />
+          </View>
+        </View>
       </Modal>
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  button: {
+    backgroundColor: colors.font_red,
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    width: 300,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    alignItems: "flex-start",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    height: 550
+  },
   container: {
     backgroundColor: defaultStyles.colors.light,
     borderRadius: 25,
