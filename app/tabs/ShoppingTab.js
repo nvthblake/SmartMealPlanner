@@ -7,9 +7,10 @@ import {
   TouchableHighlight,
   TextInput,
   Alert,
-  Dimensions, 
+  Dimensions,
+  FlatList,
+  TouchableOpacity
 } from "react-native";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import Screen from "../components/Screen";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
@@ -17,32 +18,37 @@ import ShoppingItem from "../components/ShoppingItem";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import Map from "../components/GoogleMap";
 
+/* Redux */
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { addIngredientToCart, deleteIngredientInCart, clearCart, addIngredientToFridge } from "../../actions";
+
 // Dimensions 
 const windowHeight = Dimensions.get('window').height;
 
 function ShoppingList(props) {
-  
+  const { ingredients, addIngredientToCart, deleteIngredientInCart, clearCart } = props;
 
+  const ingredientsInCart = ingredients.cart;
 
-  // Item states
-  const [todos, setTodos] = useState([
-    { text: "buy coffee", key: "1" },
-    { text: "buy candies", key: "2" },
-    { text: "buy kitkat", key: "3" },
-  ]);
+  // // Item states
+  // const [todos, setTodos] = useState([
+  //   { text: "buy coffee", key: "1" },
+  //   { text: "buy candies", key: "2" },
+  //   { text: "buy kitkat", key: "3" },
+  // ]);
+
   const [text, setText] = useState("");
   const changeHandler = (val) => {
     setText(val);
   };
-  const pressHandler = (key) => {
-    setTodos((prevCheck) => {
-      return prevCheck.filter((check) => check.key != key);
-    });
+
+  const pressHandler = (ingredient) => {
+    deleteIngredientInCart(ingredient);
   };
+
   const submitHandler = () => {
-    setTodos((prevCheck) => {
-      return [{ text: text, key: Math.random().toString() }, ...prevCheck];
-    });
+    addIngredientToCart({ name: text, id: Math.random().toString() })
   };
 
   // Modal states
@@ -55,7 +61,6 @@ function ShoppingList(props) {
         <View style={styles.header}>
           <View>
             <AppText style={styles.textformat}>{"Shopping List"}</AppText>
-            <View style={styles.underline} />
           </View>
           <TouchableOpacity
             onPress={() => {
@@ -68,7 +73,7 @@ function ShoppingList(props) {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel",
                   },
-                  { text: "OK", onPress: () => setTodos([]) },
+                  { text: "OK", onPress: () => clearCart() },
                 ],
                 { cancelable: false }
               );
@@ -96,14 +101,15 @@ function ShoppingList(props) {
           </TouchableOpacity>
         </View>
         <View style={styles.mapContainer}>
-          <Map/>
+          <Map />
         </View>
 
         <FlatList
           style={styles.list}
-          data={todos}
-          renderItem={({ item }) => (
-            <ShoppingItem item={item} pressHandler={pressHandler} />
+          data={ingredientsInCart}
+          keyExtractor={(ingredient) => ingredient.id + "cart"}
+          renderItem={({ ingredient, index }) => (
+            <ShoppingItem item={ingredientsInCart[index]} pressHandler={pressHandler} />
           )}
         />
         <View style={styles.centeredView}>
@@ -170,7 +176,7 @@ const styles = StyleSheet.create({
     width: 205,
   },
   list: {
-    marginTop: 20, 
+    marginTop: 20,
     height: windowHeight * 0.4
   },
   plusButton: {
@@ -233,4 +239,17 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ShoppingList;
+const mapStateToProps = (state) => {
+  const { ingredients } = state;
+  return { ingredients };
+};
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      addIngredientToCart, deleteIngredientInCart, clearCart
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShoppingList);

@@ -12,7 +12,6 @@ import {
   Text,
   Modal,
   Alert,
-  TouchableHighlight,
   ScrollView,
 } from "react-native";
 import AppButton from "../components/AppButton";
@@ -29,13 +28,11 @@ import {
   updateIngredientInFridge,
   deleteIngredientInFridge,
 } from "../../actions";
-import AppTextInput from "../components/AppTextInput";
 import {
   AppForm,
   AppFormField,
   AppFormPicker,
   SubmitButton,
-  AppTextFormField,
 } from "../components/forms";
 
 // Database imports
@@ -222,17 +219,7 @@ function IngredientsTab(state) {
   React.useEffect(updateFilter, []);
 
   return (
-    <Screen style={styles.screen}>
-      <AppText
-        style={{
-          fontSize: 30,
-          color: colors.primary,
-          fontWeight: "bold",
-          marginLeft: screenWidth * 0.05,
-        }}
-      >
-        {"My Ingredients"}
-      </AppText>
+    <Screen style={styles.screen} headerTitle="Ingredients">
       <View
         style={{
           marginLeft: screenWidth * 0.05,
@@ -265,7 +252,8 @@ function IngredientsTab(state) {
               <>
                 <SqCard
                   title={ingredientsInFridge[index].ingredient}
-                  subTitle={"QTY: " + ingredientsInFridge[index].qty}
+                  subTitle1={`${ingredientsInFridge[index].qty} ${ingredientsInFridge[index].unit}`}
+                  subTitle2={`${expDateToColor(ingredientsInFridge[index].expDate)[0]} days`}
                   image={ingredientsInFridge[index].imageUri}
                   screenWidth={screenWidth}
                   expStatus={
@@ -306,16 +294,14 @@ function IngredientsTab(state) {
             >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                  <ScrollView>
-                    <Image
-                      style={{
-                        width: screenWidth - 150,
-                        height: screenWidth - 200,
-                        borderRadius: 15,
-                      }}
-                      source={{ uri: selectedIngre.imageUri }}
-                    />
-                    <Text>{selectedIngre.id}</Text>
+                  <Image
+                    style={{
+                      width: screenWidth*0.85,
+                      height: screenWidth*0.85*0.66,
+                      borderRadius: 15,
+                    }}
+                    source={{ uri: selectedIngre.imageUri }}
+                  />
                     <AppForm
                       initialValues={{
                         id: selectedIngre.id,
@@ -337,45 +323,63 @@ function IngredientsTab(state) {
                       onSubmit={handleSubmit}
                       // validationSchema={validationSchema}
                     >
-                      <AppFormField
-                        name="ingredient"
-                        placeholder="Ingredient"
-                      />
-                      <AppFormField
-                        name="qty"
-                        placeholder="Quantity"
-                        keyboardType="numeric"
-                      />
-                      <AppFormPicker
-                        items={pickerOptions.units}
-                        name="unit"
-                        placeholder="Unit"
-                      />
-                      <AppFormPicker
-                        items={pickerOptions.categories}
-                        name="category"
-                        placeholder="Category"
-                      />
-                      <AppFormField
-                        name="dayToExp"
-                        placeholder="Days to Expiration"
-                        keyboardType="numeric"
-                      />
+                      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+                        <AppFormField
+                          icon="food-variant"
+                          name="ingredient"
+                          placeholder="Ingredient"
+                          width={0.85 * screenWidth}
+                        />
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-evenly",
+                          }}
+                        >
+                          <AppFormField
+                            icon="pound"
+                            name="qty"
+                            placeholder="Quantity"
+                            keyboardType="numeric"
+                            width={screenWidth*0.40}
+                            marginRight={10}
+                          />
+                          <AppFormPicker
+                            icon="beaker"
+                            items={pickerOptions.units}
+                            name="unit"
+                            placeholder="Unit"
+                            width={screenWidth*0.40}
+                            marginLeft={10}
+                          />
+                        </View>
+                        <AppFormPicker
+                          icon="menu"
+                          items={pickerOptions.categories}
+                          name="category"
+                          placeholder="Category"
+                        />
+                        <AppFormField
+                          icon="calendar-remove"
+                          name="dayToExp"
+                          placeholder="Days to Expiration"
+                          keyboardType="numeric"
+                        />
+                      </ScrollView>
                       <SubmitButton title="SAVE" />
+                      <AppButton
+                        title="DELETE"
+                        onPress={() => handleDelete(selectedIngre)}
+                        borderColor={colors.maroon}
+                        textColor={colors.maroon}
+                      />
+                      <AppButton
+                        title="CANCEL"
+                        onPress={() => toggleModal(null)}
+                        borderColor={colors.medium}
+                        textColor={colors.medium}
+                      />
                     </AppForm>
-                    <AppButton
-                      title="DELETE"
-                      onPress={() => handleDelete(selectedIngre)}
-                      borderColor={colors.maroon}
-                      textColor={colors.maroon}
-                    />
-                    <AppButton
-                      title="CANCEL"
-                      onPress={() => toggleModal(null)}
-                      borderColor={colors.medium}
-                      textColor={colors.medium}
-                    />
-                  </ScrollView>
                 </View>
               </View>
             </Modal>

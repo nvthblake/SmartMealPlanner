@@ -12,8 +12,10 @@ function getRecipes(ingredients, limit) {
             return;
         }
         // %20 is for spaces, and %2C is for seperating differet ingredient
+        // console.log("Spoonacular -> ", ingredients);
+        // return
         const params = ingredients
-            .map((ingredient) => ingredient.name.replace(" ", "%20"))
+            .map((ingredient) => ingredient.ingredient.replace(" ", "%20"))
             .join("%2C");
 
         fetch(`${BASE_URL}/recipes/findByIngredients?ingredients=${params}&number=${limit}&ranking=1&ignorePantry=true`,
@@ -108,7 +110,7 @@ function getRecipes(ingredients, limit) {
             .catch((err) => {
                 // console.log("RecipeTab -> componentDidMount -> err", err);
                 reject(err);
-                alert("Out of Spoonacular usage lol!");
+                // alert("Out of Spoonacular usage lol!");
             });
     });
 }
@@ -165,7 +167,7 @@ function getRecipeInfoInBulk(recipes) {
             .catch((err) => {
                 // console.log("RecipeTab -> componentDidMount -> err", err);
                 reject(err);
-                alert("Out of Spoonacular usage lol!");
+                // alert("Out of Spoonacular usage lol!");
             });
     });
 }

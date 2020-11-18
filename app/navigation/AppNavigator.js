@@ -24,6 +24,7 @@ import RecipeTab from "../tabs/RecipeTab";
 import ScanTab from "../tabs/ScanTab";
 import CamNavigation from "./CamNavigation";
 import MealPlanTab from "../tabs/MealPlanTab";
+import RecipeNavigator from "./RecipeNavigator";
 
 
 const Tab = createBottomTabNavigator();
@@ -45,20 +46,7 @@ const AppNavigator = () => (
     />
     <Tab.Screen
       name="Meal Plan"
-      component={MealPlanTab}
-      options={{
-        tabBarIcon: ({ color, size }) => (
-          <MaterialCommunityIcons
-            name="silverware-variant"
-            color={color}
-            size={size}
-          />
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="Recipes"
-      component={RecipeTab}
+      component={RecipeNavigator}
       options={{
         tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons

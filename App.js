@@ -26,12 +26,13 @@ import reducers from "./reducers";
 // import ScanTab from "./app/tabs/newScanTab";
 import CameraButton from "./app/components/CameraButton";
 import CameraPage from "./app/tabs/pages/CameraPage";
-import MealPlanTab from "./app/tabs/MealPlanTab"
+import MealPlanTab from "./app/tabs/MealPlanTab"; 
 
 const store = createStore(reducers);
 const db = SQLite.openDatabase("db2.db");
 
 export default function App() {
+  
   React.useEffect(() => {
     // db.transaction(tx => {
     //   tx.executeSql(
@@ -53,6 +54,20 @@ export default function App() {
         imageUri VARCHAR);`
       );
     });
+    // db.transaction(tx => {
+    //   tx.executeSql(
+    //     `DROP TABLE IF EXISTS ShoppingList;`
+    //   );
+    //   });
+    db.transaction((tx) => {
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS ShoppingList \
+        (id INTEGER PRIMARY KEY NOT NULL, \
+        createdTs DATETIME DEFAULT CURRENT_TIMESTAMP, \
+        ingredient VARCHAR NOT NULL, \
+        checked INT(1) NOT NULL);`
+      );
+    });
   }, []);
 
   return (
@@ -63,6 +78,3 @@ export default function App() {
     </Provider>
   );
 }
-// export default function App() {
-//   return <CameraPage />;
-// }
