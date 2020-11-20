@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { useNavigation } from "@react-navigation/native";
 
+
 import {
   AppForm,
   AppFormField,
@@ -46,7 +47,6 @@ const validationSchema = Yup.object().shape({
 function ScanTab(state) {
   const { ingredients, addIngredientToFridge, deleteIngredientToScan } = state;
   const ingredientToScan = ingredients.ingredientToScan;
-
 
   const [forceUpdate, forceUpdateId] = useForceUpdate();
   const [success, setSuccess] = useState(true);
@@ -128,7 +128,10 @@ function ScanTab(state) {
           renderItem={({ item, index }) => {
             return (
               <View style={styles.cardContainer}>
-                <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+                <ScrollView
+                  style={{ flex: 1 }}
+                  showsVerticalScrollIndicator={false}
+                >
                   <AppForm
                     initialValues={{
                       ingredient: "",
@@ -159,7 +162,7 @@ function ScanTab(state) {
                         name="qty"
                         placeholder="Quantity"
                         keyboardType="numeric"
-                        width={screenWidth*0.36}
+                        width={screenWidth * 0.36}
                         marginRight={10}
                       />
                       <AppFormPicker
@@ -167,7 +170,7 @@ function ScanTab(state) {
                         items={pickerOptions.units}
                         name="unit"
                         placeholder="Unit"
-                        width={screenWidth*0.36}
+                        width={screenWidth * 0.36}
                         marginLeft={10}
                       />
                     </View>
@@ -191,7 +194,7 @@ function ScanTab(state) {
           }}
         ></FlatList>
       </View>
-      <CameraPage/>
+      <CameraPage />
     </Screen>
   );
 }

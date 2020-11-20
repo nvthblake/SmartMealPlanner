@@ -26,12 +26,13 @@ import reducers from "./reducers";
 // import ScanTab from "./app/tabs/newScanTab";
 import CameraButton from "./app/components/CameraButton";
 import CameraPage from "./app/tabs/pages/CameraPage";
-import MealPlanTab from "./app/tabs/MealPlanTab"
+import MealPlanTab from "./app/tabs/MealPlanTab"; 
 
 const store = createStore(reducers);
 const db = SQLite.openDatabase("db2.db");
 
 export default function App() {
+  
   React.useEffect(() => {
     // db.transaction(tx => {
     //   tx.executeSql(
@@ -77,6 +78,3 @@ export default function App() {
     </Provider>
   );
 }
-// export default function App() {
-//   return <CameraPage />;
-// }
