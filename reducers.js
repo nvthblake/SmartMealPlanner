@@ -2,8 +2,6 @@ import { combineReducers } from "redux";
 import {
   ADD_INGREDIENT_TO_CART,
   ADD_INGREDIENT_TO_FRIDGE,
-  ADD_RECIPE,
-  CLEAR_RECIPE,
   CLEAR_INGREDIENTS_IN_FRIDGE,
   UPDATE_INGREDIENT_IN_FRIDGE,
   DELETE_INGREDIENT_IN_FRIDGE,
@@ -13,12 +11,15 @@ import {
   CLEAR_INGREDIENTS_TO_SCAN,
   CLEAR_CART,
   DELETE_INGREDIENT_IN_CART,
+  // Recipes
+  ADD_RECIPE,
+  CLEAR_RECIPE,
   // Meal Plan
   ADD_MEAL_PLAN,
   DELETE_MEAL_PLAN,
   CLEAR_MEAL_PLAN,
   // Favorite Recipes
-  ADD_FAVORITE_RECIPE,
+  TOGGLE_FAVORITE_RECIPE,
   DELETE_FAVORITE_RECIPE,
   CLEAR_FAVORITE_RECIPE,
 } from "./types";
@@ -44,19 +45,8 @@ const INITIAL_STATE = {
     //   imageUri: "file:/data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FSmartMealPlanner-c7f11723-ddae-4ba6-97f3-0120a5d82b7e/ImagePicker/acface9b-60ad-40d8-886d-43347ba91603.jpg"
     // }
   ],
-  mealPlanner: [
-    {
-      date: today,
-      breakfast: "",
-      lunch: "",
-      dinner: "",
-      snack: "",
-      optional: "" 
-    }
-  ],
-  favoriteRecipes: [
-    
-  ]
+  mealPlanner: [],
+  favoriteRecipes: []
 };
 
 const ingredientsReducer = (state = INITIAL_STATE, action) => {
@@ -169,8 +159,11 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
       newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
       return newState;
 
-    case ADD_FAVORITE_RECIPE:
-      favoriteRecipes.push(action.payload);
+    case TOGGLE_FAVORITE_RECIPE:
+      // favoriteRecipes.push(action.payload);
+      const toggledRecipe = recipes.findIndex((recipe => recipe.id === action.payload.id));
+      console.log(recipes[toggledRecipe].title, recipes[toggledRecipe].loved);
+      // recipes[toggledRecipe].loved = !recipes[toggledRecipe].loved;
       newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
       return newState;
     
