@@ -6,7 +6,8 @@ import Constants from "expo-constants";
 import MealPlanTab from '../tabs/MealPlanTab';
 import RecipeTab from '../tabs/RecipeTab';
 import Screen from '../components/Screen';
-import { colors } from 'react-native-elements';
+import colors from "../config/colors";
+
 
 const Tab = createMaterialTopTabNavigator();
 
