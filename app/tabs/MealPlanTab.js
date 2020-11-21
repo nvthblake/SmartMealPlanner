@@ -69,14 +69,17 @@ function MealPlanTab(state) {
   const mealPlanner = ingredients.mealPlanner;
   const favoriteRecipes = ingredients.favoriteRecipes;
 
+  const curDate = new Date();
+
   // State vars
   const [isLoading, setIsLoading] = useState(true);
   const [categories, setCategory] = useState(INITIAL_CATEGORIES_STATE);
   const [chosenRecipe, setChosenRecipe] = useState(null);
   const [numMealPlans, setNumMealPlans] = useState(6);
+  const [selectDate, setSelectDate] = useState(curDate);
+  const header = ["Breakfast", "Lunch", "Dinner"];
 
   // Vars related to calendar
-  const curDate = new Date();
   let datesWhitelist = (num) => {
     return [
       {
@@ -95,6 +98,35 @@ function MealPlanTab(state) {
       ],
     },
   ];
+
+  const getDateHeader = (date) => {
+    console.log("date: ", date, curDate);
+    var msDateA = Date.UTC(date.getFullYear(), date.getMonth()+1, date.getDate()); 
+    var msDateB = Date.UTC(curDate.getFullYear(), curDate.getMonth()+1, curDate.getDate()); 
+    moment.locale('en');
+
+    if (msDateA == msDateB) {
+      return "Today's Meal Plan";
+    }
+    else {
+      return moment(date).format('MMM D') + " Meal Plan";
+    }
+    
+  }
+
+  const onDateSelect = (date) => {
+    console.log(date);
+    let d = new Date(date);
+    setSelectDate(d);
+    var msDiff = new Date(date).getTime() - new Date().getTime();    //Future date - current date
+    var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 1;
+    console.log(index);
+    if (mealPlan[index] != undefined) {
+      console.log(Object.keys(mealPlan[index]));
+      getMealPlanOnDate(mealPlan[index]);
+    }
+    return date;
+  }
 
   // Recipes
   const getRecipesBasedOnFilter = (recipes) => {
@@ -196,19 +228,6 @@ function MealPlanTab(state) {
   }
   let mealPlan = generateMealPlan();
   const [selectMealPlan, getMealPlanOnDate] = useState(mealPlan[0]);
-
-  const onDateSelect = (date) => {
-    console.log(date);
-    var msDiff = new Date(date).getTime() - new Date().getTime();    //Future date - current date
-    var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 1;
-    console.log(index);
-    if (mealPlan[index] != undefined) {
-      console.log(Object.keys(mealPlan[index]));
-      getMealPlanOnDate(mealPlan[index]);
-    }
-    return date;
-  }
-
 
   // Utils Functions
   const openURLInDefaultBrowser = (url) => {
@@ -317,20 +336,21 @@ function MealPlanTab(state) {
           {/* Meal Plan */}
           {selectMealPlan !== undefined && (
             <View>
-              <View style={{ padding: 16 }}>
+              <View style={styles.sectionHeader}>
                 <Text style={{ fontSize: 22, fontWeight: "bold" }}>
-                  Today’s Meal Plan
+                  {getDateHeader(selectDate)}
                 </Text>
               </View>
               <View>
-                {/* {getMealPlanOnDate()} */}
                 <FlatList
+                  style={{height: 250, paddingBottom:10}}
+                  showsHorizontalScrollIndicator={false}
                   data={selectMealPlan}
                   horizontal={true}
                   keyExtractor={(recipe) => recipe.id.toString()}
                   renderItem={({ recipe, index }) => {
                     return (
-                      <RecipeCard recipe={selectMealPlan[index]} setChosenRecipeFunc={setChosenRecipe} />
+                      <RecipeCard header={header[index]} recipe={selectMealPlan[index]} setChosenRecipeFunc={setChosenRecipe} />
                     );
                   }}
                 ></FlatList>
@@ -556,6 +576,12 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
+  },
+  sectionHeader: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 8,
+    paddingBottom: 8
   },
   calendar: {
     margin: 20,
