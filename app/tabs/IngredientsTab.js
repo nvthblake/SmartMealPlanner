@@ -406,10 +406,8 @@ function IngredientsTab(state) {
 const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: "center",
-    // flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    // backgroundColor: "red",
   },
   centeredView: {
     alignSelf: "center",

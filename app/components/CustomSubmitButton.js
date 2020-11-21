@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import colors from "../config/colors";
 
-function CustomButton({
+function CustomSubmitButton({
   // borderColor,
   title,
   onPress,
@@ -44,7 +44,7 @@ function CustomButton({
 
 const styles = StyleSheet.create({
   button: {
-    flex: 1,
+    // flex: 1,
     // flexDirection: "row",
     backgroundColor: colors.white,
     justifyContent: "center",
@@ -62,4 +62,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomButton;
+export default CustomSubmitButton;
