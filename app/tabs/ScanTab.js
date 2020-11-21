@@ -6,12 +6,15 @@ import {
   Dimensions,
   ScrollView,
   Modal,
+  Alert,
+  TouchableWithoutFeedback,
 } from "react-native";
 import * as Yup from "yup";
 import { openDatabase } from "expo-sqlite";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { useNavigation } from "@react-navigation/native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import {
   AppForm,
@@ -28,6 +31,7 @@ import { getFridgeSql } from "../components/database/queries";
 import AppButton from "../components/AppButton";
 import colors from "../config/colors";
 import CameraPage from "./pages/CameraPage";
+import {} from "react-native-gesture-handler";
 
 const db = openDatabase("db2.db");
 
@@ -150,10 +154,50 @@ function ScanTab(state) {
                     onSubmit={handleSubmit}
                     validationSchema={validationSchema}
                   >
-                    <FormImageStatic
-                      name="imageUri"
-                      height={viewHeight - 313}
-                    />
+                    <View>
+                      <FormImageStatic
+                        name="imageUri"
+                        height={viewHeight - 313}
+                      />
+                      <View
+                        style={{
+                          position: "absolute",
+                          top: 7,
+                          right: 7,
+                          backgroundColor: "rgba(0,0,0,0.3)",
+                          borderRadius: 5,
+                        }}
+                      >
+                        <TouchableWithoutFeedback
+                          onPress={() => {
+                            Alert.alert(
+                              "Delete Ingredient?",
+                              "Are you sure you want to remove this ingredient?",
+                              [
+                                {
+                                  text: "No",
+                                  style: "cancel",
+                                },
+                                {
+                                  text: "Yes",
+                                  onPress: () => {
+                                    // Delete ingredient from Redux
+                                    deleteIngredientToScan(item.imageUri);
+                                  },
+                                },
+                              ],
+                              { cancelable: true }
+                            );
+                          }}
+                        >
+                          <MaterialCommunityIcons
+                            name="close"
+                            size={30}
+                            color={colors.white}
+                          />
+                        </TouchableWithoutFeedback>
+                      </View>
+                    </View>
                     <AppFormField
                       icon="food-variant"
                       name="ingredient"
@@ -200,6 +244,7 @@ function ScanTab(state) {
                       color={colors.secondary}
                       textColor={colors.primary}
                       height={50}
+                      size={18}
                     />
                   </AppForm>
                 </ScrollView>
