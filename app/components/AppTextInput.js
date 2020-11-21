@@ -40,13 +40,15 @@ function AppTextInput({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: defaultStyles.colors.light,
+    backgroundColor: defaultStyles.colors.white,
     borderWidth: 2,
-    borderColor: colors.lightGrey,
+    borderColor: colors.secondary,
     borderRadius: 25,
     flexDirection: "row",
-    padding: 8,
-    marginVertical: 5,
+    paddingLeft: 8,
+    height: 50,
+    alignItems: "center",
+    marginVertical: 4,
   },
   icon: {
     marginRight: 10,

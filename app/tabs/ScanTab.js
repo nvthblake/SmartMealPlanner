@@ -5,14 +5,15 @@ import {
   FlatList,
   Dimensions,
   ScrollView,
-  Modal,
+  Alert,
+  TouchableWithoutFeedback,
 } from "react-native";
 import * as Yup from "yup";
 import { openDatabase } from "expo-sqlite";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { useNavigation } from "@react-navigation/native";
-
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import {
   AppForm,
@@ -26,9 +27,9 @@ import pickerOptions from "../config/pickerOptions";
 
 import { addIngredientToFridge, deleteIngredientToScan } from "../../actions";
 import { getFridgeSql } from "../components/database/queries";
-import AppButton from "../components/AppButton";
 import colors from "../config/colors";
 import CameraPage from "./pages/CameraPage";
+import AddFoodButton from "../components/forms/AddFoodButton";
 
 const db = openDatabase("db2.db");
 
@@ -37,8 +38,6 @@ const screenHeight = Dimensions.get("window").height;
 
 const validationSchema = Yup.object().shape({
   ingredient: Yup.string().required().min(1).label("Ingredient"),
-  qty: Yup.number().required().min(1).max(10000).label("Quantity"),
-  unit: Yup.object().required().nullable().label("Unit"),
   category: Yup.object().required().nullable().label("Category"),
   dayToExp: Yup.number().required().min(1).label("Days to Expiration"),
   images: Yup.array().min(1, "Please select at least 1 image."),
@@ -113,30 +112,40 @@ function ScanTab(state) {
     }
   };
 
+  const [viewHeight, setViewHeight] = useState(screenWidth * 0.5);
+
   const navigation = useNavigation();
 
   return (
-    <Screen style={styles.container}>
-      <View>
+    <Screen>
+      <View style={styles.container}>
+        <CameraPage />
         <FlatList
           data={ingredientToScan}
           horizontal
           snapToAlignment={"center"}
-          snapToInterval={screenWidth - 30}
+          snapToInterval={screenWidth * 0.9}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(ingredientToScan) => ingredientToScan.imageUri}
           renderItem={({ item, index }) => {
             return (
-              <View style={styles.cardContainer}>
-                <ScrollView
+              <View
+                style={styles.cardContainer}
+                onLayout={(event) => {
+                  var { x, y, width, height } = event.nativeEvent.layout;
+                  setViewHeight(height);
+                  // console.log(viewHeight);
+                }}
+              >
+                <View
                   style={{ flex: 1 }}
-                  showsVerticalScrollIndicator={false}
+                  // showsVerticalScrollIndicator={false}
                 >
                   <AppForm
                     initialValues={{
                       ingredient: "",
                       qty: "",
-                      unit: null,
+                      unit: { label: "unit", value: 7 },
                       category: null,
                       dayToExp: "",
                       imageUri: item.imageUri,
@@ -144,7 +153,50 @@ function ScanTab(state) {
                     onSubmit={handleSubmit}
                     validationSchema={validationSchema}
                   >
-                    <FormImageStatic name="imageUri" />
+                    <ScrollView>
+                      <FormImageStatic
+                        name="imageUri"
+                        height={viewHeight - 313}
+                      />
+                      <View
+                        style={{
+                          position: "absolute",
+                          top: 7,
+                          right: 7,
+                          backgroundColor: "rgba(0,0,0,0.3)",
+                          borderRadius: 5,
+                        }}
+                      >
+                        <TouchableWithoutFeedback
+                          onPress={() => {
+                            Alert.alert(
+                              "Delete Ingredient?",
+                              "Are you sure you want to remove this ingredient?",
+                              [
+                                {
+                                  text: "No",
+                                  style: "cancel",
+                                },
+                                {
+                                  text: "Yes",
+                                  onPress: () => {
+                                    // Delete ingredient from Redux
+                                    deleteIngredientToScan(item.imageUri);
+                                  },
+                                },
+                              ],
+                              { cancelable: true }
+                            );
+                          }}
+                        >
+                          <MaterialCommunityIcons
+                            name="close"
+                            size={30}
+                            color={colors.white}
+                          />
+                        </TouchableWithoutFeedback>
+                      </View>
+                    </ScrollView>
                     <AppFormField
                       icon="food-variant"
                       name="ingredient"
@@ -162,16 +214,16 @@ function ScanTab(state) {
                         name="qty"
                         placeholder="Quantity"
                         keyboardType="numeric"
-                        width={screenWidth * 0.36}
-                        marginRight={10}
+                        width={screenWidth * 0.38}
+                        marginRight={9}
                       />
                       <AppFormPicker
                         icon="beaker"
                         items={pickerOptions.units}
                         name="unit"
                         placeholder="Unit"
-                        width={screenWidth * 0.36}
-                        marginLeft={10}
+                        width={screenWidth * 0.38}
+                        marginLeft={9}
                       />
                     </View>
                     <AppFormPicker
@@ -186,15 +238,20 @@ function ScanTab(state) {
                       placeholder="Days to Expiration"
                       keyboardType="numeric"
                     />
-                    <SubmitButton title="ADD TO FRIDGE" />
+                    <AddFoodButton
+                      title="ADD TO FRIDGE"
+                      color={colors.secondary}
+                      textColor={colors.primary}
+                      height={50}
+                      size={18}
+                    />
                   </AppForm>
-                </ScrollView>
+                </View>
               </View>
             );
           }}
         ></FlatList>
       </View>
-      <CameraPage />
     </Screen>
   );
 }
@@ -206,16 +263,17 @@ function useForceUpdate() {
 
 const styles = StyleSheet.create({
   cardContainer: {
+    flex: 1,
     borderRadius: 25,
     padding: 10,
-    // borderWidth: 4,
-    // borderColor: colors.primary,
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 10,
     marginBottom: 10,
     marginHorizontal: 10,
     width: screenWidth * 0.85,
-    height: screenHeight * 0.75,
+    // height: screenHeight * 0.65,
+    // height: "100%",
     backgroundColor: "white",
     overflow: "hidden",
     shadowColor: "#000",
@@ -228,7 +286,12 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   container: {
-    padding: 10,
+    flexDirection: "column",
+    height: "100%",
+    // backgroundColor: "red",
+    // justifyContent: "space-between",
+    alignItems: "center",
+    paddingBottom: 10,
   },
   logoContainer: {
     position: "absolute",

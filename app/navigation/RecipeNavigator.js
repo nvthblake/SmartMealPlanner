@@ -1,25 +1,35 @@
-import React from 'react';
+import React, { Fragment, Component } from "react";
+import { SafeAreaView } from "react-native";
 
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs"
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Constants from "expo-constants";
 
-import MealPlanTab from '../tabs/MealPlanTab';
-import RecipeTab from '../tabs/RecipeTab';
-import Screen from '../components/Screen';
-import { colors } from 'react-native-elements';
+import MealPlanTab from "../tabs/MealPlanTab";
+import RecipeTab from "../tabs/RecipeTab";
+import Screen from "../components/Screen";
+import colors from "../config/colors";
 
 const Tab = createMaterialTopTabNavigator();
 
-const RecipeNavigator = () => (
-        <Tab.Navigator tabBarOptions={{
-            indicatorStyle: {backgroundColor: colors.primary},
-            labelStyle: {fontWeight: "bold"},
+class RecipeNavigator extends Component {
+  render() {
+    return (
+      <Fragment>
+        <SafeAreaView style={{ flex: 0, backgroundColor: 'white' }} />
+        <Tab.Navigator
+          swipeEnabled={false}
+          tabBarOptions={{
+            indicatorStyle: { backgroundColor: colors.primary },
+            labelStyle: { fontWeight: "bold" },
             activeTintColor: colors.primary,
-            style: {marginTop: Constants.statusBarHeight}
-        }}>
-            <Tab.Screen name="Meal Planner" component={MealPlanTab} />
-            <Tab.Screen name="Explore" component={RecipeTab} />
+          }}
+        >
+          <Tab.Screen name="Meal Planner" component={MealPlanTab} />
+          <Tab.Screen name="Explore" component={RecipeTab} />
         </Tab.Navigator>
-)
+      </Fragment>
+    )
+  }
+}
 
 export default RecipeNavigator;

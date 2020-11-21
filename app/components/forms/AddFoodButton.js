@@ -3,12 +3,12 @@ import { StyleSheet } from "react-native";
 import { useFormikContext } from "formik";
 
 import AppButton from "../AppButton";
-import CustomButton from "../CustomButton";
+import CustomSubmitButton from "../CustomSubmitButton";
 
-function SubmitButton({ title, size, color, textColor, height }) {
+function AddFoodButton({ title, size, color, textColor, height }) {
   const { handleSubmit } = useFormikContext();
   return (
-    <CustomButton
+    <CustomSubmitButton
       title={title}
       onPress={handleSubmit}
       size={size}
@@ -21,4 +21,4 @@ function SubmitButton({ title, size, color, textColor, height }) {
 
 const styles = StyleSheet.create({});
 
-export default SubmitButton;
+export default AddFoodButton;

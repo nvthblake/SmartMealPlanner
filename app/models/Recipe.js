@@ -38,6 +38,7 @@ class Recipe {
         this.cuisines = [];
         this.dishTypes = [];
         this.instructions = ''
+        this.loved = false;
     }
 }
 

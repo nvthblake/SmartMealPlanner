@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Picker } from "@react-native-community/picker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   StyleSheet,
@@ -9,13 +8,14 @@ import {
   Dimensions,
   View,
   Image,
-  Text,
-  Modal,
   Alert,
   ScrollView,
 } from "react-native";
 import AppButton from "../components/AppButton";
+import CustomButton from "../components/CustomButton";
 import AppText from "../components/AppText";
+import Modal from "react-native-modal";
+import * as Yup from "yup";
 
 import Screen from "../components/Screen";
 import SqCard from "../components/SqCard";
@@ -37,13 +37,14 @@ import {
 
 // Database imports
 import { openDatabase } from "expo-sqlite";
-import { date } from "yup";
 
 const db = openDatabase("db2.db");
 
 const inventoryFilter = pickerOptions.inventoryFilter;
 
 const screenWidth = Dimensions.get("window").width;
+
+const screenHeight = Dimensions.get("window").height;
 
 function IngredientsTab(state) {
   const {
@@ -58,12 +59,21 @@ function IngredientsTab(state) {
   const ingredientsInFridge = ingredients.fridge;
 
   const [ingrFilter, setIngrFilter] = useState(inventoryFilter);
-  
+
+  const validationSchema = Yup.object().shape({
+    ingredient: Yup.string().required().min(1).label("Ingredient"),
+    category: Yup.object().required().nullable().label("Category"),
+    dayToExp: Yup.number().required().min(1).label("Days to Expiration"),
+    images: Yup.array().min(1, "Please select at least 1 image."),
+  });
+
   const updateFilter = () => {
     let sqlQuery = "SELECT * FROM FactFridge";
     if (inventoryFilter[0].select === false) {
       sqlQuery = sqlQuery.concat(" WHERE Category IN (");
-      const categoryFiltered = inventoryFilter.filter(c => c.select === true).map(c => `'${c.title}'`);
+      const categoryFiltered = inventoryFilter
+        .filter((c) => c.select === true)
+        .map((c) => `'${c.title}'`);
       sqlQuery = sqlQuery.concat(categoryFiltered.join(",")).concat(");");
     }
     // Load ingredients from database
@@ -93,7 +103,7 @@ function IngredientsTab(state) {
       null,
       forceUpdate
     );
-  }
+  };
 
   const toggleOnOff = (item) => {
     let temp = [...ingrFilter];
@@ -101,23 +111,20 @@ function IngredientsTab(state) {
       for (let i = 0; i < temp.length; i++) {
         if (item.id === i) {
           temp[i].select = true;
-        }
-        else {
+        } else {
           temp[i].select = false;
         }
       }
-    }
-    else if (item.id !== 0) {
+    } else if (item.id !== 0) {
       for (let i = 0; i < temp.length; i++) {
         if (i === item.id) {
           temp[i].select = !temp[i].select;
         }
       }
-      let countSelected = temp.filter(t => t.select === true).length;
-      if ( countSelected === 0 ) {
+      let countSelected = temp.filter((t) => t.select === true).length;
+      if (countSelected === 0) {
         temp[0].select = true;
-      }
-      else {
+      } else {
         temp[0].select = false;
       }
     }
@@ -136,8 +143,8 @@ function IngredientsTab(state) {
     toggleModal(null);
     var expDate = new Date(
       new Date().getTime() +
-        values.dayToExp * 24 * 60 * 60 * 1000 +
-        24 * 60 * 60 * 1000
+      values.dayToExp * 24 * 60 * 60 * 1000 +
+      24 * 60 * 60 * 1000
     ).toISOString();
     db.transaction(
       (tx) => {
@@ -226,6 +233,8 @@ function IngredientsTab(state) {
           marginRight: screenWidth * 0.05,
         }}
       >
+
+        {/* Filter Buttons */}
         <FlatList
           data={ingrFilter}
           horizontal
@@ -241,6 +250,8 @@ function IngredientsTab(state) {
           )}
         ></FlatList>
       </View>
+
+      {/* Ingredients Card */}
       <View style={{ marginBottom: 85 }}>
         <FlatList
           columnWrapperStyle={styles.gridView}
@@ -253,7 +264,8 @@ function IngredientsTab(state) {
                 <SqCard
                   title={ingredientsInFridge[index].ingredient}
                   subTitle1={`${ingredientsInFridge[index].qty} ${ingredientsInFridge[index].unit}`}
-                  subTitle2={`${expDateToColor(ingredientsInFridge[index].expDate)[0]} days`}
+                  subTitle2={`${expDateToColor(ingredientsInFridge[index].expDate)[0]
+                    } days`}
                   image={ingredientsInFridge[index].imageUri}
                   screenWidth={screenWidth}
                   expStatus={
@@ -268,12 +280,14 @@ function IngredientsTab(state) {
             );
           }}
         />
-        {selectedIngre ? (
+        {selectedIngre && (
           <View style={styles.centeredView}>
             <Modal
-              animationType="fade"
-              transparent={true}
-              visible={modalVisible}
+              backdropColor={"#F2F5F8"}
+              backdropOpacity={0.5}
+              coverScreen={true}
+              isVisible={modalVisible}
+              onBackdropPress={() => toggleModal(null)}
               onRequestClose={() => {
                 Alert.alert(
                   "Exit Change Window?",
@@ -295,35 +309,34 @@ function IngredientsTab(state) {
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                   <Image
-                    style={{
-                      width: screenWidth*0.85,
-                      height: screenWidth*0.85*0.66,
-                      borderRadius: 15,
-                    }}
+                    style={styles.modalImg}
                     source={{ uri: selectedIngre.imageUri }}
                   />
-                    <AppForm
-                      initialValues={{
-                        id: selectedIngre.id,
-                        ingredient: selectedIngre.ingredient,
-                        qty: selectedIngre.qty.toString(),
-                        unit: pickerOptions.units.find(
-                          (unit) => unit.label === selectedIngre.unit
-                        ),
-                        category: pickerOptions.categories.find(
-                          (category) =>
-                            category.label === selectedIngre.category
-                        ),
-                        dayToExp: expDateToColor(
-                          selectedIngre.expDate
-                        )[0].toString(),
-                        imageUri: selectedIngre.imageUri,
-                        inFridge: 1,
-                      }}
-                      onSubmit={handleSubmit}
-                      // validationSchema={validationSchema}
-                    >
-                      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+                  <AppForm
+                    initialValues={{
+                      id: selectedIngre.id,
+                      ingredient: selectedIngre.ingredient,
+                      qty: selectedIngre.qty.toString(),
+                      unit: pickerOptions.units.find(
+                        (unit) => unit.label === selectedIngre.unit
+                      ),
+                      category: pickerOptions.categories.find(
+                        (category) => category.label === selectedIngre.category
+                      ),
+                      dayToExp: expDateToColor(
+                        selectedIngre.expDate
+                      )[0].toString(),
+                      imageUri: selectedIngre.imageUri,
+                      inFridge: 1,
+                    }}
+                    onSubmit={handleSubmit}
+                    validationSchema={validationSchema}
+                  >
+                    <View style={styles.scrollContainer}>
+                      <ScrollView
+                        // style={{}}
+                        showsVerticalScrollIndicator={false}
+                      >
                         <AppFormField
                           icon="food-variant"
                           name="ingredient"
@@ -341,7 +354,7 @@ function IngredientsTab(state) {
                             name="qty"
                             placeholder="Quantity"
                             keyboardType="numeric"
-                            width={screenWidth*0.40}
+                            width={screenWidth * 0.4}
                             marginRight={10}
                           />
                           <AppFormPicker
@@ -349,7 +362,7 @@ function IngredientsTab(state) {
                             items={pickerOptions.units}
                             name="unit"
                             placeholder="Unit"
-                            width={screenWidth*0.40}
+                            width={screenWidth * 0.4}
                             marginLeft={10}
                           />
                         </View>
@@ -366,26 +379,27 @@ function IngredientsTab(state) {
                           keyboardType="numeric"
                         />
                       </ScrollView>
+                    </View>
+                    <View style={styles.buttonContainer}>
                       <SubmitButton title="SAVE" />
-                      <AppButton
+                      <CustomButton
                         title="DELETE"
                         onPress={() => handleDelete(selectedIngre)}
-                        borderColor={colors.maroon}
-                        textColor={colors.maroon}
+                        color={colors.danger}
+                        textColor={colors.white}
                       />
-                      <AppButton
+                      <CustomButton
                         title="CANCEL"
                         onPress={() => toggleModal(null)}
-                        borderColor={colors.medium}
-                        textColor={colors.medium}
+                        color={colors.medium}
+                        textColor={colors.white}
                       />
-                    </AppForm>
+                    </View>
+                  </AppForm>
                 </View>
               </View>
             </Modal>
           </View>
-        ) : (
-          <></>
         )}
       </View>
     </Screen>
@@ -393,53 +407,53 @@ function IngredientsTab(state) {
 }
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
   centeredView: {
-    flex: 0.85,
-    // alignSelf: "baseline",
+    alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
   },
   modalView: {
-    margin: 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
     backgroundColor: "white",
     borderRadius: 20,
     padding: 10,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   modalText: {
     marginBottom: 15,
     textAlign: "center",
   },
-  modalButton: {
-    alignSelf: "center",
-    backgroundColor: colors.primary,
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    width: 150,
-    marginTop: 10,
-  },
   modalImg: {
     borderRadius: 15,
+    height: screenWidth * 0.85 * 0.66,
+    width: screenWidth * 0.85,
+    marginBottom: 10,
   },
   screen: {
-    paddingVertical: 20,
+    paddingTop: 20,
     backgroundColor: colors.light,
+  },
+  scrollContainer: {
+    height: 232,
+    // flex: 1,
   },
   gridView: {
     flex: 1,
     justifyContent: "space-evenly",
-  },
-  AppButton: {
-    borderRadius: 10,
   },
 });
 

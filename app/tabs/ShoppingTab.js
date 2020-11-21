@@ -2,41 +2,49 @@ import React, { useState } from "react";
 import {
   StyleSheet,
   View,
-  Modal,
   Text,
   TouchableHighlight,
   TextInput,
   Alert,
   Dimensions,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import Screen from "../components/Screen";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 import ShoppingItem from "../components/ShoppingItem";
-import { AntDesign, Feather } from "@expo/vector-icons";
+import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import Map from "../components/GoogleMap";
+import Modal from "react-native-modal";
 
 /* Redux */
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { addIngredientToCart, deleteIngredientInCart, clearCart, addIngredientToFridge } from "../../actions";
+import {
+  addIngredientToCart,
+  deleteIngredientInCart,
+  clearCart,
+  addIngredientToFridge,
+} from "../../actions";
+import AppTextInput from "../components/AppTextInput";
+import CustomButton from "../components/CustomButton";
 
-// Dimensions 
-const windowHeight = Dimensions.get('window').height;
+// Dimensions
+const windowHeight = Dimensions.get("window").height;
 
-function ShoppingList(props) {
-  const { ingredients, addIngredientToCart, deleteIngredientInCart, clearCart } = props;
+function ShoppingTab(props) {
+  const {
+    ingredients,
+    addIngredientToCart,
+    deleteIngredientInCart,
+    clearCart,
+  } = props;
 
   const ingredientsInCart = ingredients.cart;
 
-  // // Item states
-  // const [todos, setTodos] = useState([
-  //   { text: "buy coffee", key: "1" },
-  //   { text: "buy candies", key: "2" },
-  //   { text: "buy kitkat", key: "3" },
-  // ]);
+  const screenWidth = Dimensions.get("window").width;
 
   const [text, setText] = useState("");
   const changeHandler = (val) => {
@@ -48,7 +56,7 @@ function ShoppingList(props) {
   };
 
   const submitHandler = () => {
-    addIngredientToCart({ name: text, id: Math.random().toString() })
+    addIngredientToCart({ name: text, id: Math.random().toString() });
   };
 
   // Modal states
@@ -56,12 +64,18 @@ function ShoppingList(props) {
 
   // HTML constructor
   return (
-    <Screen>
-      <View style={styles.content}>
+    <Screen style={styles.screen} headerTitle="Shopping List">
+      <ScrollView
+        style={{
+          marginLeft: screenWidth * 0.05,
+          marginRight: screenWidth * 0.05,
+          paddingBottom: 50,
+        }}
+      >
+        <View style={styles.mapContainer}>
+          <Map />
+        </View>
         <View style={styles.header}>
-          <View>
-            <AppText style={styles.textformat}>{"Shopping List"}</AppText>
-          </View>
           <TouchableOpacity
             onPress={() => {
               Alert.alert(
@@ -78,12 +92,12 @@ function ShoppingList(props) {
                 { cancelable: false }
               );
             }}
-            style={{ marginLeft: 30 }}
+            style={{ marginRight: 10 }}
           >
-            <Feather
-              name="trash-2"
-              size={35}
-              color={colors.black}
+            <MaterialCommunityIcons
+              name="trash-can-outline"
+              size={30}
+              color={colors.danger}
               style={styles.plusButton}
             />
           </TouchableOpacity>
@@ -92,82 +106,92 @@ function ShoppingList(props) {
               setModalVisible(true);
             }}
           >
-            <AntDesign
-              name="pluscircleo"
-              size={37}
-              color={colors.black}
+            <MaterialCommunityIcons
+              name="plus"
+              size={30}
+              color={colors.primary}
               style={styles.plusButton}
             />
           </TouchableOpacity>
         </View>
-        <View style={styles.mapContainer}>
-          <Map />
-        </View>
-
         <FlatList
           style={styles.list}
           data={ingredientsInCart}
           keyExtractor={(ingredient) => ingredient.id + "cart"}
           renderItem={({ ingredient, index }) => (
-            <ShoppingItem item={ingredientsInCart[index]} pressHandler={pressHandler} />
+            <ShoppingItem
+              item={ingredientsInCart[index]}
+              pressHandler={pressHandler}
+            />
           )}
         />
         <View style={styles.centeredView}>
           <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
+            backdropColor={"#F2F5F8"}
+            backdropOpacity={0.5}
+            coverScreen={true}
+            isVisible={modalVisible}
+            onBackdropPress={() => setModalVisible(!modalVisible)}
           >
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <TextInput
-                  style={styles.modalText}
-                  placeholder="Add item to buy"
+                <AppText style={{ paddingBottom: 5 }}>
+                  Add Item to Shopping List
+                </AppText>
+                <AppTextInput
+                  // style={styles.modalText}
+                  // placeholder="Add item to buy"
                   onChangeText={changeHandler}
                 />
-                <View style={styles.header}>
-                  <TouchableHighlight
-                    style={styles.closeButton}
+                <View style={styles.buttonContainer}>
+                  <CustomButton
+                    title="CLOSE"
+                    color={colors.danger}
+                    textColor={colors.white}
                     onPress={() => {
                       setModalVisible(!modalVisible);
                     }}
-                  >
-                    <Text style={styles.textStyle}>CLOSE</Text>
-                  </TouchableHighlight>
-                  <TouchableHighlight
-                    style={styles.addButton}
+                  />
+                  <CustomButton
+                    title="ADD ITEM"
+                    color={colors.primary}
+                    textColor={colors.white}
                     onPress={() => {
                       submitHandler();
                       setModalVisible(!modalVisible);
                     }}
-                  >
-                    <Text style={styles.textStyle}>ADD ITEM</Text>
-                  </TouchableHighlight>
+                  />
                 </View>
               </View>
             </View>
           </Modal>
         </View>
-      </View>
+      </ScrollView>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.secondary,
-  },
-  content: {
-    padding: 40,
+  screen: {
+    paddingTop: 20,
+    backgroundColor: colors.light,
   },
   header: {
+    // flex: 1,
+    // backgroundColor: "red",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+  buttonContainer: {
+    marginTop: 4,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   textformat: {
     fontSize: 30,
-    color: colors.primary,
+    color: colors.font_white,
     fontWeight: "bold",
   },
   underline: {
@@ -176,8 +200,10 @@ const styles = StyleSheet.create({
     width: 205,
   },
   list: {
-    marginTop: 20,
-    height: windowHeight * 0.4
+    // backgroundColor: "yellow",
+    // marginBottom: 20,
+    flex: 1,
+    // height: windowHeight * 0.3,
   },
   plusButton: {
     marginTop: 10,
@@ -203,6 +229,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   modalText: {
+    backgroundColor: colors.secondary,
+    width: "100%",
     marginBottom: 15,
     marginLeft: 5,
   },
@@ -218,6 +246,7 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
     width: 110,
+    marginHorizontal: 10,
   },
   addButton: {
     backgroundColor: colors.primary,
@@ -225,16 +254,15 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
     width: 110,
-    marginLeft: 50,
+    marginHorizontal: 10,
   },
   mapStyle: {
     height: 300,
   },
   mapContainer: {
-    marginTop: 20,
-    borderWidth: 1,
-    borderRadius: 30,
-    borderColor: colors.primary,
+    margin: 10,
+    elevation: 10,
+    borderRadius: 15,
     overflow: "hidden",
   },
 });
@@ -247,9 +275,11 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      addIngredientToCart, deleteIngredientInCart, clearCart
+      addIngredientToCart,
+      deleteIngredientInCart,
+      clearCart,
     },
     dispatch
   );
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShoppingList);
+export default connect(mapStateToProps, mapDispatchToProps)(ShoppingTab);
