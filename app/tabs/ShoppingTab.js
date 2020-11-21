@@ -235,9 +235,8 @@ const styles = StyleSheet.create({
   },
   mapContainer: {
     marginTop: 20,
-    borderWidth: 1,
+    elevation: 10,
     borderRadius: 30,
-    borderColor: colors.primary,
     overflow: "hidden",
   },
 });
