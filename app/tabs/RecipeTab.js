@@ -894,8 +894,8 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     backgroundColor: colors.background,
-    marginLeft: screenWidth * 0.04,
-    marginRight: screenWidth * 0.04
+    marginLeft: screenWidth * 0.02,
+    marginRight: screenWidth * 0.02
   },
   inputSearchBar: {
     borderRadius: 30,
