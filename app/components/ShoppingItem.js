@@ -10,46 +10,51 @@ function ShoppingItem({ item, pressHandler }) {
   const [hidden, setHidden] = useState(styles.hidden);
 
   return (
-    <TouchableOpacity
-      style={styles.itemContainer}
-      onPress={() => {
-        setChecked(!checked);
-        checked === false ? setStyle(styles.itemCross) : setStyle(styles.item);
-        checked === false
-          ? setHidden(styles.notHidden)
-          : setHidden(styles.hidden);
-      }}
-    >
-      <View style={styles.itemChild}>
-        <Checkbox
-          status={checked ? "checked" : "unchecked"}
-          onPress={() => {
-            setChecked(!checked);
-            checked === false
-              ? setStyle(styles.itemCross)
-              : setStyle(styles.item);
-            checked === false
-              ? setHidden(styles.notHidden)
-              : setHidden(styles.hidden);
-          }}
-          color={colors.primary}
-        />
-        <Text style={style}>{item.name}</Text>
-      </View>
-      <View style={hidden}>
-        <ListItemDeleteAction onPress={() => pressHandler(item)} />
-      </View>
-    </TouchableOpacity>
+    <>
+      <TouchableOpacity
+        style={styles.itemContainer}
+        onPress={() => {
+          setChecked(!checked);
+          checked === false
+            ? setStyle(styles.itemCross)
+            : setStyle(styles.item);
+          checked === false
+            ? setHidden(styles.notHidden)
+            : setHidden(styles.hidden);
+        }}
+      >
+        <View style={styles.itemChild}>
+          <Checkbox
+            status={checked ? "checked" : "unchecked"}
+            onPress={() => {
+              setChecked(!checked);
+              checked === false
+                ? setStyle(styles.itemCross)
+                : setStyle(styles.item);
+              checked === false
+                ? setHidden(styles.notHidden)
+                : setHidden(styles.hidden);
+            }}
+            color={colors.primary}
+          />
+          <Text style={style}>{item.name}</Text>
+        </View>
+        <View style={hidden}>
+          <ListItemDeleteAction onPress={() => pressHandler(item)} />
+        </View>
+      </TouchableOpacity>
+      <View style={styles.separator}></View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   itemContainer: {
-    padding: 10,
-    marginTop: 16,
-    borderColor: colors.primary,
-    borderWidth: 1,
-    borderRadius: 30,
+    padding: 5,
+    marginTop: 10,
+    // borderColor: colors.primary,
+    // borderRadius: 30,
+    borderWidth: 0,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -78,6 +83,11 @@ const styles = StyleSheet.create({
   },
   notHidden: {
     alignItems: "center",
+  },
+  separator: {
+    width: "100%",
+    height: 1,
+    backgroundColor: colors.lightGrey,
   },
 });
 

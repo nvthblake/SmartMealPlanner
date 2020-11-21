@@ -483,7 +483,7 @@ function RecipeTab(state) {
               >
                 <CustomButton
                   color={"#FFBE6A"}
-                  title="Add to 🛒"
+                  title="Add to  🛒"
                   height={40}
                   onPress={() =>
                     addMissedIngredientsToCard(chosenRecipe.missedIngredients)

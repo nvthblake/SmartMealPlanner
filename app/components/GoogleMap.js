@@ -1,11 +1,10 @@
 import React from "react";
 import MapView from "react-native-maps";
-import { StyleSheet, View, Linking } from "react-native";
+import { StyleSheet, View, Linking, Dimensions } from "react-native";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import openMap from 'react-native-open-maps';
-
+import openMap from "react-native-open-maps";
 
 export default class Map extends React.Component {
   state = {
@@ -22,7 +21,7 @@ export default class Map extends React.Component {
   componentDidMount() {
     this.getLocationAsync();
   }
-  
+
   async getLocationAsync() {
     // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
     const { status, permissions } = await Permissions.askAsync(
@@ -49,8 +48,9 @@ export default class Map extends React.Component {
 
   render() {
     const { firstQuery } = this.state;
+    const screenHeight = Dimensions.get("window").height;
     return (
-      <View style={styles.viewStyle}>
+      <View style={{ height: screenHeight * 0.3 }}>
         <MapView
           style={styles.mapStyle}
           region={this.state.mapRegion}
@@ -63,7 +63,8 @@ export default class Map extends React.Component {
             (data, details = null) => {
               // 'details' is provided when fetchDetails = true
               this.goToMap(details.url);
-          }}
+            }
+          }
           style={styles.searchStyle}
           query={{
             key: "AIzaSyAb9ljLkCtNvARiNTTDppYs4hcvNUZ2NFI",
@@ -79,9 +80,6 @@ export default class Map extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  viewStyle: {
-    height: 320,
-  },
   mapStyle: {
     position: "absolute",
     left: 0,
