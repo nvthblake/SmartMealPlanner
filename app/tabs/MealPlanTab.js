@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Image,
   Linking,
+  Alert,
   CircularOverview,
 } from "react-native";
 import CalendarStrip from "react-native-calendar-strip";
@@ -136,7 +137,6 @@ function MealPlanTab(state) {
     }
     return mealPlans;
   };
-
   const getMealPlanOnDate = (date) => {
     const mealPlan = [];
 
@@ -145,12 +145,32 @@ function MealPlanTab(state) {
 
     //     return recipes;
   };
+  const handleDelete = (recipe) => {
+    Alert.alert(
+      "Done Eating?",
+      "This recipe will be removed from your meal planner",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            console.log(recipe);
+            // Delete from reduce
+            deleteMealPlan(recipe)
+          },
+        },
+        {
+          text: "No",
+          style: "cancel",
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
   const selectedMealPlan = getMealPlanOnDate(curDate);
   // const favoriteRecipes = getFavoriteRecipes();
 
   const onChange = (e) => {};
-
   const getRecipesBasedOnFilter = (recipes) => {
     const result = [];
     const selectedCategories = categories
@@ -483,9 +503,9 @@ function MealPlanTab(state) {
                     borderRadius: 8,
                     paddingVertical: 8,
                   }}
-                  // onPress={() =>
-                  //   addMissedIngredientsToCard(chosenRecipe.missedIngredients)
-                  // }
+                  onPress={() =>
+                    handleDelete(chosenRecipe)
+                  }
                 >
                   <Text
                     style={{
