@@ -22,6 +22,7 @@ import AppText from "../components/AppText";
 import Screen from "../components/Screen";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CircularOverview from "../components/CircularOverview";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 /* Models */
 import Recipe from "../models/Recipe";
@@ -29,7 +30,12 @@ import SpoonacularIngredient from "../models/SpoonacularIngredient";
 
 /* Redux */ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { addRecipe, clearRecipe, addIngredientToCart, addFavoriteRecipe } from "../../actions";
+import {
+  addRecipe,
+  clearRecipe,
+  addIngredientToCart,
+  toggleFavoriteRecipe,
+} from "../../actions";
 
 /* APIs */
 import { getRecipes, getRecipeInfoInBulk } from "../api/Spoonacular";
@@ -55,7 +61,13 @@ const INITIAL_CATEGORIES_STATE = [
 ];
 
 function RecipeTab(state) {
-  const { ingredients, addRecipe, clearRecipe, addIngredientToCart, addFavoriteRecipe } = state;
+  const {
+    ingredients,
+    addRecipe,
+    clearRecipe,
+    addIngredientToCart,
+    toggleFavoriteRecipe,
+  } = state;
 
   const ingredientsInFridge = ingredients.fridge;
   const recipes = ingredients.recipes;
@@ -65,6 +77,8 @@ function RecipeTab(state) {
   const [isResultEmpty, setIsResultEmpty] = useState(false);
   const [chosenRecipe, setChosenRecipe] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [love, setLove] = useState(false);
+  const [heartImage, setHeartImage] = useState(null);
 
   resetCategories = () => {
     setCategory(INITIAL_CATEGORIES_STATE);
@@ -427,6 +441,24 @@ function RecipeTab(state) {
                   }}
                 ></FlatList>
               </View>
+              <TouchableOpacity
+                onPress={() => {
+                  chosenRecipe.loved = !chosenRecipe.loved;
+                  // toggleFavoriteRecipe(chosenRecipe);
+                  console.log(chosenRecipe.loved);
+                  chosenRecipe.loved
+                    ? setHeartImage("heart")
+                    : setHeartImage("heart-outline");
+                }}
+                style={{ position: "absolute" }}
+              >
+                <MaterialCommunityIcons
+                  name={chosenRecipe.loved ? "heart" : "heart-outline"}
+                  size={40}
+                  color={colors.font_red}
+                />
+              </TouchableOpacity>
+
               <View
                 style={{
                   display: "flex",
@@ -438,7 +470,7 @@ function RecipeTab(state) {
                 <TouchableOpacity
                   style={{
                     backgroundColor: "#FFBE6A",
-                    width: Math.floor(screenWidth / 5),
+                    width: Math.floor(screenWidth / 4),
                     borderRadius: 8,
                     paddingVertical: 8,
                   }}
@@ -453,34 +485,13 @@ function RecipeTab(state) {
                       textAlign: "center",
                     }}
                   >
-                    🛒
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#ffc0cb",
-                    width: Math.floor(screenWidth / 5),
-                    borderRadius: 8,
-                    paddingVertical: 8,
-                  }}
-                  onPress={() =>
-                    addFavoriteRecipe(chosenRecipe)
-                  }
-                >
-                  <Text
-                    style={{
-                      color: "white",
-                      fontSize: 16,
-                      textAlign: "center",
-                    }}
-                  >
-                    ❤️
+                    Add to 🛒
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
                     backgroundColor: "#3E73FB",
-                    width: Math.floor(screenWidth / 5),
+                    width: Math.floor(screenWidth / 4),
                     borderRadius: 8,
                     paddingVertical: 8,
                   }}
@@ -495,18 +506,21 @@ function RecipeTab(state) {
                       textAlign: "center",
                     }}
                   >
-                    👨🏻‍🍳
+                    See details
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
                     borderColor: "#3E73FB",
-                    width: Math.floor(screenWidth / 5),
+                    width: Math.floor(screenWidth / 4),
                     borderRadius: 8,
                     paddingVertical: 8,
                     borderWidth: 1,
                   }}
-                  onPress={() => setChosenRecipe(null)}
+                  onPress={() => {
+                    setChosenRecipe(null)
+                    setHeartImage(null);
+                  }}
                 >
                   <Text
                     style={{
@@ -584,6 +598,16 @@ function RecipeTab(state) {
                                     marginRight: 8,
                                   }}
                                 ></Image>
+                                <MaterialCommunityIcons
+                                  size={30}
+                                  style={{ position: "absolute" }}
+                                  name={
+                                    veryPopularRecipes[index].loved
+                                      ? "heart"
+                                      : "heart-outline"
+                                  }
+                                  color={colors.font_red}
+                                />
                                 <Text
                                   numberOfLines={2}
                                   style={styles.recipeTitle}
@@ -748,6 +772,16 @@ function RecipeTab(state) {
                                     marginRight: 8,
                                   }}
                                 ></Image>
+                                <MaterialCommunityIcons
+                                  size={30}
+                                  style={{ position: "absolute" }}
+                                  name={
+                                    vegetarianRecipes[index].loved
+                                      ? "heart"
+                                      : "heart-outline"
+                                  }
+                                  color={colors.font_red}
+                                />
                                 <Text
                                   numberOfLines={2}
                                   style={styles.recipeTitle}
@@ -824,6 +858,16 @@ function RecipeTab(state) {
                                     marginRight: 8,
                                   }}
                                 ></Image>
+                                <MaterialCommunityIcons
+                                  size={30}
+                                  style={{ position: "absolute" }}
+                                  name={
+                                    otherRecipes[index].loved
+                                      ? "heart"
+                                      : "heart-outline"
+                                  }
+                                  color={colors.font_red}
+                                />
                                 <Text
                                   numberOfLines={2}
                                   style={styles.recipeTitle}
@@ -964,7 +1008,7 @@ const mapDispatchToProps = (dispatch) =>
       addRecipe,
       clearRecipe,
       addIngredientToCart,
-      addFavoriteRecipe
+      toggleFavoriteRecipe,
     },
     dispatch
   );

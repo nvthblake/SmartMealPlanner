@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Image,
   Linking,
+  Alert,
   CircularOverview,
 } from "react-native";
 import CalendarStrip from "react-native-calendar-strip";
@@ -67,21 +68,23 @@ function MealPlanTab(state) {
   const recipes = ingredients.recipes;
   const mealPlanner = ingredients.mealPlanner;
   const favoriteRecipes = ingredients.favoriteRecipes;
-  const numMealPlans = 6;
 
   // State vars
   const [isLoading, setIsLoading] = useState(true);
   const [categories, setCategory] = useState(INITIAL_CATEGORIES_STATE);
   const [chosenRecipe, setChosenRecipe] = useState(null);
+  const [numMealPlans, setNumMealPlans] = useState(6);
 
   // Vars related to calendar
   const curDate = new Date();
-  let datesWhitelist = [
-    {
-      start: moment(),
-      end: moment().add(numMealPlans, "days"), // total 2 weeks
-    },
-  ];
+  let datesWhitelist = (num) => {
+    return [
+      {
+        start: moment(),
+        end: moment().add(num, "days"), // total 2 weeks
+      },
+    ];
+  }
   const markedCurDate = [
     {
       date: curDate,
@@ -114,6 +117,7 @@ function MealPlanTab(state) {
   };
 
   // Generate meal plan
+  let maxlength;
   const generateMealPlan = () => {
     const filteredRecipes = getRecipesBasedOnFilter(recipes);
     let breakfastRecipes = [];
@@ -123,6 +127,8 @@ function MealPlanTab(state) {
     let breakfast = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("breakfast") > -1);
     let main_course = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("main course") > -1);
     let salad = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("salad") > -1);
+    let soup = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("soup") > -1);
+    let sauce = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("sauce") > -1);
 
     breakfast.forEach(function (recipe) {
       if (breakfastRecipes.find(e => e.id === recipe.id) == false) {
@@ -135,13 +141,23 @@ function MealPlanTab(state) {
         breakfastRecipes.push(recipe)
       }
     })
+    sauce.forEach(function (recipe) {
+      if (breakfastRecipes.some(e => e.id === recipe.id) == false) {
+        breakfastRecipes.push(recipe)
+      }
+    })
+    soup.forEach(function (recipe) {
+      if (breakfastRecipes.some(e => e.id === recipe.id) == false) {
+        breakfastRecipes.push(recipe)
+      }
+    })
 
     console.log("------main_course");
     console.log(Object.keys(main_course));
 
     lunchRecipes = main_course.slice(0, Math.floor(main_course.length / 2));
     dinnerRecipes = main_course.slice(Math.ceil(main_course.length / 2), main_course.length);
-    
+
     console.log("------breakfastRecipes");
     console.log(Object.keys(breakfastRecipes));
     console.log("------lunchRecipes");
@@ -150,7 +166,7 @@ function MealPlanTab(state) {
     console.log(Object.keys(dinnerRecipes));
 
     let mealPlan = {};
-    const maxlength = Math.max(breakfastRecipes.length, lunchRecipes.length, dinnerRecipes.length);
+    maxlength = Math.max(breakfastRecipes.length, lunchRecipes.length, dinnerRecipes.length);
     const minlength = Math.min(breakfastRecipes.length, lunchRecipes.length, dinnerRecipes.length);
     console.log("-----minlength");
     console.log(minlength);
@@ -159,15 +175,16 @@ function MealPlanTab(state) {
       let l = lunchRecipes[i];
       let d = dinnerRecipes[i];
 
-      if (b === undefined) {
+      if (b === undefined && minlength != 0) {
         b = breakfastRecipes[minlength - 1];
       }
-      if (l === undefined) {
+      if (l === undefined && minlength != 0) {
         l = lunchRecipes[minlength - 1];
       }
-      if (d === undefined) {
+      if (d === undefined && minlength != 0) {
         d = dinnerRecipes[minlength - 1];
       }
+
 
       mealPlan[i] = [b, l, d];
     }
@@ -175,9 +192,6 @@ function MealPlanTab(state) {
   }
   let mealPlan = generateMealPlan();
   const [selectMealPlan, getMealPlanOnDate] = useState(generateMealPlan());
-
-  console.log("------mealPlan");
-  console.log(Object.keys(mealPlan));
 
   const onChangeDate = (date) => {
     console.log(date);
@@ -218,12 +232,33 @@ function MealPlanTab(state) {
     });
     return result;
   };
+  const handleDelete = (recipe) => {
+    Alert.alert(
+      "Done Eating?",
+      "This recipe will be removed from your meal planner",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            console.log(recipe);
+            // Delete from reduce
+            deleteMealPlan(recipe)
+          },
+        },
+        {
+          text: "No",
+          style: "cancel",
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
   useEffect(() => {
     setIsLoading(false);
+    setNumMealPlans(maxlength);
     getMealPlanOnDate(mealPlan[0]);
-  }, [ingredientsInFridge]);
-
+  }, [ingredientsInFridge, numMealPlans]);
 
   return (
     <Screen style={styles.screen}>
@@ -247,7 +282,7 @@ function MealPlanTab(state) {
         highlightDateNameStyle={{ color: colors.primary }}
         disabledDateNameStyle={{ color: "black" }}
         disabledDateNumberStyle={{ color: "black" }}
-        datesWhitelist={datesWhitelist}
+        datesWhitelist={datesWhitelist(numMealPlans)}
         // iconLeft={require('./img/left-arrow.png')}
         // iconRight={require('./img/right-arrow.png')}
         iconContainer={{ flex: 0.1 }}
@@ -475,9 +510,9 @@ function MealPlanTab(state) {
                     borderRadius: 8,
                     paddingVertical: 8,
                   }}
-                // onPress={() =>
-                //   addMissedIngredientsToCard(chosenRecipe.missedIngredients)
-                // }
+                  onPress={() =>
+                    handleDelete(chosenRecipe)
+                  }
                 >
                   <Text
                     style={{
