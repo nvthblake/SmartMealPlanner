@@ -14,7 +14,7 @@ import {
   Alert,
   RefreshControl,
 } from "react-native";
-import { SearchBar } from 'react-native-elements';
+import { SearchBar } from "react-native-elements";
 import { render } from "react-dom";
 
 /* Custom components */
@@ -83,7 +83,7 @@ function RecipeTab(state) {
   const [refreshing, setRefreshing] = useState(false);
   const [love, setLove] = useState(false);
   const [heartImage, setHeartImage] = useState(null);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   resetCategories = () => {
     setCategory(INITIAL_CATEGORIES_STATE);
@@ -585,7 +585,9 @@ function RecipeTab(state) {
                                   color={colors.font_red}
                                 />
                                 {/* Hole all recipe info */}
-                                <View style={{ paddingRight: 3, paddingLeft: 3 }}>
+                                <View
+                                  style={{ paddingRight: 3, paddingLeft: 3 }}
+                                >
                                   <Text
                                     numberOfLines={2}
                                     style={styles.recipeTitle}
@@ -600,20 +602,19 @@ function RecipeTab(state) {
                                       veryPopularRecipes[index].likes,
                                       1
                                     )}{" "}
-                                  likes
-                                </Text>
+                                    likes
+                                  </Text>
                                   <Text
                                     numberOfLines={1}
                                     style={styles.recipeMissingIngredients}
                                   >
                                     {
-                                      veryPopularRecipes[index].missedIngredients
-                                        .length
+                                      veryPopularRecipes[index]
+                                        .missedIngredients.length
                                     }{" "}
-                                  missings
-                                </Text>
+                                    missings
+                                  </Text>
                                 </View>
-
                               </View>
                             </View>
                           </TouchableOpacity>
@@ -672,7 +673,9 @@ function RecipeTab(state) {
                                   color={colors.font_red}
                                 />
                                 {/* Hole all recipe info */}
-                                <View style={{ paddingRight: 3, paddingLeft: 3 }}>
+                                <View
+                                  style={{ paddingRight: 3, paddingLeft: 3 }}
+                                >
                                   {/* Title */}
                                   <Text
                                     numberOfLines={2}
@@ -680,18 +683,18 @@ function RecipeTab(state) {
                                   >
                                     {veryHealthyRecipes[index].title}
                                   </Text>
-                                  
+
                                   {/* Likes */}
                                   <Text
                                     numberOfLines={1}
                                     style={styles.recipeLikes}
                                   >
                                     {nFormatter(
-                                      veryPopularRecipes[index].likes,
+                                      veryHealthyRecipes[index].likes,
                                       1
                                     )}{" "}
-                                  likes
-                                </Text>
+                                    likes
+                                  </Text>
 
                                   {/* Missings Ingre */}
                                   <Text
@@ -699,11 +702,11 @@ function RecipeTab(state) {
                                     style={styles.recipeMissingIngredients}
                                   >
                                     {
-                                      veryHealthyRecipes[index].missedIngredients
-                                        .length
+                                      veryHealthyRecipes[index]
+                                        .missedIngredients.length
                                     }{" "}
-                                  missings
-                                </Text>
+                                    missings
+                                  </Text>
                                 </View>
                               </View>
                             </View>
@@ -763,7 +766,9 @@ function RecipeTab(state) {
                                   color={colors.font_red}
                                 />
                                 {/* Hole all recipe info */}
-                                <View style={{ paddingRight: 3, paddingLeft: 3 }}>
+                                <View
+                                  style={{ paddingRight: 3, paddingLeft: 3 }}
+                                >
                                   <Text
                                     numberOfLines={2}
                                     style={styles.recipeTitle}
@@ -778,8 +783,8 @@ function RecipeTab(state) {
                                       vegetarianRecipes[index].likes,
                                       1
                                     )}{" "}
-                                  likes
-                                </Text>
+                                    likes
+                                  </Text>
                                   <Text
                                     numberOfLines={1}
                                     style={styles.recipeMissingIngredients}
@@ -788,8 +793,8 @@ function RecipeTab(state) {
                                       vegetarianRecipes[index].missedIngredients
                                         .length
                                     }{" "}
-                                  missings
-                                </Text>
+                                    missings
+                                  </Text>
                                 </View>
                               </View>
                             </View>
@@ -843,7 +848,9 @@ function RecipeTab(state) {
                                   color={colors.font_red}
                                 />
                                 {/* Hole all recipe info */}
-                                <View style={{ paddingRight: 3, paddingLeft: 3 }}>
+                                <View
+                                  style={{ paddingRight: 3, paddingLeft: 3 }}
+                                >
                                   <Text
                                     numberOfLines={2}
                                     style={styles.recipeTitle}
@@ -855,16 +862,19 @@ function RecipeTab(state) {
                                     style={styles.recipeLikes}
                                   >
                                     {nFormatter(otherRecipes[index].likes, 1)}{" "}
-                                  likes
-                                </Text>
+                                    likes
+                                  </Text>
 
                                   <Text
                                     numberOfLines={1}
                                     style={styles.recipeMissingIngredients}
                                   >
-                                    {otherRecipes[index].missedIngredients.length}{" "}
-                                  missings
-                                </Text>
+                                    {
+                                      otherRecipes[index].missedIngredients
+                                        .length
+                                    }{" "}
+                                    missings
+                                  </Text>
                                 </View>
                               </View>
                             </View>
@@ -879,9 +889,8 @@ function RecipeTab(state) {
           )}
           <View style={{ height: 60 }}></View>
         </ScrollView>
-      )
-      }
-    </Screen >
+      )}
+    </Screen>
   );
 }
 
@@ -896,12 +905,12 @@ const styles = StyleSheet.create({
   searchBar: {
     backgroundColor: colors.background,
     marginLeft: screenWidth * 0.02,
-    marginRight: screenWidth * 0.02
+    marginRight: screenWidth * 0.02,
   },
   inputSearchBar: {
     borderRadius: 30,
     paddingLeft: 10,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     ...Platform.select({
       ios: {
         shadowColor: colors.primary,
@@ -936,7 +945,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 8,
-    paddingBottom: 8
+    paddingBottom: 8,
   },
   recipeTitle: {
     fontSize: 16,
