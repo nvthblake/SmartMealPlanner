@@ -62,7 +62,7 @@ class RecipeCard extends Component {
     const setChosenRecipeFunc = this.props.setChosenRecipeFunc;
 
     return (
-      <View style={{ margin: 5 }}>
+      <View style={{ margin: 1 }}>
         <View style={styles.recipeCard}>
           <TouchableOpacity
             onPress={() => {
@@ -70,13 +70,12 @@ class RecipeCard extends Component {
             }}
           >
             <View style={{ padding: 8 }}>
-              <View style={{ flexDirection: "column", height: '100%', minHeight: 250 }}>
+              <View style={{ flexDirection: "column", height: '100%', minHeight: 240 }}>
                 <Image
                   source={{ uri: recipe.image }}
                   style={{
                     width: "100%",
-                    marginRight: 14,
-                    height: 140,
+                    height: 131,
                     borderRadius: 10,
                     marginRight: 8,
                   }}
@@ -136,7 +135,7 @@ const styles = StyleSheet.create({
     color: "#FF5757",
   },
   recipeCard: {
-    marginLeft: 16,
+    marginLeft: 10,
     backgroundColor: "white",
     borderRadius: 20,
     width: screenWidth / 2.4,
