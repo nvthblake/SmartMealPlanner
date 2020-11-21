@@ -22,17 +22,22 @@ import colors from "../../config/colors";
 // Redux
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { addIngredientToScan, clearIngredientsToScan, deleteIngredientToScan } from "../../../actions";
-import {  } from "react-native-gesture-handler";
+import {
+  addIngredientToScan,
+  clearIngredientsToScan,
+  deleteIngredientToScan,
+} from "../../../actions";
+import {} from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Screen from "../../components/Screen";
 import * as ImagePicker from "expo-image-picker";
+import CustomButton from "../../components/CustomButton";
+import CamButton from "../../components/CamButton";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 function CameraPage(state, { navigation }) {
-  
   const [modalVisible, setModalVisible] = useState(false);
   const [camVisibility, setCamVisibility] = useState(false);
   const showCameraView = () => {
@@ -43,7 +48,12 @@ function CameraPage(state, { navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
 
-  const { ingredients, addIngredientToScan, clearIngredientsToScan, deleteIngredientToScan } = state;
+  const {
+    ingredients,
+    addIngredientToScan,
+    clearIngredientsToScan,
+    deleteIngredientToScan,
+  } = state;
   const ingredientToScan = ingredients.ingredientToScan;
 
   useEffect(() => {
@@ -102,40 +112,50 @@ function CameraPage(state, { navigation }) {
       [
         {
           text: "No",
-          style: "cancel"
+          style: "cancel",
         },
         {
           text: "Yes",
           onPress: () => {
             clearIngredientsToScan();
             setModalVisible(false);
-          }
-        }
+          },
+        },
       ]
-    )
-  }
+    );
+  };
 
   return (
     <>
-      <AppButton
+      <CamButton
+        height={50}
+        icon={"camera"}
         title={"SCAN FOOD"}
-        // onPress={() => navigation.navigate("Camera")}
         onPress={() => setModalVisible(true)}
       />
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={modalVisible}
-      >
+      <Modal animationType="slide" transparent={false} visible={modalVisible}>
         <View
-          style={{ height: 50, width: screenWidth, alignItems: "center", flexDirection: "row" }}
+          style={{
+            height: 50,
+            width: screenWidth,
+            alignItems: "center",
+            flexDirection: "row",
+          }}
         >
-          <TouchableWithoutFeedback onPress = {handleQuickExit}>
-            <MaterialCommunityIcons name="close" size={35} color={colors.primary} />
+          <TouchableWithoutFeedback onPress={handleQuickExit}>
+            <MaterialCommunityIcons
+              name="close"
+              size={35}
+              color={colors.primary}
+            />
           </TouchableWithoutFeedback>
         </View>
         <View
-          style={{ height: screenWidth, width: "100%", justifyContent: "center" }}
+          style={{
+            height: screenWidth,
+            width: "100%",
+            justifyContent: "center",
+          }}
         >
           <Camera
             style={{ flex: 1 }}
@@ -245,7 +265,6 @@ function CameraPage(state, { navigation }) {
                 //   marginBottom: 30,
               }}
               onPress={takePicture}
-              onLongPress={() => navigation.navigate("ScanTab")}
             />
             <TouchableOpacity
               style={{
@@ -266,19 +285,6 @@ function CameraPage(state, { navigation }) {
               />
             </TouchableOpacity>
           </View>
-          {/* <TouchableOpacity
-            style={{
-              height: 80,
-              width: 80,
-              borderRadius: 40,
-              backgroundColor: colors.white,
-              borderColor: colors.primary,
-              borderWidth: 10,
-              marginBottom: 30,
-            }}
-            onPress={takePicture}
-            onLongPress={() => navigation.navigate("ScanTab")}
-          /> */}
         </View>
       </Modal>
     </>
