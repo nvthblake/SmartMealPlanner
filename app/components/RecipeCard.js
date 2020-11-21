@@ -34,6 +34,7 @@ class RecipeCard extends Component {
   }
 
   componentDidMount() {
+    console.log("header", this.props.header);
     this.setState({
       recipe: this.props.recipe,
       header: this.props.header,
@@ -81,16 +82,37 @@ class RecipeCard extends Component {
                   }}
                 ></Image>
 
-                <View style={styles.textHolder}>
-                  <Text numberOfLines={2} style={styles.recipeHeader}>
-                    {this.state.header}
-                  </Text>
-                  <Text numberOfLines={2} style={styles.recipeTitle}>
-                    {recipe.title}
-                  </Text>
-                </View>
+                {/* With header */}
+                {this.state.header != undefined && (
+                  <View style={[styles.textHolder, { alignItems: 'center' }]}>
+                    <Text numberOfLines={2} style={styles.recipeHeader}>
+                      {this.state.header}
+                    </Text>
+                    <Text numberOfLines={2} style={[styles.recipeTitle, { textAlign: 'center' }]}>
+                      {recipe.title}
+                    </Text>
+                  </View>
+                )}
 
-
+                {/* No header */}
+                {this.state.header == undefined && (
+                  <View style={styles.textHolder}>
+                    <Text numberOfLines={2} style={styles.recipeTitleHeader}>
+                      {recipe.title}
+                    </Text>
+                    {/* likes */}
+                    <Text numberOfLines={2} style={styles.recipeLikes}>
+                      {nFormatter(recipe.likes, 1)}{" "} likes
+                    </Text>
+                    {/* missing */}
+                    <Text
+                      numberOfLines={1}
+                      style={styles.recipeMissingIngredients}
+                    >
+                      {recipe.missedIngredients.length}{" "} missings
+                    </Text>
+                  </View>
+                )}
               </View>
             </View>
           </TouchableOpacity>
@@ -109,7 +131,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   textHolder: {
-    alignItems: 'center'
+
   },
   recipeHeader: {
     fontSize: 20,
@@ -118,19 +140,27 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   recipeTitle: {
-    textAlign: 'center',
     fontSize: 15,
     marginTop: 6,
     color: "#AFAFAF",
   },
+  recipeTitleHeader: {
+    paddingLeft: 8,
+    fontSize: 16,
+    marginTop: 6,
+    color: "#3c3c3c",
+    fontWeight: "bold",
+  },
   recipeLikes: {
+    paddingLeft: 10,
     fontSize: 12,
     marginTop: 3,
     color: "#B3B3B5",
   },
   recipeMissingIngredients: {
+    paddingLeft: 10,
+    marginTop: 2,
     fontSize: 12,
-    marginTop: 12,
     fontWeight: "bold",
     color: "#FF5757",
   },
