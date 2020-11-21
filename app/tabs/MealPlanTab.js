@@ -67,13 +67,14 @@ function MealPlanTab(state) {
   const recipes = ingredients.recipes;
   const mealPlanner = ingredients.mealPlanner;
   const favoriteRecipes = ingredients.favoriteRecipes;
+  const generatingDays = 6;
 
   // Vars related to calendar
   const curDate = new Date();
   let datesWhitelist = [
     {
       start: moment(),
-      end: moment().add(13, "days"), // total 2 weeks
+      end: moment().add(generatingDays, "days"), // total 2 weeks
     },
   ];
   const markedCurDate = [
@@ -176,9 +177,23 @@ function MealPlanTab(state) {
 
   const filteredRecipes = getRecipesBasedOnFilter(recipes);
   // const breakfastRecipes = filteredRecipes;
-  const breakfastRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("lunch") > -1);
+  const breakfastRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("breakfast") > -1);
   const lunchRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("lunch") > -1);
   const dinnerRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("main course") > -1);
+
+  const mealPlan = {};
+  const maxlength = Math.min(breakfastRecipes.length, lunchRecipes.length, dinnerRecipes.length);
+  for (var i = 0; i < maxlength; i++) {
+    mealPlan[i] = [
+      breakfastRecipes[i],
+      lunchRecipes[i],
+      dinnerRecipes[i]
+    ]
+  }
+  console.log("----- breakfast\n");
+  console.log(breakfastRecipes);
+  console.log("----- mealPlan\n");
+  console.log(mealPlan[0]);
 
   // const mealPlan = ;
   return (
@@ -210,6 +225,8 @@ function MealPlanTab(state) {
         markedDates={markedCurDate}
       />
 
+
+      {/* Today's Meal Plan */}
       {isLoading && (
         <View style={{ width: screenWidth, height: screenHeight / 1.5 }}>
           <LoadingAnimation
@@ -230,70 +247,12 @@ function MealPlanTab(state) {
               </View>
               <View>
                 <FlatList
-                  data={breakfastRecipes}
+                  data={mealPlan[0]}
                   horizontal={true}
                   keyExtractor={(recipe) => recipe.id.toString()}
                   renderItem={({ recipe, index }) => {
                     return (
-                      <View style={{ paddingBottom: 5 }}>
-                        <View style={styles.recipeCard}>
-                          <TouchableOpacity
-                            onPress={() => {
-                              setChosenRecipe(breakfastRecipes[index]);
-                            }}
-                          >
-                            <View style={{ padding: 10 }}>
-                              <View style={{ flexDirection: "column" }}>
-                                <Image
-                                  source={{
-                                    uri: breakfastRecipes[index].image,
-                                  }}
-                                  style={{
-                                    width: "100%",
-                                    marginRight: 14,
-                                    height: 140,
-                                    borderRadius: 10,
-                                    marginRight: 8,
-                                  }}
-                                ></Image>
-                                <Text
-                                  numberOfLines={2}
-                                  style={styles.recipeTitle}
-                                >
-                                  {breakfastRecipes[index].title}
-                                </Text>
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.recipeLikes}
-                                >
-                                  {nFormatter(breakfastRecipes[index].likes, 1)}{" "}
-                                  likes
-                                </Text>
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.recipeUsedIngredients}
-                                >
-                                  {
-                                    breakfastRecipes[index].usedIngredients
-                                      .length
-                                  }{" "}
-                                  ingredients
-                                </Text>
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.recipeMissingIngredients}
-                                >
-                                  {
-                                    breakfastRecipes[index].missedIngredients
-                                      .length
-                                  }{" "}
-                                  missings
-                                </Text>
-                              </View>
-                            </View>
-                          </TouchableOpacity>
-                        </View>
-                      </View>
+                      <RecipeCard recipe={mealPlan[0][index]} setChosenRecipeFunc={setChosenRecipe} />
                     );
                   }}
                 ></FlatList>
@@ -312,7 +271,7 @@ function MealPlanTab(state) {
               </View>
 
               {/* Recipe Cards */}
-              {/* <RecipeCard recipe={breakfastRecipes[0]} /> */}
+              <RecipeCard recipe={breakfastRecipes[0]} setChosenRecipeFunc={setChosenRecipe}/>
             </View>
           )}
         </ScrollView>
