@@ -443,25 +443,25 @@ function RecipeTab(state) {
                   }}
                 ></FlatList>
               </View>
-              <TouchableOpacity
-                onPress={() => {
-                  chosenRecipe.loved = !chosenRecipe.loved;
-                  console.log(chosenRecipe.loved);
-                  chosenRecipe.loved
-                    ? setHeartImage("heart") 
-                    : setHeartImage("heart-outline");
+                <TouchableOpacity
+                  onPress={() => {
+                    chosenRecipe.loved = !chosenRecipe.loved;
+                    console.log(chosenRecipe.loved);
                     chosenRecipe.loved
-                      ? addFavoriteRecipe(chosenRecipe) 
-                      : deleteFavoriteRecipe(chosenRecipe);
-                }}
-                style={{ position: "absolute" }}
-              >
-                <MaterialCommunityIcons
-                  name={chosenRecipe.loved ? "heart" : "heart-outline"}
-                  size={40}
-                  color={colors.font_red}
-                />
-              </TouchableOpacity>
+                      ? setHeartImage("heart") 
+                      : setHeartImage("heart-outline");
+                      chosenRecipe.loved
+                        ? addFavoriteRecipe(chosenRecipe) 
+                        : deleteFavoriteRecipe(chosenRecipe);
+                  }}
+                  style={{ position: "absolute", padding: 5 }}
+                >
+                  <MaterialCommunityIcons
+                    name={chosenRecipe.loved ? "heart" : "heart-outline"}
+                    size={40}
+                    color={colors.font_red}
+                  />
+                </TouchableOpacity>
 
               <View
                 style={{
@@ -533,7 +533,7 @@ function RecipeTab(state) {
                       textAlign: "center",
                     }}
                   >
-                    Cancel
+                    Back
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -602,16 +602,16 @@ function RecipeTab(state) {
                                     marginRight: 8,
                                   }}
                                 ></Image>
-                                <MaterialCommunityIcons
-                                  size={30}
-                                  style={{ position: "absolute" }}
-                                  name={
-                                    veryPopularRecipes[index].loved
-                                      ? "heart"
-                                      : "heart-outline"
-                                  }
-                                  color={colors.font_red}
-                                />
+                                  <MaterialCommunityIcons
+                                    size={30}
+                                    style={{ position: "absolute", padding: 5 }}
+                                    name={
+                                      veryPopularRecipes[index].loved
+                                        ? "heart"
+                                        : "heart-outline"
+                                    }
+                                    color={colors.font_red}
+                                  />
                                 <Text
                                   numberOfLines={2}
                                   style={styles.recipeTitle}
@@ -696,7 +696,7 @@ function RecipeTab(state) {
                                 ></Image>
                                 <MaterialCommunityIcons
                                   size={30}
-                                  style={{ position: "absolute" }}
+                                  style={{ position: "absolute", padding: 5 }}
                                   name={
                                     veryHealthyRecipes[index].loved
                                       ? "heart"
@@ -788,7 +788,7 @@ function RecipeTab(state) {
                                 ></Image>
                                 <MaterialCommunityIcons
                                   size={30}
-                                  style={{ position: "absolute" }}
+                                  style={{ position: "absolute", padding: 5 }}
                                   name={
                                     vegetarianRecipes[index].loved
                                       ? "heart"
@@ -874,7 +874,7 @@ function RecipeTab(state) {
                                 ></Image>
                                 <MaterialCommunityIcons
                                   size={30}
-                                  style={{ position: "absolute" }}
+                                  style={{ position: "absolute", padding: 5 }}
                                   name={
                                     otherRecipes[index].loved
                                       ? "heart"
