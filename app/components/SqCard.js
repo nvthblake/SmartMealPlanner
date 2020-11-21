@@ -1,10 +1,24 @@
 import React from "react";
-import { View, StyleSheet, Image, TouchableWithoutFeedback } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableWithoutFeedback,
+} from "react-native";
 // import {  } from "react-native-gesture-handler";
 import colors from "../config/colors";
 import AppText from "./AppText";
 
-function SqCard({ title, subTitle1, subTitle2, image, expStatus, screenWidth, onPress, onLongPress }) {
+function SqCard({
+  title,
+  subTitle1,
+  subTitle2,
+  image,
+  expStatus,
+  screenWidth,
+  onPress,
+  onLongPress,
+}) {
   return (
     <TouchableWithoutFeedback onPress={onPress} onLongPress={onLongPress}>
       <View
@@ -18,9 +32,13 @@ function SqCard({ title, subTitle1, subTitle2, image, expStatus, screenWidth, on
           },
         ]}
       >
-        <Image 
-          style={[styles.image, { marginTop: ((0.85 * screenWidth) / 3)*0.025 }]} 
-          source={{uri: image}} />
+        <Image
+          style={[
+            styles.image,
+            { marginTop: ((0.85 * screenWidth) / 3) * 0.025 },
+          ]}
+          source={{ uri: image }}
+        />
         <View style={styles.detailsContainer}>
           <AppText style={[styles.title, { fontSize: 0.03 * screenWidth }]}>
             {title}
@@ -28,7 +46,12 @@ function SqCard({ title, subTitle1, subTitle2, image, expStatus, screenWidth, on
           <AppText style={[styles.subTitle, { fontSize: 0.025 * screenWidth }]}>
             {subTitle1}
           </AppText>
-          <AppText style={[styles.subTitle, { fontSize: 0.025 * screenWidth, color: expStatus }]}>
+          <AppText
+            style={[
+              styles.subTitle,
+              { fontSize: 0.025 * screenWidth, color: expStatus },
+            ]}
+          >
             {subTitle2}
           </AppText>
         </View>
@@ -45,11 +68,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    elevation: 10,
+    // elevation: 10,
   },
   detailsContainer: {
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   image: {
     width: "95%",
