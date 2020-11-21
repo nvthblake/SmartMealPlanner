@@ -40,9 +40,9 @@ function AppTextInput({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: defaultStyles.colors.light,
+    backgroundColor: defaultStyles.colors.white,
     borderWidth: 2,
-    borderColor: colors.lightGrey,
+    borderColor: colors.secondary,
     borderRadius: 25,
     flexDirection: "row",
     paddingLeft: 8,

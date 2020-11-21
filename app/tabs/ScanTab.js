@@ -37,8 +37,6 @@ const screenHeight = Dimensions.get("window").height;
 
 const validationSchema = Yup.object().shape({
   ingredient: Yup.string().required().min(1).label("Ingredient"),
-  qty: Yup.number().required().min(1).max(10000).label("Quantity"),
-  unit: Yup.object().required().nullable().label("Unit"),
   category: Yup.object().required().nullable().label("Category"),
   dayToExp: Yup.number().required().min(1).label("Days to Expiration"),
   images: Yup.array().min(1, "Please select at least 1 image."),

@@ -15,6 +15,7 @@ import AppButton from "../components/AppButton";
 import CustomButton from "../components/CustomButton";
 import AppText from "../components/AppText";
 import Modal from "react-native-modal";
+import * as Yup from "yup";
 
 import Screen from "../components/Screen";
 import SqCard from "../components/SqCard";
@@ -58,6 +59,13 @@ function IngredientsTab(state) {
   const ingredientsInFridge = ingredients.fridge;
 
   const [ingrFilter, setIngrFilter] = useState(inventoryFilter);
+
+  const validationSchema = Yup.object().shape({
+    ingredient: Yup.string().required().min(1).label("Ingredient"),
+    category: Yup.object().required().nullable().label("Category"),
+    dayToExp: Yup.number().required().min(1).label("Days to Expiration"),
+    images: Yup.array().min(1, "Please select at least 1 image."),
+  });
 
   const updateFilter = () => {
     let sqlQuery = "SELECT * FROM FactFridge";
@@ -319,7 +327,7 @@ function IngredientsTab(state) {
                       inFridge: 1,
                     }}
                     onSubmit={handleSubmit}
-                    // validationSchema={validationSchema}
+                    validationSchema={validationSchema}
                   >
                     <View style={styles.scrollContainer}>
                       <ScrollView
@@ -404,7 +412,6 @@ const styles = StyleSheet.create({
     // backgroundColor: "red",
   },
   centeredView: {
-    // flex: 0.65,
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
@@ -421,10 +428,8 @@ const styles = StyleSheet.create({
         elevation: 3,
       },
     }),
-    // flex: 0.85,
     backgroundColor: "white",
     borderRadius: 20,
-    // marginTop: screenHeight / 6,
     padding: 10,
   },
   modalText: {
@@ -442,7 +447,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.light,
   },
   scrollContainer: {
-    height: screenWidth * 0.85 * 0.66,
+    height: 232,
     // flex: 1,
   },
   gridView: {
