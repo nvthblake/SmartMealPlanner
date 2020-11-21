@@ -283,7 +283,6 @@ function MealPlanTab(state) {
   useEffect(() => {
     setIsLoading(false);
     setNumMealPlans(maxlength);
-    let mealPlan = generateMealPlan();
     getMealPlanOnDate(mealPlan[0]);
     onDateSelect(curDate);
   }, [ingredientsInFridge]);
@@ -597,12 +596,9 @@ function MealPlanTab(state) {
 
 const styles = StyleSheet.create({
   screen: {
-    paddingTop: 0,
+    // paddingTop: 0,
     backgroundColor: colors.background,
-    flex: 1,
-  },
-  container: {
-    flex: 1,
+    // flex: 1,
   },
   body: {
     flex: 1,
@@ -612,11 +608,6 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingTop: 10,
     paddingBottom: 10,
-  },
-  calendar: {
-    margin: 20,
-    borderRadius: 20,
-    marginBottom: 10,
   },
   shadowBox: {
     // shadow
