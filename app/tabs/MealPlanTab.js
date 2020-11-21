@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useEffect, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -310,7 +310,6 @@ function MealPlanTab(state) {
   useEffect(() => {
     setIsLoading(false);
     setNumMealPlans(maxlength);
-    let mealPlan = generateMealPlan();
     getMealPlanOnDate(mealPlan[0]);
     onDateSelect(curDate);
   }, [ingredientsInFridge]);
@@ -342,8 +341,6 @@ function MealPlanTab(state) {
         disabledDateNameStyle={{ color: "black" }}
         disabledDateNumberStyle={{ color: "black" }}
         datesWhitelist={datesWhitelist(numMealPlans)}
-        // iconLeft={require('./img/left-arrow.png')}
-        // iconRight={require('./img/right-arrow.png')}
         iconContainer={{ flex: 0.1 }}
         markedDates={markedCurDate}
         onDateSelected={onDateSelect}
@@ -389,10 +386,12 @@ function MealPlanTab(state) {
               </View>
             </View>
           )}
+
+          {/* Favorite section */}
           {favoriteRecipes.length > 0 && (
             <View>
               {/* Header */}
-              <View style={{ marginLeft: 20 }}>
+              <View style={styles.sectionHeader}>
                 <Text style={{ fontSize: 22, fontWeight: "bold" }}>
                   Favourite
                 </Text>
@@ -630,10 +629,7 @@ const styles = StyleSheet.create({
   screen: {
     paddingTop: 0,
     backgroundColor: colors.background,
-    flex: 1,
-  },
-  container: {
-    flex: 1,
+    // flex: 1,
   },
   body: {
     flex: 1,
@@ -643,11 +639,6 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingTop: 10,
     paddingBottom: 10,
-  },
-  calendar: {
-    margin: 20,
-    borderRadius: 20,
-    marginBottom: 10,
   },
   shadowBox: {
     // shadow
@@ -663,7 +654,7 @@ const styles = StyleSheet.create({
   recipeScroll: {
     marginLeft: 6,
     height: 240,
-    paddingBottom: 10,
+    paddingBottom: 20,
   },
   recipeTitle: {
     fontSize: 16,
@@ -718,7 +709,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     borderRadius: 20,
-    marginTop: screenHeight / 7,
+    // marginTop: screenHeight / 7,
     padding: 12,
   },
 });
