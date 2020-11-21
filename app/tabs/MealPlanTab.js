@@ -258,7 +258,7 @@ function MealPlanTab(state) {
     setIsLoading(false);
     setNumMealPlans(maxlength);
     getMealPlanOnDate(mealPlan[0]);
-  }, [ingredientsInFridge]);
+  }, [ingredientsInFridge, numMealPlans]);
 
   return (
     <Screen style={styles.screen}>
