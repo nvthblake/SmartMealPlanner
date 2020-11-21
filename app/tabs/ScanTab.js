@@ -5,7 +5,6 @@ import {
   FlatList,
   Dimensions,
   ScrollView,
-  Modal,
   Alert,
   TouchableWithoutFeedback,
 } from "react-native";
@@ -28,10 +27,10 @@ import pickerOptions from "../config/pickerOptions";
 
 import { addIngredientToFridge, deleteIngredientToScan } from "../../actions";
 import { getFridgeSql } from "../components/database/queries";
-import AppButton from "../components/AppButton";
 import colors from "../config/colors";
 import CameraPage from "./pages/CameraPage";
 import {} from "react-native-gesture-handler";
+import AddFoodButton from "../components/forms/AddFoodButton";
 
 const db = openDatabase("db2.db");
 
@@ -121,6 +120,7 @@ function ScanTab(state) {
   return (
     <Screen>
       <View style={styles.container}>
+        <CameraPage />
         <FlatList
           data={ingredientToScan}
           horizontal
@@ -135,12 +135,12 @@ function ScanTab(state) {
                 onLayout={(event) => {
                   var { x, y, width, height } = event.nativeEvent.layout;
                   setViewHeight(height);
-                  console.log(viewHeight);
+                  // console.log(viewHeight);
                 }}
               >
-                <ScrollView
+                <View
                   style={{ flex: 1 }}
-                  showsVerticalScrollIndicator={false}
+                  // showsVerticalScrollIndicator={false}
                 >
                   <AppForm
                     initialValues={{
@@ -154,7 +154,7 @@ function ScanTab(state) {
                     onSubmit={handleSubmit}
                     validationSchema={validationSchema}
                   >
-                    <View>
+                    <ScrollView>
                       <FormImageStatic
                         name="imageUri"
                         height={viewHeight - 313}
@@ -197,7 +197,7 @@ function ScanTab(state) {
                           />
                         </TouchableWithoutFeedback>
                       </View>
-                    </View>
+                    </ScrollView>
                     <AppFormField
                       icon="food-variant"
                       name="ingredient"
@@ -239,7 +239,7 @@ function ScanTab(state) {
                       placeholder="Days to Expiration"
                       keyboardType="numeric"
                     />
-                    <SubmitButton
+                    <AddFoodButton
                       title="ADD TO FRIDGE"
                       color={colors.secondary}
                       textColor={colors.primary}
@@ -247,12 +247,11 @@ function ScanTab(state) {
                       size={18}
                     />
                   </AppForm>
-                </ScrollView>
+                </View>
               </View>
             );
           }}
         ></FlatList>
-        <CameraPage />
       </View>
     </Screen>
   );
@@ -293,7 +292,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "red",
     // justifyContent: "space-between",
     alignItems: "center",
-    paddingBottom: 20,
+    paddingBottom: 10,
   },
   logoContainer: {
     position: "absolute",

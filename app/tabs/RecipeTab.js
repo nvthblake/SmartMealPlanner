@@ -12,7 +12,7 @@ import {
   Platform,
   Linking,
   Alert,
-  RefreshControl
+  RefreshControl,
 } from "react-native";
 import { SearchBar } from 'react-native-elements';
 import { render } from "react-dom";
@@ -35,7 +35,8 @@ import {
   addRecipe,
   clearRecipe,
   addIngredientToCart,
-  toggleFavoriteRecipe,
+  addFavoriteRecipe,
+  deleteFavoriteRecipe,
 } from "../../actions";
 
 /* APIs */
@@ -49,6 +50,7 @@ import Modal from "react-native-modal";
 import colors from "../config/colors";
 import { nFormatter } from "../utils/NumberFormatting";
 import { capitalize } from "../utils/TextFormatting";
+import CustomButton from "../components/CustomButton";
 
 /* Copied from IngredientsTab */
 const screenWidth = Dimensions.get("window").width;
@@ -67,7 +69,8 @@ function RecipeTab(state) {
     addRecipe,
     clearRecipe,
     addIngredientToCart,
-    toggleFavoriteRecipe,
+    addFavoriteRecipe,
+    deleteFavoriteRecipe,
   } = state;
 
   const ingredientsInFridge = ingredients.fridge;
@@ -209,11 +212,13 @@ function RecipeTab(state) {
 
   const onRefresh = () => {
     setRefreshing(true);
-    loadRecipesFromSpoonacular().then((recipes) => {
-      setRefreshing(false);
-    }).catch((err) => {
-      setRefreshing(false);
-    })
+    loadRecipesFromSpoonacular()
+      .then((recipes) => {
+        setRefreshing(false);
+      })
+      .catch((err) => {
+        setRefreshing(false);
+      });
   };
 
   function loadRecipesFromSpoonacular() {
@@ -253,20 +258,20 @@ function RecipeTab(state) {
               console.log("RecipeTab -> recipes", recipes.length);
               setIsLoading(false);
 
-              resolve(final_recipes)
+              resolve(final_recipes);
             })
             .catch((err) => {
               setIsResultEmpty(true);
               setIsLoading(false);
-              reject(err)
+              reject(err);
             });
         })
         .catch((err) => {
           setIsResultEmpty(true);
           setIsLoading(false);
-          reject(err)
+          reject(err);
         });
-    })
+    });
   }
 
   const updateSearch = (search) => {
@@ -275,7 +280,7 @@ function RecipeTab(state) {
 
   // Initial API pull
   useEffect(() => {
-    loadRecipesFromSpoonacular()
+    loadRecipesFromSpoonacular();
   }, []);
 
   const filteredRecipes = getRecipesBasedOnFilter(recipes);
@@ -431,15 +436,18 @@ function RecipeTab(state) {
                             marginVertical: 4,
                           }}
                         >
-                          {getAllNeededIngredientsForRecipe(chosenRecipe)[
-                            index
-                          ].ingredient.amount + " " + getAllNeededIngredientsForRecipe(chosenRecipe)[
-                            index
-                          ].ingredient.unitShort + " " + capitalize(
+                          {getAllNeededIngredientsForRecipe(chosenRecipe)[index]
+                            .ingredient.amount +
+                            " " +
                             getAllNeededIngredientsForRecipe(chosenRecipe)[
                               index
-                            ].ingredient.name
-                          )}
+                            ].ingredient.unitShort +
+                            " " +
+                            capitalize(
+                              getAllNeededIngredientsForRecipe(chosenRecipe)[
+                                index
+                              ].ingredient.name
+                            )}
                         </Text>
                       </View>
                     );
@@ -449,11 +457,13 @@ function RecipeTab(state) {
               <TouchableOpacity
                 onPress={() => {
                   chosenRecipe.loved = !chosenRecipe.loved;
-                  // toggleFavoriteRecipe(chosenRecipe);
                   console.log(chosenRecipe.loved);
                   chosenRecipe.loved
-                    ? setHeartImage("heart")
+                    ? setHeartImage("heart") 
                     : setHeartImage("heart-outline");
+                    chosenRecipe.loved
+                      ? addFavoriteRecipe(chosenRecipe) 
+                      : deleteFavoriteRecipe(chosenRecipe);
                 }}
                 style={{ position: "absolute" }}
               >
@@ -466,77 +476,37 @@ function RecipeTab(state) {
 
               <View
                 style={{
-                  display: "flex",
                   flexDirection: "row",
-                  backgroundColor: "white",
+                  alignItems: "center",
                   justifyContent: "space-between",
                 }}
               >
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#FFBE6A",
-                    width: Math.floor(screenWidth / 4),
-                    borderRadius: 8,
-                    paddingVertical: 8,
-                  }}
+                <CustomButton
+                  color={"#FFBE6A"}
+                  title="Add to 🛒"
+                  height={40}
                   onPress={() =>
                     addMissedIngredientsToCard(chosenRecipe.missedIngredients)
                   }
-                >
-                  <Text
-                    style={{
-                      color: "white",
-                      fontSize: 16,
-                      textAlign: "center",
-                    }}
-                  >
-                    Add to 🛒
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#3E73FB",
-                    width: Math.floor(screenWidth / 4),
-                    borderRadius: 8,
-                    paddingVertical: 8,
-                  }}
+                ></CustomButton>
+                <CustomButton
+                  color={colors.primary}
+                  title="See Details"
+                  height={40}
                   onPress={() =>
                     openURLInDefaultBrowser(chosenRecipe.sourceUrl)
                   }
-                >
-                  <Text
-                    style={{
-                      color: "white",
-                      fontSize: 16,
-                      textAlign: "center",
-                    }}
-                  >
-                    See details
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    borderColor: "#3E73FB",
-                    width: Math.floor(screenWidth / 4),
-                    borderRadius: 8,
-                    paddingVertical: 8,
-                    borderWidth: 1,
-                  }}
+                ></CustomButton>
+                <CustomButton
+                  color={colors.medium}
+                  textColor={colors.white}
+                  title="Cancel"
+                  height={40}
                   onPress={() => {
-                    setChosenRecipe(null)
+                    setChosenRecipe(null);
                     setHeartImage(null);
                   }}
-                >
-                  <Text
-                    style={{
-                      color: "#3E73FB",
-                      fontSize: 16,
-                      textAlign: "center",
-                    }}
-                  >
-                    Cancel
-                  </Text>
-                </TouchableOpacity>
+                ></CustomButton>
               </View>
             </View>
           )}
@@ -691,6 +661,16 @@ function RecipeTab(state) {
                                     marginRight: 8,
                                   }}
                                 ></Image>
+                                <MaterialCommunityIcons
+                                  size={30}
+                                  style={{ position: "absolute" }}
+                                  name={
+                                    veryHealthyRecipes[index].loved
+                                      ? "heart"
+                                      : "heart-outline"
+                                  }
+                                  color={colors.font_red}
+                                />
                                 {/* Hole all recipe info */}
                                 <View style={{ paddingRight: 3, paddingLeft: 3 }}>
                                   <Text
@@ -707,6 +687,20 @@ function RecipeTab(state) {
                                       veryHealthyRecipes[index].likes,
                                       1
                                     )}{" "}
+                                <Text
+                                  numberOfLines={2}
+                                  style={styles.recipeTitle}
+                                >
+                                  {veryHealthyRecipes[index].title}
+                                </Text>
+                                <Text
+                                  numberOfLines={1}
+                                  style={styles.recipeLikes}
+                                >
+                                  {nFormatter(
+                                    veryHealthyRecipes[index].likes,
+                                    1
+                                  )}{" "}
                                   likes
                                 </Text>
                                   <Text
@@ -1030,7 +1024,8 @@ const mapDispatchToProps = (dispatch) =>
       addRecipe,
       clearRecipe,
       addIngredientToCart,
-      toggleFavoriteRecipe,
+      addFavoriteRecipe,
+      deleteFavoriteRecipe,
     },
     dispatch
   );

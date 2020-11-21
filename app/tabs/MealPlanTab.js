@@ -15,6 +15,7 @@ import {
 import CalendarStrip from "react-native-calendar-strip";
 import moment from "moment";
 import Modal from "react-native-modal";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Redux
 import { connect } from "react-redux";
@@ -78,6 +79,7 @@ function MealPlanTab(state) {
   const [numMealPlans, setNumMealPlans] = useState(6);
   const [selectDate, setSelectDate] = useState(curDate);
   const header = ["Breakfast", "Lunch", "Dinner"];
+  const [heartImage, setHeartImage] = useState(null);
 
   // Vars related to calendar
   let datesWhitelist = (num) => {
@@ -357,8 +359,6 @@ function MealPlanTab(state) {
               </View>
             </View>
           )}
-
-          {/* Favourite */}
           {favoriteRecipes.length > 0 && (
             <View>
               {/* Header */}
@@ -369,7 +369,17 @@ function MealPlanTab(state) {
               </View>
 
               {/* Recipe Cards */}
-              {/* <RecipeCard recipe={breakfastRecipes[0]} setChosenRecipeFunc={setChosenRecipe}/> */}
+              <FlatList
+                  data={favoriteRecipes}
+                  horizontal={true}
+                  keyExtractor={(recipe) => recipe.id.toString()}
+                  renderItem={({ recipe, index }) => {
+                    return (
+                      <RecipeCard recipe={favoriteRecipes[index]} setChosenRecipeFunc={setChosenRecipe} />
+                    );
+                  }}
+                ></FlatList>
+              {/* <RecipeCard recipe={favoriteRecipes[0]} setChosenRecipeFunc={setChosenRecipe}/> */}
             </View>
           )}
         </ScrollView>
@@ -396,6 +406,25 @@ function MealPlanTab(state) {
                     marginRight: 8,
                   }}
                 ></Image>
+                <TouchableOpacity
+                onPress={() => {
+                  chosenRecipe.loved = !chosenRecipe.loved;
+                  console.log(chosenRecipe.loved);
+                  chosenRecipe.loved
+                    ? setHeartImage("heart") 
+                    : setHeartImage("heart-outline");
+                    chosenRecipe.loved
+                      ? addFavoriteRecipe(chosenRecipe) 
+                      : deleteFavoriteRecipe(chosenRecipe);
+                }}
+                style={{ position: "absolute" }}
+              >
+                <MaterialCommunityIcons
+                  name={chosenRecipe.loved ? "heart" : "heart-outline"}
+                  size={40}
+                  color={colors.font_red}
+                />
+              </TouchableOpacity>
                 <Text
                   style={{
                     color: "#4F555E",
@@ -511,7 +540,7 @@ function MealPlanTab(state) {
                       textAlign: "center",
                     }}
                   >
-                    Cancel
+                    Back
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
