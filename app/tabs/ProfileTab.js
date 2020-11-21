@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import CardView from "../components/CardView";
 import AppText from "../components/AppText";
+import CircularOverview from "../components/CircularOverview";
 import colors from "../config/colors";
 import * as ImagePicker from "expo-image-picker";
 import ProgressBarAnimated from "react-native-progress-bar-animated";
@@ -134,47 +135,42 @@ function Profile(state) {
               Need to go shopping in the next 10 days
             </Text>
             <View style={[{marginTop: screenHeight*0.015, marginHorizontal: screenWidth*0.02}, styles.seperatorline]} />
-            <View style={[{marginTop: screenHeight*0.02, marginHorizontal: screenWidth*0.05}, styles.minilogoview]}>
-              <View>
-                <ImageBackground
-                  source={require("../assets/appIcon/white.png")}
-                  style={[{height: screenWidth*0.6/3, width: screenWidth*0.6/3}, styles.minilogo]}
-                >
-                  <View style={[{marginTop: screenWidth*0.04}, styles.viewDemotext]}>
-                    <Text style={[{fontSize: screenWidth*0.1}, styles.demotext]}>{Expirein3}</Text>
-                  </View>
-                </ImageBackground>
-                <Text style={[{marginTop: screenHeight*0.005, fontSize: screenWidth*0.03}, styles.minitext]}>Items expiring</Text>
-                <Text style={[{marginBottom: screenHeight*0.01, fontSize: screenWidth*0.03}, styles.minitext]}>in 3 days</Text>
-              </View>
-              <View>
-                <ImageBackground
-                  source={require("../assets/appIcon/white.png")}
-                  style={[{height: screenWidth*0.6/3, width: screenWidth*0.6/3}, styles.minilogo]}
-                >
-                  <View style={[{marginTop: screenWidth*0.04}, styles.viewDemotext]}>
-                    <Text style={[{fontSize: screenWidth*0.1}, styles.demotext]}>{Expirein10}</Text>
-                  </View>
-                </ImageBackground>
-                <Text style={[{marginTop: screenHeight*0.005, fontSize: screenWidth*0.03}, styles.minitext]}>Items expiring</Text>
-                <Text style={[{marginBottom: screenHeight*0.01, fontSize: screenWidth*0.03}, styles.minitext]}>in 10 days</Text>
-              </View>
-
-              <View>
-                <ImageBackground
-                  source={require("../assets/appIcon/white.png")}
-                  style={[{height: screenWidth*0.6/3, width: screenWidth*0.6/3}, styles.minilogo]}
-                >
-                  <View style={[{marginTop: screenWidth*0.04}, styles.viewDemotext]}>
-                    <Text style={[{fontSize: screenWidth*0.1}, styles.demotext]}>{Expired}</Text>
-                  </View>
-                </ImageBackground>
-                <Text style={[{marginTop: screenHeight*0.005, fontSize: screenWidth*0.03}, styles.minitext]}>Items already</Text>
-                <Text style={[{marginBottom: screenHeight*0.01, fontSize: screenWidth*0.03}, styles.minitext]}>expired</Text>
-              </View>
+            <View
+              style={{
+                marginTop: screenHeight*0.02,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingHorizontal: 8,
+              }}
+            >
+              <CircularOverview
+                stat={Expirein3}
+                title={"Items expiring"}
+                title2={"in 3 days"}
+                size={Math.floor(screenWidth*0.2)}
+                fontSize={screenWidth*0.1}
+                fontColor={colors.grey}
+              />
+              <CircularOverview
+                stat={Expirein10}
+                title={"Items expiring"}
+                title2={"in 10 days"}
+                size={Math.floor(screenWidth*0.2)}
+                fontSize={screenWidth*0.1}
+                fontColor={colors.grey}
+              />
+              <CircularOverview
+                stat={Expired}
+                title={"Items already"}
+                title2={"expired"}
+                size={Math.floor(screenWidth*0.2)}
+                fontSize={screenWidth*0.1}
+                fontColor={colors.grey}
+              />
             </View>
           </CardView>
-          <Text style={styles.suggestHeader}>Suggested Meals</Text>
+          <Text style={[{marginLeft: screenWidth*0.06, fontSize: screenWidth*0.06}, styles.suggestHeader]}>Suggested Meals</Text>
           <CardView>
             <Text style={styles.suggestHeader}>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -230,8 +226,8 @@ function Profile(state) {
 
 const styles = StyleSheet.create({
   suggestHeader: {
-    marginLeft: 20,
-    fontSize: 12,
+    // marginLeft: 20,
+    // fontSize: 12,
     fontWeight: "bold",
     marginBottom: 10,
     marginTop: 10,
