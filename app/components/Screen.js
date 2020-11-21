@@ -24,14 +24,14 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
     backgroundColor: colors.background,
     flex: 1,
-    // marginBottom: 20,
+    paddingBottom: 20,
   },
   title: {
     // fontStyle: 'Avenir',
     textAlign: 'center', // <-- the magic
     fontWeight: 'bold',
     fontSize: 28,
-    color: colors.font_dark,
+    color: colors.primary,
     marginBottom: 10
   }
 });

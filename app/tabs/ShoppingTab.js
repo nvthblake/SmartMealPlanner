@@ -31,12 +31,7 @@ function ShoppingList(props) {
 
   const ingredientsInCart = ingredients.cart;
 
-  // // Item states
-  // const [todos, setTodos] = useState([
-  //   { text: "buy coffee", key: "1" },
-  //   { text: "buy candies", key: "2" },
-  //   { text: "buy kitkat", key: "3" },
-  // ]);
+  const screenWidth = Dimensions.get("window").width;
 
   const [text, setText] = useState("");
   const changeHandler = (val) => {
@@ -56,8 +51,12 @@ function ShoppingList(props) {
 
   // HTML constructor
   return (
-    <Screen>
-      <View style={styles.content}>
+    <Screen style={styles.screen} headerTitle="Shopping List">
+      <View style={{
+          marginLeft: screenWidth * 0.05,
+          marginRight: screenWidth * 0.05,
+          paddingBottom: 50,
+        }}>
         <View style={styles.header}>
           <View>
             <AppText style={styles.textformat}>{"Shopping List"}</AppText>
@@ -154,6 +153,10 @@ function ShoppingList(props) {
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    paddingTop: 20,
+    backgroundColor: colors.light,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.secondary,
@@ -167,7 +170,7 @@ const styles = StyleSheet.create({
   },
   textformat: {
     fontSize: 30,
-    color: colors.primary,
+    color: colors.font_white,
     fontWeight: "bold",
   },
   underline: {
@@ -232,9 +235,8 @@ const styles = StyleSheet.create({
   },
   mapContainer: {
     marginTop: 20,
-    borderWidth: 1,
+    elevation: 10,
     borderRadius: 30,
-    borderColor: colors.primary,
     overflow: "hidden",
   },
 });
