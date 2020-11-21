@@ -68,14 +68,19 @@ function MealPlanTab(state) {
   const recipes = ingredients.recipes;
   const mealPlanner = ingredients.mealPlanner;
   const favoriteRecipes = ingredients.favoriteRecipes;
-  const generatingDays = 6;
+  const numMealPlans = 6;
+
+  // State vars
+  const [isLoading, setIsLoading] = useState(true);
+  const [categories, setCategory] = useState(INITIAL_CATEGORIES_STATE);
+  const [chosenRecipe, setChosenRecipe] = useState(null);
 
   // Vars related to calendar
   const curDate = new Date();
   let datesWhitelist = [
     {
       start: moment(),
-      end: moment().add(generatingDays, "days"), // total 2 weeks
+      end: moment().add(numMealPlans, "days"), // total 2 weeks
     },
   ];
   const markedCurDate = [
@@ -89,11 +94,103 @@ function MealPlanTab(state) {
     },
   ];
 
-  // State vars
-  const [isLoading, setIsLoading] = useState(true);
-  const [categories, setCategory] = useState(INITIAL_CATEGORIES_STATE);
-  const numMealPlans = 14;
-  const [chosenRecipe, setChosenRecipe] = useState(null);
+  // Recipes
+  const getRecipesBasedOnFilter = (recipes) => {
+    const result = [];
+    const selectedCategories = categories
+      .filter((category) => category.selected)
+      .map((category) => category.title);
+    if (selectedCategories.indexOf("All") > -1) {
+      return recipes;
+    }
+    for (let i = 0; i < recipes.length; i++) {
+      for (let j = 0; j < selectedCategories.length; j++) {
+        if (recipes[i].dishTypes.indexOf(selectedCategories[j]) > -1) {
+          result.push(recipes[i]);
+          break;
+        }
+      }
+    }
+    return result;
+  };
+
+  // Generate meal plan
+  const generateMealPlan = () => {
+    const filteredRecipes = getRecipesBasedOnFilter(recipes);
+    let breakfastRecipes = [];
+    let lunchRecipes = [];
+    let dinnerRecipes = [];
+
+    let breakfast = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("breakfast") > -1);
+    let main_course = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("main course") > -1);
+    let salad = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("salad") > -1);
+
+    breakfast.forEach(function (recipe) {
+      if (breakfastRecipes.find(e => e.id === recipe.id) == false) {
+        breakfastRecipes.push(recipe)
+      }
+    })
+
+    salad.forEach(function (recipe) {
+      if (breakfastRecipes.some(e => e.id === recipe.id) == false) {
+        breakfastRecipes.push(recipe)
+      }
+    })
+
+    console.log("------main_course");
+    console.log(Object.keys(main_course));
+
+    lunchRecipes = main_course.slice(0, Math.floor(main_course.length / 2));
+    dinnerRecipes = main_course.slice(Math.ceil(main_course.length / 2), main_course.length);
+    
+    console.log("------breakfastRecipes");
+    console.log(Object.keys(breakfastRecipes));
+    console.log("------lunchRecipes");
+    console.log(Object.keys(lunchRecipes));
+    console.log("------dinnerRecipes");
+    console.log(Object.keys(dinnerRecipes));
+
+    let mealPlan = {};
+    const maxlength = Math.max(breakfastRecipes.length, lunchRecipes.length, dinnerRecipes.length);
+    const minlength = Math.min(breakfastRecipes.length, lunchRecipes.length, dinnerRecipes.length);
+    console.log("-----minlength");
+    console.log(minlength);
+    for (var i = 0; i < maxlength; i++) {
+      let b = breakfastRecipes[i];
+      let l = lunchRecipes[i];
+      let d = dinnerRecipes[i];
+
+      if (b === undefined) {
+        b = breakfastRecipes[minlength - 1];
+      }
+      if (l === undefined) {
+        l = lunchRecipes[minlength - 1];
+      }
+      if (d === undefined) {
+        d = dinnerRecipes[minlength - 1];
+      }
+
+      mealPlan[i] = [b, l, d];
+    }
+    return mealPlan;
+  }
+  let mealPlan = generateMealPlan();
+  const [selectMealPlan, getMealPlanOnDate] = useState(generateMealPlan());
+
+  console.log("------mealPlan");
+  console.log(Object.keys(mealPlan));
+
+  const onChangeDate = (date) => {
+    console.log(date);
+    var msDiff = new Date(date).getTime() - new Date().getTime();    //Future date - current date
+    var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 1;
+    console.log(index);
+    if (mealPlan[index] != undefined) {
+      console.log(Object.keys(mealPlan[index]));
+      getMealPlanOnDate(mealPlan[index]);
+    }
+  }
+
 
   // Utils Functions
   const openURLInDefaultBrowser = (url) => {
@@ -122,30 +219,6 @@ function MealPlanTab(state) {
     });
     return result;
   };
-  const generateMealPlan = () => {
-    const mealPlans = [];
-
-    // no meal plan in database
-    if (mealPlanner.length() == 0) {
-    }
-    // meal plans in database is < numDay
-    else if (mealPlanner.length() < numMealPlans) {
-      const neededNumMealPlan = numMealPlans - mealPlanner.length();
-    }
-    // meal plan > numdate
-    else {
-      const neededNumMealPlan = numMealPlans - mealPlanner.length();
-    }
-    return mealPlans;
-  };
-  const getMealPlanOnDate = (date) => {
-    const mealPlan = [];
-
-    // const getFavoriteRecipes = () => {
-    //     const recipes = []
-
-    //     return recipes;
-  };
   const handleDelete = (recipe) => {
     Alert.alert(
       "Done Eating?",
@@ -168,58 +241,12 @@ function MealPlanTab(state) {
     );
   };
 
-  const selectedMealPlan = getMealPlanOnDate(curDate);
-  // const favoriteRecipes = getFavoriteRecipes();
-
-  const onChange = (e) => {};
-  const getRecipesBasedOnFilter = (recipes) => {
-    const result = [];
-    const selectedCategories = categories
-      .filter((category) => category.selected)
-      .map((category) => category.title);
-    if (selectedCategories.indexOf("All") > -1) {
-      return recipes;
-    }
-    for (let i = 0; i < recipes.length; i++) {
-      for (let j = 0; j < selectedCategories.length; j++) {
-        if (recipes[i].dishTypes.indexOf(selectedCategories[j]) > -1) {
-          result.push(recipes[i]);
-          break;
-        }
-      }
-    }
-    return result;
-  };
-
   useEffect(() => {
     setIsLoading(false);
+    getMealPlanOnDate(mealPlan[0]);
   }, [ingredientsInFridge]);
 
-  const filteredRecipes = getRecipesBasedOnFilter(recipes);
-  // const breakfastRecipes = filteredRecipes;
-  let breakfastRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("breakfast") > -1);
-  const lunchRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("lunch") > -1);
-  const dinnerRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("main course") > -1);
 
-  if (breakfastRecipes.length == 0) {
-    breakfastRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("salad") > -1);
-  }
-  const mealPlan = {};
-  const maxlength = Math.min(breakfastRecipes.length, lunchRecipes.length, dinnerRecipes.length);
-  for (var i = 0; i < maxlength; i++) {
-    mealPlan[i] = [
-      breakfastRecipes[i],
-      lunchRecipes[i],
-      dinnerRecipes[i]
-    ]
-    
-  }
-  console.log("----- breakfast\n");
-  console.log(breakfastRecipes);
-  console.log("----- mealPlan\n");
-  console.log(mealPlan[0]);
-
-  // const mealPlan = ;
   return (
     <Screen style={styles.screen}>
       {/* Calendar */}
@@ -247,6 +274,7 @@ function MealPlanTab(state) {
         // iconRight={require('./img/right-arrow.png')}
         iconContainer={{ flex: 0.1 }}
         markedDates={markedCurDate}
+        onDateSelected={onChangeDate}
       />
 
 
@@ -262,7 +290,7 @@ function MealPlanTab(state) {
       {!isLoading && (
         <ScrollView>
           {/* Meal Plan */}
-          {breakfastRecipes.length > 0 && (
+          {selectMealPlan !== undefined && (
             <View>
               <View style={{ padding: 16 }}>
                 <Text style={{ fontSize: 22, fontWeight: "bold" }}>
@@ -270,13 +298,14 @@ function MealPlanTab(state) {
                 </Text>
               </View>
               <View>
+                {/* {getMealPlanOnDate()} */}
                 <FlatList
-                  data={mealPlan[0]}
+                  data={selectMealPlan}
                   horizontal={true}
                   keyExtractor={(recipe) => recipe.id.toString()}
                   renderItem={({ recipe, index }) => {
                     return (
-                      <RecipeCard recipe={mealPlan[0][index]} setChosenRecipeFunc={setChosenRecipe} />
+                      <RecipeCard recipe={selectMealPlan[index]} setChosenRecipeFunc={setChosenRecipe} />
                     );
                   }}
                 ></FlatList>
@@ -285,7 +314,7 @@ function MealPlanTab(state) {
           )}
 
           {/* Favourite */}
-          {breakfastRecipes.length > 0 && (
+          {favoriteRecipes.length > 0 && (
             <View>
               {/* Header */}
               <View style={{ marginLeft: 20 }}>
@@ -295,7 +324,7 @@ function MealPlanTab(state) {
               </View>
 
               {/* Recipe Cards */}
-              <RecipeCard recipe={breakfastRecipes[0]} setChosenRecipeFunc={setChosenRecipe}/>
+              {/* <RecipeCard recipe={breakfastRecipes[0]} setChosenRecipeFunc={setChosenRecipe}/> */}
             </View>
           )}
         </ScrollView>

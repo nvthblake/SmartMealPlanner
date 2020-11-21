@@ -25,12 +25,14 @@ class RecipeCard extends Component {
     super(props);
     this.state = {
       recipe: this.props.recipe,
+      setChosenRecipeFunc: this.props.setChosenRecipeFunc
     };
   }
 
   componentDidMount() {
     this.setState({
       recipe: this.props.recipe,
+      setChosenRecipeFunc: this.props.setChosenRecipeFunc
     });
   }
 
@@ -52,12 +54,15 @@ class RecipeCard extends Component {
     const avaUrl = `https://randomuser.me/api/portraits/${
       isMan ? "men" : "women"
     }/${randomNumber}.jpg`;
+    const setChosenRecipeFunc = this.props.setChosenRecipeFunc;
 
     return (
       <View style={{ margin: 5 }}>
         <View style={styles.recipeCard}>
           <TouchableOpacity
-            // onPress={() => openURLInDefaultBrowser(recipe.sourceUrl)}
+            onPress={() => {
+              setChosenRecipeFunc(recipe);
+            }}
           >
             <View style={{ padding: 8 }}>
               <View style={{ flexDirection: "column" }}>
@@ -80,6 +85,7 @@ class RecipeCard extends Component {
                 <Text numberOfLines={1} style={styles.recipeMissingIngredients}>
                   {recipe.missedIngredients.length} missings
                 </Text>
+                
               </View>
             </View>
           </TouchableOpacity>

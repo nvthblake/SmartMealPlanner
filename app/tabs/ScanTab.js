@@ -110,6 +110,8 @@ function ScanTab(state) {
     }
   };
 
+  const [viewHeight, setViewHeight] = useState(screenWidth * 0.5);
+
   const navigation = useNavigation();
 
   return (
@@ -128,6 +130,8 @@ function ScanTab(state) {
                 style={styles.cardContainer}
                 onLayout={(event) => {
                   var { x, y, width, height } = event.nativeEvent.layout;
+                  setViewHeight(height);
+                  console.log(viewHeight);
                 }}
               >
                 <ScrollView
@@ -146,7 +150,10 @@ function ScanTab(state) {
                     onSubmit={handleSubmit}
                     validationSchema={validationSchema}
                   >
-                    <FormImageStatic name="imageUri" />
+                    <FormImageStatic
+                      name="imageUri"
+                      height={viewHeight - 313}
+                    />
                     <AppFormField
                       icon="food-variant"
                       name="ingredient"
