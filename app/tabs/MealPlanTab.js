@@ -177,10 +177,13 @@ function MealPlanTab(state) {
 
   const filteredRecipes = getRecipesBasedOnFilter(recipes);
   // const breakfastRecipes = filteredRecipes;
-  const breakfastRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("breakfast") > -1);
+  let breakfastRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("breakfast") > -1);
   const lunchRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("lunch") > -1);
   const dinnerRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("main course") > -1);
 
+  if (breakfastRecipes.length == 0) {
+    breakfastRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("salad") > -1);
+  }
   const mealPlan = {};
   const maxlength = Math.min(breakfastRecipes.length, lunchRecipes.length, dinnerRecipes.length);
   for (var i = 0; i < maxlength; i++) {
@@ -189,6 +192,7 @@ function MealPlanTab(state) {
       lunchRecipes[i],
       dinnerRecipes[i]
     ]
+    
   }
   console.log("----- breakfast\n");
   console.log(breakfastRecipes);
