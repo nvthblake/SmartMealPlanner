@@ -15,7 +15,7 @@ import {
     ADD_MEAL_PLAN,
     DELETE_MEAL_PLAN,
     CLEAR_MEAL_PLAN,
-    TOGGLE_FAVORITE_RECIPE,
+    ADD_FAVORITE_RECIPE,
     DELETE_FAVORITE_RECIPE,
     CLEAR_FAVORITE_RECIPE,
 } from './types';
@@ -122,9 +122,9 @@ export const clearMealPlan = () => (
 )
 
 // Favorite Recipe
-export const toggleFavoriteRecipe = (recipe) => (
+export const addFavoriteRecipe = (recipe) => (
     {
-        type: TOGGLE_FAVORITE_RECIPE,
+        type: ADD_FAVORITE_RECIPE,
         payload: recipe
     }
 )
