@@ -454,11 +454,11 @@ function RecipeTab(state) {
                   chosenRecipe.loved = !chosenRecipe.loved;
                   console.log(chosenRecipe.loved);
                   chosenRecipe.loved
-                    ? setHeartImage("heart") 
+                    ? setHeartImage("heart")
                     : setHeartImage("heart-outline");
-                    chosenRecipe.loved
-                      ? addFavoriteRecipe(chosenRecipe) 
-                      : deleteFavoriteRecipe(chosenRecipe);
+                  chosenRecipe.loved
+                    ? addFavoriteRecipe(chosenRecipe)
+                    : deleteFavoriteRecipe(chosenRecipe);
                 }}
                 style={{ position: "absolute" }}
               >
@@ -478,7 +478,7 @@ function RecipeTab(state) {
               >
                 <CustomButton
                   color={"#FFBE6A"}
-                  title="Add to 🛒"
+                  title="Add to  🛒"
                   height={40}
                   onPress={() =>
                     addMissedIngredientsToCard(chosenRecipe.missedIngredients)
