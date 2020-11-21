@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./app/assets/appIcon/fridge.png",
     "splash": {
-      "image": "./app/assets/appIcon/fridge.png",
+      "image": "./app/assets/appIcon/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
