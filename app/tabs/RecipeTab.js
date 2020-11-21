@@ -4,6 +4,7 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  ScrollView,
   View,
   Image,
   Dimensions,
@@ -25,8 +26,7 @@ import CircularOverview from "../components/CircularOverview";
 import Recipe from "../models/Recipe";
 import SpoonacularIngredient from "../models/SpoonacularIngredient";
 
-/* Redux */
-import { connect } from "react-redux";
+/* Redux */ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { addRecipe, clearRecipe, addIngredientToCart } from "../../actions";
 
@@ -39,7 +39,6 @@ import Modal from "react-native-modal";
 
 /* Miscellaneous */
 import colors from "../config/colors";
-import { ScrollView } from "react-native-gesture-handler";
 import { nFormatter } from "../utils/NumberFormatting";
 import { capitalize } from "../utils/TextFormatting";
 
