@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     textAlign: 'center', // <-- the magic
     fontWeight: 'bold',
     fontSize: 28,
-    color: colors.font_dark,
+    color: colors.primary,
     marginBottom: 10
   }
 });
