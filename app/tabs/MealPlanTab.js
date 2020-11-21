@@ -155,7 +155,7 @@ function MealPlanTab(state) {
     console.log("------main_course");
     console.log(Object.keys(main_course));
 
-    lunchRecipes = main_course.slice(0, Math.floor(main_course.length / 2));
+    lunchRecipes = main_course.slice(0, Math.ceil(main_course.length / 2));
     dinnerRecipes = main_course.slice(Math.ceil(main_course.length / 2), main_course.length);
 
     console.log("------breakfastRecipes");
@@ -168,8 +168,14 @@ function MealPlanTab(state) {
     let mealPlan = {};
     maxlength = Math.max(breakfastRecipes.length, lunchRecipes.length, dinnerRecipes.length);
     const minlength = Math.min(breakfastRecipes.length, lunchRecipes.length, dinnerRecipes.length);
+
+    console.log("-----maxlength");
+    console.log(maxlength);
     console.log("-----minlength");
     console.log(minlength);
+    
+    console.log("here", Math.ceil(main_course.length / 2));
+    console.log("here", Math.floor(main_course.length / 2));
     for (var i = 0; i < maxlength; i++) {
       let b = breakfastRecipes[i];
       let l = lunchRecipes[i];
@@ -184,16 +190,14 @@ function MealPlanTab(state) {
       if (d === undefined && minlength != 0) {
         d = dinnerRecipes[minlength - 1];
       }
-
-
       mealPlan[i] = [b, l, d];
     }
     return mealPlan;
   }
   let mealPlan = generateMealPlan();
-  const [selectMealPlan, getMealPlanOnDate] = useState(generateMealPlan());
+  const [selectMealPlan, getMealPlanOnDate] = useState(mealPlan[0]);
 
-  const onChangeDate = (date) => {
+  const onDateSelect = (date) => {
     console.log(date);
     var msDiff = new Date(date).getTime() - new Date().getTime();    //Future date - current date
     var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 1;
@@ -202,6 +206,7 @@ function MealPlanTab(state) {
       console.log(Object.keys(mealPlan[index]));
       getMealPlanOnDate(mealPlan[index]);
     }
+    return date;
   }
 
 
@@ -257,8 +262,14 @@ function MealPlanTab(state) {
   useEffect(() => {
     setIsLoading(false);
     setNumMealPlans(maxlength);
+    let mealPlan = generateMealPlan();
     getMealPlanOnDate(mealPlan[0]);
-  }, [ingredientsInFridge, numMealPlans]);
+    onDateSelect(curDate);
+  }, [ingredientsInFridge]);
+
+  useEffect(() => {
+    setNumMealPlans(maxlength);
+  }, [maxlength]);
 
   return (
     <Screen style={styles.screen}>
@@ -287,7 +298,8 @@ function MealPlanTab(state) {
         // iconRight={require('./img/right-arrow.png')}
         iconContainer={{ flex: 0.1 }}
         markedDates={markedCurDate}
-        onDateSelected={onChangeDate}
+        onDateSelected={onDateSelect}
+        selectedDate={curDate}
       />
 
 
