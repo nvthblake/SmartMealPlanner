@@ -32,6 +32,7 @@ function SqCard({
           },
         ]}
       >
+        {/* Ingredients Images */}
         <Image
           style={[
             styles.image,
@@ -40,12 +41,17 @@ function SqCard({
           source={{ uri: image }}
         />
         <View style={styles.detailsContainer}>
+          {/* Ingredients Title */}
           <AppText style={[styles.title, { fontSize: 0.03 * screenWidth }]}>
             {title}
           </AppText>
+
+          {/* Ingredients quantity */}
           <AppText style={[styles.subTitle, { fontSize: 0.025 * screenWidth }]}>
             {subTitle1}
           </AppText>
+
+          {/* Ingredients exp days */}
           <AppText
             style={[
               styles.subTitle,
