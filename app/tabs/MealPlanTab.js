@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useEffect, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -41,7 +41,7 @@ import { getRecipes, getRecipeInfoInBulk } from "../api/Spoonacular";
 import colors from "../config/colors";
 import { ScrollView } from "react-native-gesture-handler";
 import { nFormatter } from "../utils/NumberFormatting";
-import { capitalize } from "../utils/TextFormatting"
+import { capitalize } from "../utils/TextFormatting";
 
 /* Copied from IngredientsTab */
 const screenWidth = Dimensions.get("window").width;
@@ -70,15 +70,18 @@ function MealPlanTab(state) {
   const mealPlanner = ingredients.mealPlanner;
   const favoriteRecipes = ingredients.favoriteRecipes;
 
+  const curDate = new Date();
+
   // State vars
   const [isLoading, setIsLoading] = useState(true);
   const [categories, setCategory] = useState(INITIAL_CATEGORIES_STATE);
   const [chosenRecipe, setChosenRecipe] = useState(null);
   const [numMealPlans, setNumMealPlans] = useState(6);
+  const [selectDate, setSelectDate] = useState(curDate);
+  const header = ["Breakfast", "Lunch", "Dinner"];
   const [heartImage, setHeartImage] = useState(null);
 
   // Vars related to calendar
-  const curDate = new Date();
   let datesWhitelist = (num) => {
     return [
       {
@@ -86,7 +89,7 @@ function MealPlanTab(state) {
         end: moment().add(num, "days"), // total 2 weeks
       },
     ];
-  }
+  };
   const markedCurDate = [
     {
       date: curDate,
@@ -97,6 +100,41 @@ function MealPlanTab(state) {
       ],
     },
   ];
+
+  const getDateHeader = (date) => {
+    console.log("date: ", date, curDate);
+    var msDateA = Date.UTC(
+      date.getFullYear(),
+      date.getMonth() + 1,
+      date.getDate()
+    );
+    var msDateB = Date.UTC(
+      curDate.getFullYear(),
+      curDate.getMonth() + 1,
+      curDate.getDate()
+    );
+    moment.locale("en");
+
+    if (msDateA == msDateB) {
+      return "Today's Meal Plan";
+    } else {
+      return moment(date).format("MMM D") + " Meal Plan";
+    }
+  };
+
+  const onDateSelect = (date) => {
+    console.log(date);
+    let d = new Date(date);
+    setSelectDate(d);
+    var msDiff = new Date(date).getTime() - new Date().getTime(); //Future date - current date
+    var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 1;
+    console.log(index);
+    if (mealPlan[index] != undefined) {
+      console.log(Object.keys(mealPlan[index]));
+      getMealPlanOnDate(mealPlan[index]);
+    }
+    return date;
+  };
 
   // Recipes
   const getRecipesBasedOnFilter = (recipes) => {
@@ -126,39 +164,52 @@ function MealPlanTab(state) {
     let lunchRecipes = [];
     let dinnerRecipes = [];
 
-    let breakfast = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("breakfast") > -1);
-    let main_course = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("main course") > -1);
-    let salad = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("salad") > -1);
-    let soup = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("soup") > -1);
-    let sauce = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("sauce") > -1);
+    let breakfast = filteredRecipes.filter(
+      (recipe) => recipe.dishTypes.indexOf("breakfast") > -1
+    );
+    let main_course = filteredRecipes.filter(
+      (recipe) => recipe.dishTypes.indexOf("main course") > -1
+    );
+    let salad = filteredRecipes.filter(
+      (recipe) => recipe.dishTypes.indexOf("salad") > -1
+    );
+    let soup = filteredRecipes.filter(
+      (recipe) => recipe.dishTypes.indexOf("soup") > -1
+    );
+    let sauce = filteredRecipes.filter(
+      (recipe) => recipe.dishTypes.indexOf("sauce") > -1
+    );
 
     breakfast.forEach(function (recipe) {
-      if (breakfastRecipes.find(e => e.id === recipe.id) == false) {
-        breakfastRecipes.push(recipe)
+      if (breakfastRecipes.find((e) => e.id === recipe.id) == false) {
+        breakfastRecipes.push(recipe);
       }
-    })
+    });
 
     salad.forEach(function (recipe) {
-      if (breakfastRecipes.some(e => e.id === recipe.id) == false) {
-        breakfastRecipes.push(recipe)
+      if (breakfastRecipes.some((e) => e.id === recipe.id) == false) {
+        breakfastRecipes.push(recipe);
       }
-    })
+    });
     sauce.forEach(function (recipe) {
-      if (breakfastRecipes.some(e => e.id === recipe.id) == false) {
-        breakfastRecipes.push(recipe)
+      if (breakfastRecipes.some((e) => e.id === recipe.id) == false) {
+        breakfastRecipes.push(recipe);
       }
-    })
+    });
     soup.forEach(function (recipe) {
-      if (breakfastRecipes.some(e => e.id === recipe.id) == false) {
-        breakfastRecipes.push(recipe)
+      if (breakfastRecipes.some((e) => e.id === recipe.id) == false) {
+        breakfastRecipes.push(recipe);
       }
-    })
+    });
 
     console.log("------main_course");
     console.log(Object.keys(main_course));
 
-    lunchRecipes = main_course.slice(0, Math.floor(main_course.length / 2));
-    dinnerRecipes = main_course.slice(Math.ceil(main_course.length / 2), main_course.length);
+    lunchRecipes = main_course.slice(0, Math.ceil(main_course.length / 2));
+    dinnerRecipes = main_course.slice(
+      Math.ceil(main_course.length / 2),
+      main_course.length
+    );
 
     console.log("------breakfastRecipes");
     console.log(Object.keys(breakfastRecipes));
@@ -168,10 +219,24 @@ function MealPlanTab(state) {
     console.log(Object.keys(dinnerRecipes));
 
     let mealPlan = {};
-    maxlength = Math.max(breakfastRecipes.length, lunchRecipes.length, dinnerRecipes.length);
-    const minlength = Math.min(breakfastRecipes.length, lunchRecipes.length, dinnerRecipes.length);
+    maxlength = Math.max(
+      breakfastRecipes.length,
+      lunchRecipes.length,
+      dinnerRecipes.length
+    );
+    const minlength = Math.min(
+      breakfastRecipes.length,
+      lunchRecipes.length,
+      dinnerRecipes.length
+    );
+
+    console.log("-----maxlength");
+    console.log(maxlength);
     console.log("-----minlength");
     console.log(minlength);
+
+    console.log("here", Math.ceil(main_course.length / 2));
+    console.log("here", Math.floor(main_course.length / 2));
     for (var i = 0; i < maxlength; i++) {
       let b = breakfastRecipes[i];
       let l = lunchRecipes[i];
@@ -186,26 +251,12 @@ function MealPlanTab(state) {
       if (d === undefined && minlength != 0) {
         d = dinnerRecipes[minlength - 1];
       }
-
-
       mealPlan[i] = [b, l, d];
     }
     return mealPlan;
-  }
+  };
   let mealPlan = generateMealPlan();
-  const [selectMealPlan, getMealPlanOnDate] = useState(generateMealPlan());
-
-  const onChangeDate = (date) => {
-    console.log(date);
-    var msDiff = new Date(date).getTime() - new Date().getTime();    //Future date - current date
-    var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 1;
-    console.log(index);
-    if (mealPlan[index] != undefined) {
-      console.log(Object.keys(mealPlan[index]));
-      getMealPlanOnDate(mealPlan[index]);
-    }
-  }
-
+  const [selectMealPlan, getMealPlanOnDate] = useState(mealPlan[0]);
 
   // Utils Functions
   const openURLInDefaultBrowser = (url) => {
@@ -244,7 +295,7 @@ function MealPlanTab(state) {
           onPress: () => {
             console.log(recipe);
             // Delete from reduce
-            deleteMealPlan(recipe)
+            deleteMealPlan(recipe);
           },
         },
         {
@@ -260,7 +311,12 @@ function MealPlanTab(state) {
     setIsLoading(false);
     setNumMealPlans(maxlength);
     getMealPlanOnDate(mealPlan[0]);
-  }, [ingredientsInFridge, numMealPlans]);
+    onDateSelect(curDate);
+  }, [ingredientsInFridge]);
+
+  useEffect(() => {
+    setNumMealPlans(maxlength);
+  }, [maxlength]);
 
   return (
     <Screen style={styles.screen}>
@@ -275,7 +331,7 @@ function MealPlanTab(state) {
           highlightColor: colors.secondary,
           borderHighlightColor: "white",
         }}
-        style={{ height: 90, paddingTop: 10 }}
+        style={{ height: 90, paddingTop: 10, marginBottom: 10 }}
         calendarHeaderStyle={{ color: "black" }}
         calendarColor={"white"}
         dateNumberStyle={{ color: "black" }}
@@ -285,13 +341,11 @@ function MealPlanTab(state) {
         disabledDateNameStyle={{ color: "black" }}
         disabledDateNumberStyle={{ color: "black" }}
         datesWhitelist={datesWhitelist(numMealPlans)}
-        // iconLeft={require('./img/left-arrow.png')}
-        // iconRight={require('./img/right-arrow.png')}
         iconContainer={{ flex: 0.1 }}
         markedDates={markedCurDate}
-        onDateSelected={onChangeDate}
+        onDateSelected={onDateSelect}
+        selectedDate={curDate}
       />
-
 
       {/* Today's Meal Plan */}
       {isLoading && (
@@ -307,30 +361,37 @@ function MealPlanTab(state) {
           {/* Meal Plan */}
           {selectMealPlan !== undefined && (
             <View>
-              <View style={{ padding: 16 }}>
+              <View style={styles.sectionHeader}>
                 <Text style={{ fontSize: 22, fontWeight: "bold" }}>
-                  Today’s Meal Plan
+                  {getDateHeader(selectDate)}
                 </Text>
               </View>
               <View>
-                {/* {getMealPlanOnDate()} */}
                 <FlatList
+                  style={styles.recipeScroll}
+                  showsHorizontalScrollIndicator={false}
                   data={selectMealPlan}
                   horizontal={true}
                   keyExtractor={(recipe) => recipe.id.toString()}
                   renderItem={({ recipe, index }) => {
                     return (
-                      <RecipeCard recipe={selectMealPlan[index]} setChosenRecipeFunc={setChosenRecipe} />
+                      <RecipeCard
+                        header={header[index]}
+                        recipe={selectMealPlan[index]}
+                        setChosenRecipeFunc={setChosenRecipe}
+                      />
                     );
                   }}
                 ></FlatList>
               </View>
             </View>
           )}
+
+          {/* Favorite section */}
           {favoriteRecipes.length > 0 && (
             <View>
               {/* Header */}
-              <View style={{ marginLeft: 20 }}>
+              <View style={styles.sectionHeader}>
                 <Text style={{ fontSize: 22, fontWeight: "bold" }}>
                   Favourite
                 </Text>
@@ -338,15 +399,19 @@ function MealPlanTab(state) {
 
               {/* Recipe Cards */}
               <FlatList
-                  data={favoriteRecipes}
-                  horizontal={true}
-                  keyExtractor={(recipe) => recipe.id.toString()}
-                  renderItem={({ recipe, index }) => {
-                    return (
-                      <RecipeCard recipe={favoriteRecipes[index]} setChosenRecipeFunc={setChosenRecipe} />
-                    );
-                  }}
-                ></FlatList>
+                style={styles.recipeScroll}
+                data={favoriteRecipes}
+                horizontal={true}
+                keyExtractor={(recipe) => recipe.id.toString()}
+                renderItem={({ recipe, index }) => {
+                  return (
+                    <RecipeCard
+                      recipe={favoriteRecipes[index]}
+                      setChosenRecipeFunc={setChosenRecipe}
+                    />
+                  );
+                }}
+              ></FlatList>
               {/* <RecipeCard recipe={favoriteRecipes[0]} setChosenRecipeFunc={setChosenRecipe}/> */}
             </View>
           )}
@@ -375,24 +440,24 @@ function MealPlanTab(state) {
                   }}
                 ></Image>
                 <TouchableOpacity
-                onPress={() => {
-                  chosenRecipe.loved = !chosenRecipe.loved;
-                  console.log(chosenRecipe.loved);
-                  chosenRecipe.loved
-                    ? setHeartImage("heart") 
-                    : setHeartImage("heart-outline");
+                  onPress={() => {
+                    chosenRecipe.loved = !chosenRecipe.loved;
+                    console.log(chosenRecipe.loved);
                     chosenRecipe.loved
-                      ? addFavoriteRecipe(chosenRecipe) 
+                      ? setHeartImage("heart")
+                      : setHeartImage("heart-outline");
+                    chosenRecipe.loved
+                      ? addFavoriteRecipe(chosenRecipe)
                       : deleteFavoriteRecipe(chosenRecipe);
-                }}
-                style={{ position: "absolute" }}
-              >
-                <MaterialCommunityIcons
-                  name={chosenRecipe.loved ? "heart" : "heart-outline"}
-                  size={40}
-                  color={colors.font_red}
-                />
-              </TouchableOpacity>
+                  }}
+                  style={{ position: "absolute" }}
+                >
+                  <MaterialCommunityIcons
+                    name={chosenRecipe.loved ? "heart" : "heart-outline"}
+                    size={40}
+                    color={colors.font_red}
+                  />
+                </TouchableOpacity>
                 <Text
                   style={{
                     color: "#4F555E",
@@ -511,9 +576,7 @@ function MealPlanTab(state) {
                     borderRadius: 8,
                     paddingVertical: 8,
                   }}
-                  onPress={() =>
-                    handleDelete(chosenRecipe)
-                  }
+                  onPress={() => handleDelete(chosenRecipe)}
                 >
                   <Text
                     style={{
@@ -538,17 +601,16 @@ const styles = StyleSheet.create({
   screen: {
     paddingTop: 0,
     backgroundColor: colors.background,
-    flex: 1,
-  },
-  container: {
-    flex: 1,
+    // flex: 1,
   },
   body: {
     flex: 1,
   },
-  calendar: {
-    margin: 20,
-    borderRadius: 20,
+  sectionHeader: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   shadowBox: {
     // shadow
@@ -560,6 +622,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 10,
     elevation: 9,
+  },
+  recipeScroll: {
+    marginLeft: 6,
+    height: 240,
+    paddingBottom: 20,
   },
   recipeTitle: {
     fontSize: 16,
@@ -614,7 +681,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     borderRadius: 20,
-    marginTop: screenHeight / 7,
+    // marginTop: screenHeight / 7,
     padding: 12,
   },
 });

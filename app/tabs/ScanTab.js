@@ -29,7 +29,6 @@ import { addIngredientToFridge, deleteIngredientToScan } from "../../actions";
 import { getFridgeSql } from "../components/database/queries";
 import colors from "../config/colors";
 import CameraPage from "./pages/CameraPage";
-import {} from "react-native-gesture-handler";
 import AddFoodButton from "../components/forms/AddFoodButton";
 
 const db = openDatabase("db2.db");
@@ -146,7 +145,7 @@ function ScanTab(state) {
                     initialValues={{
                       ingredient: "",
                       qty: "",
-                      unit: null,
+                      unit: { label: "unit", value: 7 },
                       category: null,
                       dayToExp: "",
                       imageUri: item.imageUri,

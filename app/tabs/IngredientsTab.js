@@ -233,6 +233,7 @@ function IngredientsTab(state) {
           marginRight: screenWidth * 0.05,
         }}
       >
+        {/* Filter Buttons */}
         <FlatList
           data={ingrFilter}
           horizontal
@@ -248,6 +249,8 @@ function IngredientsTab(state) {
           )}
         ></FlatList>
       </View>
+
+      {/* Ingredients Card */}
       <View style={{ marginBottom: 85 }}>
         <FlatList
           columnWrapperStyle={styles.gridView}
