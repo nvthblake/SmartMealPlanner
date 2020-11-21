@@ -305,7 +305,7 @@ function MealPlanTab(state) {
           highlightColor: colors.secondary,
           borderHighlightColor: "white",
         }}
-        style={{ height: 90, paddingTop: 10 }}
+        style={{ height: 90, paddingTop: 10, marginBottom: 10}}
         calendarHeaderStyle={{ color: "black" }}
         calendarColor={"white"}
         dateNumberStyle={{ color: "black" }}
@@ -345,7 +345,7 @@ function MealPlanTab(state) {
               </View>
               <View>
                 <FlatList
-                  style={{height: 250, paddingBottom:10}}
+                  style={styles.recipeScroll}
                   showsHorizontalScrollIndicator={false}
                   data={selectMealPlan}
                   horizontal={true}
@@ -370,6 +370,7 @@ function MealPlanTab(state) {
 
               {/* Recipe Cards */}
               <FlatList
+                  style={styles.recipeScroll}
                   data={favoriteRecipes}
                   horizontal={true}
                   keyExtractor={(recipe) => recipe.id.toString()}
@@ -609,12 +610,13 @@ const styles = StyleSheet.create({
   sectionHeader: {
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: 8,
-    paddingBottom: 8
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   calendar: {
     margin: 20,
     borderRadius: 20,
+    marginBottom: 10,
   },
   shadowBox: {
     // shadow
@@ -626,6 +628,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 10,
     elevation: 9,
+  },
+  recipeScroll: {
+    marginLeft: 6,
+    height: 240, 
+    paddingBottom: 10
   },
   recipeTitle: {
     fontSize: 16,
