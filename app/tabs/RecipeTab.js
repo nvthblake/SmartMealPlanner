@@ -602,9 +602,19 @@ function RecipeTab(state) {
                                     marginRight: 8,
                                   }}
                                 ></Image>
+                                <TouchableOpacity
+                                    style={{ position: "absolute", padding: 5 }}
+                                    onPress={() => {
+                                      console.log("Pressed very popular!")
+                                      veryPopularRecipes[index].loved = !veryPopularRecipes[index].loved;
+                                      console.log(veryPopularRecipes[index].loved);
+                                      veryPopularRecipes[index].loved
+                                        ? addFavoriteRecipe(veryPopularRecipes[index]) 
+                                        : deleteFavoriteRecipe(veryPopularRecipes[index]);
+
+                                    }}>
                                   <MaterialCommunityIcons
                                     size={30}
-                                    style={{ position: "absolute", padding: 5 }}
                                     name={
                                       veryPopularRecipes[index].loved
                                         ? "heart"
@@ -612,6 +622,7 @@ function RecipeTab(state) {
                                     }
                                     color={colors.font_red}
                                   />
+                                </TouchableOpacity>
                                 <Text
                                   numberOfLines={2}
                                   style={styles.recipeTitle}
@@ -694,16 +705,27 @@ function RecipeTab(state) {
                                     marginRight: 8,
                                   }}
                                 ></Image>
-                                <MaterialCommunityIcons
-                                  size={30}
-                                  style={{ position: "absolute", padding: 5 }}
-                                  name={
-                                    veryHealthyRecipes[index].loved
-                                      ? "heart"
-                                      : "heart-outline"
-                                  }
-                                  color={colors.font_red}
-                                />
+                                <TouchableOpacity
+                                    style={{ position: "absolute", padding: 5 }}
+                                    onPress={() => {
+                                      console.log("Pressed very healthy!")
+                                      veryHealthyRecipes[index].loved = !veryHealthyRecipes[index].loved;
+                                      console.log(veryHealthyRecipes[index].loved);
+                                      veryHealthyRecipes[index].loved
+                                        ? addFavoriteRecipe(veryHealthyRecipes[index]) 
+                                        : deleteFavoriteRecipe(veryHealthyRecipes[index]);
+
+                                    }}>
+                                  <MaterialCommunityIcons
+                                    size={30}
+                                    name={
+                                      veryHealthyRecipes[index].loved
+                                        ? "heart"
+                                        : "heart-outline"
+                                    }
+                                    color={colors.font_red}
+                                  />
+                                </TouchableOpacity>
                                 <Text
                                   numberOfLines={2}
                                   style={styles.recipeTitle}
@@ -786,16 +808,27 @@ function RecipeTab(state) {
                                     marginRight: 8,
                                   }}
                                 ></Image>
-                                <MaterialCommunityIcons
-                                  size={30}
-                                  style={{ position: "absolute", padding: 5 }}
-                                  name={
-                                    vegetarianRecipes[index].loved
-                                      ? "heart"
-                                      : "heart-outline"
-                                  }
-                                  color={colors.font_red}
-                                />
+                                <TouchableOpacity
+                                    style={{ position: "absolute", padding: 5 }}
+                                    onPress={() => {
+                                      console.log("Pressed vegetarian!")
+                                      vegetarianRecipes[index].loved = !vegetarianRecipes[index].loved;
+                                      console.log(vegetarianRecipes[index].loved);
+                                      vegetarianRecipes[index].loved
+                                        ? addFavoriteRecipe(vegetarianRecipes[index]) 
+                                        : deleteFavoriteRecipe(vegetarianRecipes[index]);
+
+                                    }}>
+                                  <MaterialCommunityIcons
+                                    size={30}
+                                    name={
+                                      vegetarianRecipes[index].loved
+                                        ? "heart"
+                                        : "heart-outline"
+                                    }
+                                    color={colors.font_red}
+                                  />
+                                </TouchableOpacity>
                                 <Text
                                   numberOfLines={2}
                                   style={styles.recipeTitle}
@@ -872,16 +905,27 @@ function RecipeTab(state) {
                                     marginRight: 8,
                                   }}
                                 ></Image>
-                                <MaterialCommunityIcons
-                                  size={30}
-                                  style={{ position: "absolute", padding: 5 }}
-                                  name={
-                                    otherRecipes[index].loved
-                                      ? "heart"
-                                      : "heart-outline"
-                                  }
-                                  color={colors.font_red}
-                                />
+                                <TouchableOpacity
+                                    style={{ position: "absolute", padding: 5 }}
+                                    onPress={() => {
+                                      console.log("Pressed other!")
+                                      otherRecipes[index].loved = !otherRecipes[index].loved;
+                                      console.log(otherRecipes[index].loved);
+                                      otherRecipes[index].loved
+                                        ? addFavoriteRecipe(otherRecipes[index]) 
+                                        : deleteFavoriteRecipe(otherRecipes[index]);
+
+                                    }}>
+                                  <MaterialCommunityIcons
+                                    size={30}
+                                    name={
+                                      otherRecipes[index].loved
+                                        ? "heart"
+                                        : "heart-outline"
+                                    }
+                                    color={colors.font_red}
+                                  />
+                                </TouchableOpacity>
                                 <Text
                                   numberOfLines={2}
                                   style={styles.recipeTitle}
