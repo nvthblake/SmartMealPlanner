@@ -5,7 +5,6 @@ import {
   FlatList,
   Dimensions,
   ScrollView,
-  Modal,
   Alert,
   TouchableWithoutFeedback,
 } from "react-native";
@@ -28,10 +27,10 @@ import pickerOptions from "../config/pickerOptions";
 
 import { addIngredientToFridge, deleteIngredientToScan } from "../../actions";
 import { getFridgeSql } from "../components/database/queries";
-import AppButton from "../components/AppButton";
 import colors from "../config/colors";
 import CameraPage from "./pages/CameraPage";
 import {} from "react-native-gesture-handler";
+import AddFoodButton from "../components/forms/AddFoodButton";
 
 const db = openDatabase("db2.db");
 
@@ -240,7 +239,7 @@ function ScanTab(state) {
                       placeholder="Days to Expiration"
                       keyboardType="numeric"
                     />
-                    <SubmitButton
+                    <AddFoodButton
                       title="ADD TO FRIDGE"
                       color={colors.secondary}
                       textColor={colors.primary}
