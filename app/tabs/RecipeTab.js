@@ -887,6 +887,7 @@ function RecipeTab(state) {
 
 const styles = StyleSheet.create({
   screen: {
+    paddingTop: 0,
     backgroundColor: colors.light,
   },
   container: {
