@@ -4,12 +4,12 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import colors from "../config/colors";
 
-function CustomButton({
+function CamButton({
   // borderColor,
   title,
   onPress,
   color = colors.primary,
-  size = 15,
+  size = 18,
   textColor = colors.white,
   height = 30,
   icon,
@@ -44,12 +44,11 @@ function CustomButton({
 
 const styles = StyleSheet.create({
   button: {
-    flex: 1,
-    // flexDirection: "row",
+    flexDirection: "row",
     backgroundColor: colors.white,
     justifyContent: "center",
     alignItems: "center",
-    padding: 5,
+    width: "95%",
     margin: 2,
     marginTop: 10,
   },
@@ -62,4 +61,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomButton;
+export default CamButton;

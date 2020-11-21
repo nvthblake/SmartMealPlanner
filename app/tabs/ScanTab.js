@@ -13,7 +13,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { useNavigation } from "@react-navigation/native";
 
-
 import {
   AppForm,
   AppFormField,
@@ -114,18 +113,23 @@ function ScanTab(state) {
   const navigation = useNavigation();
 
   return (
-    <Screen style={styles.container}>
-      <View>
+    <Screen>
+      <View style={styles.container}>
         <FlatList
           data={ingredientToScan}
           horizontal
           snapToAlignment={"center"}
-          snapToInterval={screenWidth - 30}
+          snapToInterval={screenWidth * 0.9}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(ingredientToScan) => ingredientToScan.imageUri}
           renderItem={({ item, index }) => {
             return (
-              <View style={styles.cardContainer}>
+              <View
+                style={styles.cardContainer}
+                onLayout={(event) => {
+                  var { x, y, width, height } = event.nativeEvent.layout;
+                }}
+              >
                 <ScrollView
                   style={{ flex: 1 }}
                   showsVerticalScrollIndicator={false}
@@ -160,16 +164,16 @@ function ScanTab(state) {
                         name="qty"
                         placeholder="Quantity"
                         keyboardType="numeric"
-                        width={screenWidth * 0.36}
-                        marginRight={10}
+                        width={screenWidth * 0.38}
+                        marginRight={9}
                       />
                       <AppFormPicker
                         icon="beaker"
                         items={pickerOptions.units}
                         name="unit"
                         placeholder="Unit"
-                        width={screenWidth * 0.36}
-                        marginLeft={10}
+                        width={screenWidth * 0.38}
+                        marginLeft={9}
                       />
                     </View>
                     <AppFormPicker
@@ -184,15 +188,20 @@ function ScanTab(state) {
                       placeholder="Days to Expiration"
                       keyboardType="numeric"
                     />
-                    <SubmitButton title="ADD TO FRIDGE" />
+                    <SubmitButton
+                      title="ADD TO FRIDGE"
+                      color={colors.secondary}
+                      textColor={colors.primary}
+                      height={50}
+                    />
                   </AppForm>
                 </ScrollView>
               </View>
             );
           }}
         ></FlatList>
+        <CameraPage />
       </View>
-      <CameraPage />
     </Screen>
   );
 }
@@ -204,16 +213,17 @@ function useForceUpdate() {
 
 const styles = StyleSheet.create({
   cardContainer: {
+    flex: 1,
     borderRadius: 25,
     padding: 10,
-    // borderWidth: 4,
-    // borderColor: colors.primary,
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 10,
     marginBottom: 10,
     marginHorizontal: 10,
     width: screenWidth * 0.85,
-    height: screenHeight * 0.75,
+    // height: screenHeight * 0.65,
+    // height: "100%",
     backgroundColor: "white",
     overflow: "hidden",
     shadowColor: "#000",
@@ -226,7 +236,12 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   container: {
-    padding: 10,
+    flexDirection: "column",
+    height: "100%",
+    // backgroundColor: "red",
+    // justifyContent: "space-between",
+    alignItems: "center",
+    paddingBottom: 20,
   },
   logoContainer: {
     position: "absolute",
