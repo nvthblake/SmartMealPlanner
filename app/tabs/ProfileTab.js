@@ -23,6 +23,7 @@ import Screen from "../components/Screen";
 
 function Profile(state) {
   const screenWidth = Dimensions.get("window").width;
+  const screenHeight = Dimensions.get("window").height;
   // Camera logic
   const [selectedImage, setSelectedImage] = useState("");
   const takePicture = async () => {
@@ -60,7 +61,7 @@ function Profile(state) {
   };
 
   // Progress bar logic
-  const barWidth = screenWidth * 0.52;
+  const barWidth = screenWidth * 0.66;
   const { ingredients, addIngredientToFridge } = state;
   const ingredientsInFridge = ingredients.fridge;
   const Limit = 100;
@@ -83,6 +84,7 @@ function Profile(state) {
       Expired += 1;
     }
   });
+  let fridgePct = Item < Limit ? Math.floor((Item / Limit) * 100) : 100;
 
   // Model State
   const [modalVisible, setModalVisible] = useState(false);
@@ -91,14 +93,13 @@ function Profile(state) {
     <Screen style={styles.screen} headerTitle="Welcome to SmartFridge">
       <View
         style={{
-          marginLeft: screenWidth * 0.05,
-          marginRight: screenWidth * 0.05,
+          marginLeft: screenWidth * 0.02,
+          marginRight: screenWidth * 0.02,
           paddingBottom: 50,
         }}
       >
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.imageView}>
-            {/* <AppText style={styles.welcome}>{"Welcome to SmartFridge"}</AppText> */}
             <TouchableOpacity
               onPress={() => {
                 setModalVisible(true);
@@ -111,65 +112,65 @@ function Profile(state) {
             </TouchableOpacity>
           </View>
           <CardView>
-            <Text style={styles.fridgeheader}>Your Fridge</Text>
-            <View style={styles.fridgeview}>
+            <Text style={{marginTop: screenHeight*0.005, marginLeft: screenWidth*0.02, fontSize: screenHeight*0.04, fontWeight: "bold", color: colors.grey}}>Your Fridge</Text>
+            <View style={{marginTop: screenHeight*0.015, marginLeft: screenWidth*0.02, flexDirection: "row"}}>
               <Image
                 source={require("../assets/appIcon/fridge2.png")}
-                style={styles.fridgelogo}
+                style={{height: screenWidth*0.05, width: screenWidth*0.05}}
               />
-              <View style={styles.fridgestatus}>
+              <View style={[{marginLeft: screenWidth*0.03}, styles.fridgestatus]}>
                 <ProgressBarAnimated
                   width={barWidth}
-                  height={18}
+                  height={screenWidth*0.05}
                   backgroundColor={colors.primary}
-                  value={Math.floor((Item / Limit) * 100)}
+                  value={fridgePct}
                 />
               </View>
             </View>
-            <Text style={styles.fridgetext}>
-              Your fridge is {Math.floor((Item / Limit) * 100)}% full
+            <Text style={{marginTop: screenHeight*0.015, marginLeft: screenWidth*0.02, fontSize: screenHeight*0.02}}>
+              Your fridge is {fridgePct}% full
             </Text>
-            <Text style={styles.fridgetext}>
+            <Text style={{marginTop: screenHeight*0.005, marginLeft: screenWidth*0.02, fontSize: screenHeight*0.02}}>
               Need to go shopping in the next 10 days
             </Text>
-            <View style={styles.seperatorline} />
-            <View style={styles.minilogoview}>
+            <View style={[{marginTop: screenHeight*0.015, marginHorizontal: screenWidth*0.02}, styles.seperatorline]} />
+            <View style={[{marginTop: screenHeight*0.02, marginHorizontal: screenWidth*0.05}, styles.minilogoview]}>
               <View>
                 <ImageBackground
                   source={require("../assets/appIcon/white.png")}
-                  style={styles.minilogo}
+                  style={[{height: screenWidth*0.6/3, width: screenWidth*0.6/3}, styles.minilogo]}
                 >
-                  <View style={styles.viewDemotext}>
-                    <Text style={styles.demotext}>{Expirein3}</Text>
+                  <View style={[{marginTop: screenWidth*0.04}, styles.viewDemotext]}>
+                    <Text style={[{fontSize: screenWidth*0.1}, styles.demotext]}>{Expirein3}</Text>
                   </View>
                 </ImageBackground>
-                <Text style={styles.minitext}>Item is expiring</Text>
-                <Text style={styles.minitext}>in 3 days</Text>
+                <Text style={[{marginTop: screenHeight*0.005, fontSize: screenWidth*0.03}, styles.minitext]}>Items expiring</Text>
+                <Text style={[{marginBottom: screenHeight*0.01, fontSize: screenWidth*0.03}, styles.minitext]}>in 3 days</Text>
               </View>
               <View>
                 <ImageBackground
                   source={require("../assets/appIcon/white.png")}
-                  style={styles.minilogo}
+                  style={[{height: screenWidth*0.6/3, width: screenWidth*0.6/3}, styles.minilogo]}
                 >
-                  <View style={styles.viewDemotext}>
-                    <Text style={styles.demotext}>{Expirein10}</Text>
+                  <View style={[{marginTop: screenWidth*0.04}, styles.viewDemotext]}>
+                    <Text style={[{fontSize: screenWidth*0.1}, styles.demotext]}>{Expirein10}</Text>
                   </View>
                 </ImageBackground>
-                <Text style={styles.minitext}>Item is expiring</Text>
-                <Text style={styles.minitext}>in 10 days</Text>
+                <Text style={[{marginTop: screenHeight*0.005, fontSize: screenWidth*0.03}, styles.minitext]}>Items expiring</Text>
+                <Text style={[{marginBottom: screenHeight*0.01, fontSize: screenWidth*0.03}, styles.minitext]}>in 10 days</Text>
               </View>
 
               <View>
                 <ImageBackground
                   source={require("../assets/appIcon/white.png")}
-                  style={styles.minilogo}
+                  style={[{height: screenWidth*0.6/3, width: screenWidth*0.6/3}, styles.minilogo]}
                 >
-                  <View style={styles.viewDemotext}>
-                    <Text style={styles.demotext}>{Expired}</Text>
+                  <View style={[{marginTop: screenWidth*0.04}, styles.viewDemotext]}>
+                    <Text style={[{fontSize: screenWidth*0.1}, styles.demotext]}>{Expired}</Text>
                   </View>
                 </ImageBackground>
-                <Text style={styles.minitext}>Item is already</Text>
-                <Text style={styles.minitext}>expired</Text>
+                <Text style={[{marginTop: screenHeight*0.005, fontSize: screenWidth*0.03}, styles.minitext]}>Items already</Text>
+                <Text style={[{marginBottom: screenHeight*0.01, fontSize: screenWidth*0.03}, styles.minitext]}>expired</Text>
               </View>
             </View>
           </CardView>
@@ -295,12 +296,12 @@ const styles = StyleSheet.create({
     borderColor: "#537aff",
     overflow: "hidden",
     borderWidth: 2,
-    marginTop: 20,
-    marginBottom: 20,
+    // marginTop: 0,
+    marginBottom: 10,
   },
   minilogo: {
-    height: 80,
-    width: 80,
+    // height: 80,
+    // width: 80,
     borderRadius: 100,
     borderColor: "#537aff",
     overflow: "hidden",
@@ -323,47 +324,47 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   fridgetext: {
-    marginTop: 10,
-    marginLeft: 20,
-    fontSize: 10,
+    // marginTop: 10,
+    // marginLeft: 20,
+    // fontSize: 10,
   },
   fridgeview: {
-    marginTop: 20,
-    marginLeft: 20,
+    // marginTop: screenWidth*0.02,
+    // marginLeft: 20,
     flexDirection: "row",
   },
   fridgelogo: {
-    height: 40,
-    width: 40,
+    height: 30,
+    width: 30,
   },
   fridgestatus: {
-    marginLeft: 20,
-    marginTop: 10,
+    // marginLeft: 20,
+    // marginTop: 10,
     alignItems: "center",
   },
   seperatorline: {
-    margin: 20,
-    borderBottomColor: "black",
+    // margin: 20,
+    borderBottomColor: colors.lightGrey,
     borderBottomWidth: 1,
   },
   minilogoview: {
     flexDirection: "row",
-    margin: 20,
+    // margin: 20,
     justifyContent: "space-between",
   },
   minitext: {
-    marginTop: 5,
+    // marginTop: 5,
     textAlign: "center",
-    fontSize: 10,
+    // fontSize: 10,
   },
   viewDemotext: {
-    marginTop: 10,
+    justifyContent: "center",
     alignItems: "center",
   },
   demotext: {
-    fontSize: 35,
-    color: colors.primary,
-    fontWeight: "bold",
+    // fontSize: 35,
+    color: colors.grey,
+    // fontWeight: "bold",
   },
   screen: {
     paddingTop: 20,
