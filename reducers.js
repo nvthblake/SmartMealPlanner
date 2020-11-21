@@ -61,28 +61,28 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
       fridge.push(action.payload);
 
       // Finally, update the redux state
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
 
       return newState;
 
     case ADD_INGREDIENT_TO_CART:
       cart.push(action.payload);
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return newState;
 
     case ADD_RECIPE:
       recipes.push(action.payload);
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return newState;
 
     case CLEAR_RECIPE:
       recipes = [];
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return newState;
 
     case CLEAR_INGREDIENTS_IN_FRIDGE:
       fridge = [];
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return newState;
 
     case UPDATE_INGREDIENT_IN_FRIDGE:
@@ -92,7 +92,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
       fridge[ingreIndexUpdate] = action.payload;
 
       // Update the redux state
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
 
       return newState;
 
@@ -103,14 +103,14 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
       fridge.splice(ingreIndexDelete, 1);
 
       // Update the redux state
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
 
       return newState;
 
     case ADD_INGREDIENT_TO_SCAN:
 
       ingredientToScan.push(action.payload);
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return newState;
 
     case DELETE_INGREDIENT_TO_SCAN:
@@ -119,22 +119,22 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
       ingredientToScan.splice(ingreScanIndexDelete, 1);
 
       // Update the redux state
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return newState
 
     case CLEAR_INGREDIENTS_TO_SCAN:
       ingredientToScan = [];
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return newState;
 
     case ADD_MEAL_PLAN:
       mealPlanner.push(action.payload);
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return newState;
 
     case CLEAR_CART:
       cart = [];
-      newState = { fridge, cart, recipes, ingredientToScan };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return newState;
 
     case DELETE_INGREDIENT_IN_CART:
@@ -143,7 +143,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
       cart.splice(spliceIndex, 1);
 
       // Update the redux state
-      newState = { fridge, cart, recipes, ingredientToScan };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
 
       return newState;
 
@@ -151,12 +151,12 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
       const mealPlanIndexDelete = favoriteRecipes.findIndex((recipe => recipe.id === action.payload.id));
       favoriteRecipes.splice(mealPlanIndexDelete, 1);
 
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return newState;
 
     case CLEAR_MEAL_PLAN:
       mealPlanner = [];
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return newState;
 
     case TOGGLE_FAVORITE_RECIPE:
@@ -166,21 +166,21 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
       // recipes[toggledRecipe].loved = !recipes[toggledRecipe].loved;
       newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
       return newState;
-    
+
     case DELETE_FAVORITE_RECIPE:
       const favoriteRecipesIndexDelete = favoriteRecipes.findIndex((recipe => recipe.id === action.payload.id));
       favoriteRecipes.splice(favoriteRecipesIndexDelete, 1);
 
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return newState;
 
     case CLEAR_FAVORITE_RECIPE:
       favoriteRecipes = [];
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return newState
 
     default:
-      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return state;
   }
 };

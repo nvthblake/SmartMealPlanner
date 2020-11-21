@@ -12,6 +12,7 @@ import {
   Platform,
   Linking,
   Alert,
+  RefreshControl
 } from "react-native";
 import { render } from "react-dom";
 
@@ -75,6 +76,7 @@ function RecipeTab(state) {
   const [isLoading, setIsLoading] = useState(true);
   const [isResultEmpty, setIsResultEmpty] = useState(false);
   const [chosenRecipe, setChosenRecipe] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
   const [love, setLove] = useState(false);
   const [heartImage, setHeartImage] = useState(null);
 
@@ -203,52 +205,72 @@ function RecipeTab(state) {
     );
   };
 
-  useEffect(() => {
-    getRecipes(ingredientsInFridge, 10)
-      .then((step1_recipes) => {
-        if (step1_recipes.length === 0) {
-          setIsResultEmpty(true);
-          setIsLoading(false);
-          return;
-        }
+  const onRefresh = () => {
+    setRefreshing(true);
+    loadRecipesFromSpoonacular().then((recipes) => {
+      setRefreshing(false);
+    }).catch((err) => {
+      setRefreshing(false);
+    })
+  };
 
-        getRecipeInfoInBulk(step1_recipes)
-          .then((final_recipes) => {
-            if (final_recipes.length === 0) {
-              setIsResultEmpty(true);
-              setIsLoading(false);
-              return;
-            }
-
-            final_recipes.sort((a, b) => {
-              return b.likes - a.likes;
-            });
-            clearRecipe();
-
-            let allDishTypes = [];
-            final_recipes.forEach((recipe) => {
-              addRecipe(recipe);
-              recipe.dishTypes.forEach((dishType) => {
-                allDishTypes.push(dishType);
-              });
-            });
-            resetCategories();
-            allDishTypes = Array.from(new Set(allDishTypes));
-            console.log("RecipeTab -> allDishTypes", allDishTypes);
-            addCategories(allDishTypes);
-            console.log("RecipeTab -> recipes", recipes.length);
-            setIsLoading(false);
-          })
-          .catch((err) => {
+  function loadRecipesFromSpoonacular() {
+    return new Promise((resolve, reject) => {
+      getRecipes(ingredientsInFridge, 10)
+        .then((step1_recipes) => {
+          if (step1_recipes.length === 0) {
             setIsResultEmpty(true);
             setIsLoading(false);
-          });
-      })
-      .catch((err) => {
-        setIsResultEmpty(true);
-        setIsLoading(false);
-      });
-  }, [ingredientsInFridge]);
+            return;
+          }
+
+          getRecipeInfoInBulk(step1_recipes)
+            .then((final_recipes) => {
+              if (final_recipes.length === 0) {
+                setIsResultEmpty(true);
+                setIsLoading(false);
+                return;
+              }
+
+              final_recipes.sort((a, b) => {
+                return b.likes - a.likes;
+              });
+              clearRecipe();
+
+              let allDishTypes = [];
+              final_recipes.forEach((recipe) => {
+                addRecipe(recipe);
+                recipe.dishTypes.forEach((dishType) => {
+                  allDishTypes.push(dishType);
+                });
+              });
+              resetCategories();
+              allDishTypes = Array.from(new Set(allDishTypes));
+              console.log("RecipeTab -> allDishTypes", allDishTypes);
+              addCategories(allDishTypes);
+              console.log("RecipeTab -> recipes", recipes.length);
+              setIsLoading(false);
+
+              resolve(final_recipes)
+            })
+            .catch((err) => {
+              setIsResultEmpty(true);
+              setIsLoading(false);
+              reject(err)
+            });
+        })
+        .catch((err) => {
+          setIsResultEmpty(true);
+          setIsLoading(false);
+          reject(err)
+        });
+    })
+  }
+
+  // Initial API pull
+  useEffect(() => {
+    loadRecipesFromSpoonacular()
+  }, []);
 
   const filteredRecipes = getRecipesBasedOnFilter(recipes);
   const veryPopularRecipes = filteredRecipes.filter(
@@ -314,7 +336,7 @@ function RecipeTab(state) {
         <View style={styles.modalCard}>
           {!!chosenRecipe && (
             <View style={{ flex: 1, justifyContent: "space-between" }}>
-              <View>
+              <View style={{ flex: 1 }}>
                 <Image
                   resizeMode={"cover"}
                   source={{ uri: chosenRecipe.image }}
@@ -377,8 +399,9 @@ function RecipeTab(state) {
                 <Text
                   style={{
                     marginHorizontal: 8,
+                    marginBottom: 2,
                     fontWeight: "500",
-                    fontSize: 15,
+                    fontSize: 17,
                   }}
                 >
                   Ingredients
@@ -403,7 +426,11 @@ function RecipeTab(state) {
                             marginVertical: 4,
                           }}
                         >
-                          {capitalize(
+                          {getAllNeededIngredientsForRecipe(chosenRecipe)[
+                            index
+                          ].ingredient.amount + " " + getAllNeededIngredientsForRecipe(chosenRecipe)[
+                            index
+                          ].ingredient.unitShort + " " + capitalize(
                             getAllNeededIngredientsForRecipe(chosenRecipe)[
                               index
                             ].ingredient.name
@@ -442,25 +469,23 @@ function RecipeTab(state) {
               >
                 <TouchableOpacity
                   style={{
-                    borderColor: "#3E73FB",
+                    backgroundColor: "#FFBE6A",
                     width: Math.floor(screenWidth / 4),
                     borderRadius: 8,
                     paddingVertical: 8,
-                    borderWidth: 1,
                   }}
-                  onPress={() => {
-                    setChosenRecipe(null);
-                    setHeartImage(null);
-                  }}
+                  onPress={() =>
+                    addMissedIngredientsToCard(chosenRecipe.missedIngredients)
+                  }
                 >
                   <Text
                     style={{
-                      color: "#3E73FB",
+                      color: "white",
                       fontSize: 16,
                       textAlign: "center",
                     }}
                   >
-                    Back
+                    Add to 🛒
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -481,28 +506,30 @@ function RecipeTab(state) {
                       textAlign: "center",
                     }}
                   >
-                    See Details
+                    See details
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
-                    backgroundColor: "#FFBE6A",
+                    borderColor: "#3E73FB",
                     width: Math.floor(screenWidth / 4),
                     borderRadius: 8,
                     paddingVertical: 8,
+                    borderWidth: 1,
                   }}
-                  onPress={() =>
-                    addMissedIngredientsToCard(chosenRecipe.missedIngredients)
-                  }
+                  onPress={() => {
+                    setChosenRecipe(null)
+                    setHeartImage(null);
+                  }}
                 >
                   <Text
                     style={{
-                      color: "white",
+                      color: "#3E73FB",
                       fontSize: 16,
                       textAlign: "center",
                     }}
                   >
-                    Add to 🛒
+                    Cancel
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -530,7 +557,11 @@ function RecipeTab(state) {
         </View>
       )}
       {!isLoading && (
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           {veryPopularRecipes.length > 0 && (
             <View>
               <View style={{ padding: 16 }}>
