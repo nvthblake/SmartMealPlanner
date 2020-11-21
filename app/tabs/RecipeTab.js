@@ -14,6 +14,7 @@ import {
   Alert,
   RefreshControl
 } from "react-native";
+import { SearchBar } from 'react-native-elements';
 import { render } from "react-dom";
 
 /* Custom components */
@@ -79,6 +80,7 @@ function RecipeTab(state) {
   const [refreshing, setRefreshing] = useState(false);
   const [love, setLove] = useState(false);
   const [heartImage, setHeartImage] = useState(null);
+  const [search, setSearch] = useState('');
 
   resetCategories = () => {
     setCategory(INITIAL_CATEGORIES_STATE);
@@ -267,6 +269,10 @@ function RecipeTab(state) {
     })
   }
 
+  const updateSearch = (search) => {
+    this.setState({ search });
+  };
+
   // Initial API pull
   useEffect(() => {
     loadRecipesFromSpoonacular()
@@ -288,20 +294,18 @@ function RecipeTab(state) {
 
   return (
     <Screen style={styles.screen}>
-      {/* <View>
-        <Container>
-          <Tabs>
-            <Tab heading='Recipes'>
-              <View style={styles.topNavContainer}>
-                <Text style={styles.topNavTitle}>Recipes</Text>
-              </View>
-            </Tab>
-            <Tab heading='Meal Planner'>
-              <MealPlanTab/>
-            </Tab>
-          </Tabs>
-        </Container>
-      </View> */}
+      {/* Search Bar engine */}
+      <SearchBar
+        round
+        platform={Platform.OS}
+        containerStyle={{backgroundColor:colors.background, margin:0, marginLeft: screenWidth * 0.05, marginRight: screenWidth * 0.05,}}
+        inputContainerStyle={{backgroundColor:'white'}}
+        placeholder="Type Here..."
+        onChangeText={updateSearch}
+        value={search}
+      />
+
+      {/* Filters Scroll Horizontal */}
       <View
         style={{
           marginLeft: screenWidth * 0.05,
@@ -915,7 +919,6 @@ function RecipeTab(state) {
 
 const styles = StyleSheet.create({
   screen: {
-    paddingVertical: 20,
     backgroundColor: colors.light,
   },
   container: {
