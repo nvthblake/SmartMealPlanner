@@ -1,4 +1,5 @@
-import React from "react";
+import React, {Fragment} from "react";
+import {SafeAreaView} from "react-native";
 
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Constants from "expo-constants";
@@ -11,18 +12,21 @@ import colors from "../config/colors";
 const Tab = createMaterialTopTabNavigator();
 
 const RecipeNavigator = () => (
-  <Tab.Navigator
-    swipeEnabled={false}
-    tabBarOptions={{
-      indicatorStyle: { backgroundColor: colors.primary },
-      labelStyle: { fontWeight: "bold" },
-      activeTintColor: colors.primary,
-      style: { marginTop: Constants.statusBarHeight },
-    }}
-  >
-    <Tab.Screen name="Meal Planner" component={MealPlanTab} />
-    <Tab.Screen name="Explore" component={RecipeTab} />
-  </Tab.Navigator>
+  <Fragment>
+    <SafeAreaView style={{ flex: 0, backgroundColor: 'white'}} />
+    <Tab.Navigator
+      swipeEnabled={false}
+      tabBarOptions={{
+        indicatorStyle: { backgroundColor: colors.primary },
+        labelStyle: { fontWeight: "bold" },
+        activeTintColor: colors.primary,
+      }}
+    >
+      <Tab.Screen name="Meal Planner" component={MealPlanTab} />
+      <Tab.Screen name="Explore" component={RecipeTab} />
+    </Tab.Navigator>
+  </Fragment>
+
 );
 
 export default RecipeNavigator;
