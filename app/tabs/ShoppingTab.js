@@ -57,6 +57,9 @@ function ShoppingList(props) {
           marginRight: screenWidth * 0.05,
           paddingBottom: 50,
         }}>
+          <View style={styles.mapContainer}>
+          <Map />
+        </View>
         <View style={styles.header}>
           <View>
             <AppText style={styles.textformat}>{"Shopping List"}</AppText>
@@ -99,9 +102,7 @@ function ShoppingList(props) {
             />
           </TouchableOpacity>
         </View>
-        <View style={styles.mapContainer}>
-          <Map />
-        </View>
+        
 
         <FlatList
           style={styles.list}
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
   },
   list: {
     marginTop: 20,
-    height: windowHeight * 0.4
+    height: windowHeight * 0.3
   },
   plusButton: {
     marginTop: 10,
