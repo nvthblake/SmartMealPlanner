@@ -596,7 +596,7 @@ function MealPlanTab(state) {
 
 const styles = StyleSheet.create({
   screen: {
-    // paddingTop: 0,
+    paddingTop: 0,
     backgroundColor: colors.background,
     // flex: 1,
   },
@@ -678,7 +678,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     borderRadius: 20,
-    marginTop: screenHeight / 7,
+    // marginTop: screenHeight / 7,
     padding: 12,
   },
 });
