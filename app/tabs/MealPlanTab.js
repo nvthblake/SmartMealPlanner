@@ -175,26 +175,28 @@ function MealPlanTab(state) {
   }, [ingredientsInFridge]);
 
   const filteredRecipes = getRecipesBasedOnFilter(recipes);
-  const breakfastRecipes = filteredRecipes;
-  // const breakfastRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("breakfast") > -1);
-  // const lunchRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("lunch") > -1);
-  // const dinnerRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("main course") > -1);
+  // const breakfastRecipes = filteredRecipes;
+  const breakfastRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("lunch") > -1);
+  const lunchRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("lunch") > -1);
+  const dinnerRecipes = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("main course") > -1);
 
   // const mealPlan = ;
   return (
     <Screen style={styles.screen}>
       {/* Calendar */}
       <CalendarStrip
+        scrollable
         calendarAnimation={{ type: "sequence", duration: 30 }}
         daySelectionAnimation={{
-          type: "border",
+          type: "background",
           duration: 200,
           borderWidth: 2,
+          highlightColor: colors.secondary,
           borderHighlightColor: "white",
         }}
         style={{ height: 90, paddingTop: 10 }}
         calendarHeaderStyle={{ color: "black" }}
-        calendarColor={colors.white}
+        calendarColor={"white"}
         dateNumberStyle={{ color: "black" }}
         dateNameStyle={{ color: "black" }}
         highlightDateNumberStyle={{ color: colors.primary }}
