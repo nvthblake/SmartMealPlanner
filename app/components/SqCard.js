@@ -4,6 +4,8 @@ import {
   StyleSheet,
   Image,
   TouchableWithoutFeedback,
+  Platform,
+  Text,
 } from "react-native";
 // import {  } from "react-native-gesture-handler";
 import colors from "../config/colors";
@@ -25,9 +27,9 @@ function SqCard({
         style={[
           styles.card,
           {
-            height: (0.85 * screenWidth) / 3,
-            width: (0.85 * screenWidth) / 3,
-            marginBottom: 0.05 * screenWidth,
+            height: (0.88 * screenWidth) / 3,
+            width: (0.88 * screenWidth) / 3,
+            marginBottom: 0.04 * screenWidth,
             // borderColor: expStatus,
           },
         ]}
@@ -36,30 +38,33 @@ function SqCard({
         <Image
           style={[
             styles.image,
-            { marginTop: ((0.85 * screenWidth) / 3) * 0.025 },
+            // { marginTop: ((0.85 * screenWidth) / 3) * 0.025 },
           ]}
           source={{ uri: image }}
         />
         <View style={styles.detailsContainer}>
           {/* Ingredients Title */}
-          <AppText style={[styles.title, { fontSize: 0.03 * screenWidth }]}>
+          <AppText style={[styles.title, { fontSize: 0.035 * screenWidth }]}>
             {title}
           </AppText>
 
-          {/* Ingredients quantity */}
-          <AppText style={[styles.subTitle, { fontSize: 0.025 * screenWidth }]}>
-            {subTitle1}
-          </AppText>
+          <View style={{ flexDirection: 'row' }}>
+            {/* Ingredients quantity */}
+            <AppText style={[styles.subTitle, { fontSize: 0.025 * screenWidth }]}>
+              {subTitle1}
+            </AppText>
+            <Text style={[styles.subTitle, { fontSize: 0.025 * screenWidth }]}> | </Text>
+            {/* Ingredients exp days */}
+            <AppText
+              style={[
+                styles.subTitle,
+                { fontSize: 0.025 * screenWidth, color: expStatus },
+              ]}
+            >
+              {subTitle2}
+            </AppText>
+          </View>
 
-          {/* Ingredients exp days */}
-          <AppText
-            style={[
-              styles.subTitle,
-              { fontSize: 0.025 * screenWidth, color: expStatus },
-            ]}
-          >
-            {subTitle2}
-          </AppText>
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -68,36 +73,47 @@ function SqCard({
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 15,
-    // borderWidth: 2,
+    padding: 2,
+    borderRadius: 20,
     backgroundColor: colors.white,
-    overflow: "hidden",
     alignItems: "center",
-    justifyContent: "center",
-    // elevation: 10,
+    // justifyContent: "center",
+
+    ...Platform.select({
+      ios: {
+        shadowColor: colors.primary,
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.4,
+        shadowRadius: 5,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
   },
   detailsContainer: {
     justifyContent: "center",
     alignItems: "center",
   },
   image: {
+    marginTop: 3,
     width: "95%",
     height: "65%",
-    borderRadius: 12,
+    borderRadius: 15,
     borderColor: colors.white,
     overflow: "hidden",
   },
   title: {
     alignItems: "center",
     justifyContent: "center",
-    color: colors.black,
+    color: colors.grey,
     fontWeight: "bold",
   },
   subTitle: {
     alignItems: "center",
     justifyContent: "center",
     // backgroundColor: colors.primary,
-    color: colors.dark,
+    color: colors.grey,
   },
 });
 export default SqCard;
