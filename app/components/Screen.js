@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
     backgroundColor: colors.background,
     flex: 1,
-    // marginBottom: 20,
+    paddingBottom: 20,
   },
   title: {
     // fontStyle: 'Avenir',

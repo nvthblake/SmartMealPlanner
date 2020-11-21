@@ -12,14 +12,17 @@ import {
   Modal,
   TouchableHighlight,
   ScrollView,
+  ImageBackground,
 } from "react-native";
 import CardView from "../components/CardView";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 import * as ImagePicker from "expo-image-picker";
 import ProgressBarAnimated from "react-native-progress-bar-animated";
+import Screen from "../components/Screen";
 
 function Profile(state) {
+  const screenWidth = Dimensions.get("window").width;
   // Camera logic
   const [selectedImage, setSelectedImage] = useState("");
   const takePicture = async () => {
@@ -57,7 +60,7 @@ function Profile(state) {
   };
 
   // Progress bar logic
-  const barWidth = Dimensions.get("screen").width - 150;
+  const barWidth = screenWidth * 0.52;
   const { ingredients, addIngredientToFridge } = state;
   const ingredientsInFridge = ingredients.fridge;
   const Limit = 100;
@@ -72,7 +75,7 @@ function Profile(state) {
     const today = new Date();
     const expDate = Date.parse(element.expDate);
     var dateDiff = Math.floor((expDate - today) / (1000 * 60 * 60 * 24));
-    if (dateDiff <= 3 && dateDiff > 1) {
+    if (dateDiff <= 3 && dateDiff >= 1) {
       Expirein3 += 1;
     } else if (dateDiff > 3) {
       Expirein10 += 1;
@@ -85,120 +88,142 @@ function Profile(state) {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.imageView}>
-        <AppText style={styles.welcome}>{"Welcome to SmartFridge"}</AppText>
-        <TouchableOpacity
-          onPress={() => {
-            setModalVisible(true);
-          }}
-        >
-          <Image source={{ uri: selectedImage.localUri }} style={styles.logo} />
-        </TouchableOpacity>
-      </View>
-      <CardView>
-        <Text style={styles.fridgeheader}>Your Fridge</Text>
-        <View style={styles.fridgeview}>
-          <Image
-            source={require("../assets/appIcon/fridge2.png")}
-            style={styles.fridgelogo}
-          />
-          <View style={styles.fridgestatus}>
-            <ProgressBarAnimated
-              width={barWidth}
-              height={18}
-              backgroundColor={colors.primary}
-              // value={50}
-              value={(Item / Limit) * 100}
-            />
+    <Screen style={styles.screen} headerTitle="Welcome to SmartFridge">
+      <View
+        style={{
+          marginLeft: screenWidth * 0.05,
+          marginRight: screenWidth * 0.05,
+          paddingBottom: 50,
+        }}
+      >
+        <ScrollView>
+          <View style={styles.imageView}>
+            {/* <AppText style={styles.welcome}>{"Welcome to SmartFridge"}</AppText> */}
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(true);
+              }}
+            >
+              <Image
+                source={{ uri: selectedImage.localUri }}
+                style={styles.logo}
+              />
+            </TouchableOpacity>
           </View>
-        </View>
-        <Text style={styles.fridgetext}>
-          Your fridge is {(Item / Limit) * 100}% full
-        </Text>
-        <Text style={styles.fridgetext}>
-          Need to go shopping in the next 10 days
-        </Text>
-        <View style={styles.seperatorline} />
-        <View style={styles.minilogoview}>
-          <View>
-            <Image
-              source={require("../assets/appIcon/white.png")}
-              style={styles.minilogo}
-            />
-            <View style={styles.viewDemotext}>
-              <Text style={styles.demotext}>{Expirein3}</Text>
+          <CardView>
+            <Text style={styles.fridgeheader}>Your Fridge</Text>
+            <View style={styles.fridgeview}>
+              <Image
+                source={require("../assets/appIcon/fridge2.png")}
+                style={styles.fridgelogo}
+              />
+              <View style={styles.fridgestatus}>
+                <ProgressBarAnimated
+                  width={barWidth}
+                  height={18}
+                  backgroundColor={colors.primary}
+                  value={Math.floor((Item / Limit) * 100)}
+                />
+              </View>
             </View>
-            <Text style={styles.minitext}>Item is expiring</Text>
-            <Text style={styles.minitext}>in 3 days</Text>
-          </View>
-          <View>
-            <Image
-              source={require("../assets/appIcon/white.png")}
-              style={styles.minilogo}
-            />
-            <View style={styles.viewDemotext}>
-              <Text style={styles.demotext}>{Expirein10}</Text>
+            <Text style={styles.fridgetext}>
+              Your fridge is {Math.floor((Item / Limit) * 100)}% full
+            </Text>
+            <Text style={styles.fridgetext}>
+              Need to go shopping in the next 10 days
+            </Text>
+            <View style={styles.seperatorline} />
+            <View style={styles.minilogoview}>
+              <View>
+                <ImageBackground
+                  source={require("../assets/appIcon/white.png")}
+                  style={styles.minilogo}
+                >
+                  <View style={styles.viewDemotext}>
+                    <Text style={styles.demotext}>{Expirein3}</Text>
+                  </View>
+                </ImageBackground>
+                <Text style={styles.minitext}>Item is expiring</Text>
+                <Text style={styles.minitext}>in 3 days</Text>
+              </View>
+              <View>
+                <ImageBackground
+                  source={require("../assets/appIcon/white.png")}
+                  style={styles.minilogo}
+                >
+                  <View style={styles.viewDemotext}>
+                    <Text style={styles.demotext}>{Expirein10}</Text>
+                  </View>
+                </ImageBackground>
+                <Text style={styles.minitext}>Item is expiring</Text>
+                <Text style={styles.minitext}>in 10 days</Text>
+              </View>
+
+              <View>
+                <ImageBackground
+                  source={require("../assets/appIcon/white.png")}
+                  style={styles.minilogo}
+                >
+                  <View style={styles.viewDemotext}>
+                    <Text style={styles.demotext}>{Expired}</Text>
+                  </View>
+                </ImageBackground>
+                <Text style={styles.minitext}>Item is already</Text>
+                <Text style={styles.minitext}>expired</Text>
+              </View>
             </View>
-            <Text style={styles.minitext}>Item is expiring</Text>
-            <Text style={styles.minitext}>in 10 days</Text>
-          </View>
-          <View>
-            <Image
-              source={require("../assets/appIcon/white.png")}
-              style={styles.minilogo}
-            />
-            <View style={styles.viewDemotext}>
-              <Text style={styles.demotext}>{Expired}</Text>
-            </View>
-            <Text style={styles.minitext}>Item is already</Text>
-            <Text style={styles.minitext}>expired</Text>
-          </View>
-        </View>
-      </CardView>
-      <Text style={styles.suggestHeader}>Suggested Meals</Text>
-      <CardView>
-        <Text style={styles.suggestHeader}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua aliquip ex
-          ea commodo consequat.{" "}
-        </Text>
-      </CardView>
-      <View style={styles.centeredView}>
-        <Modal animationType="slide" transparent={true} visible={modalVisible}>
+          </CardView>
+          <Text style={styles.suggestHeader}>Suggested Meals</Text>
+          <CardView>
+            <Text style={styles.suggestHeader}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua aliquip
+              ex ea commodo consequat.{" "}
+            </Text>
+          </CardView>
           <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <TouchableHighlight
-                style={styles.takePhotoButton}
-                onPress={() => {
-                  takePicture();
-                  setModalVisible(!modalVisible);
-                }}
-              >
-                <Text style={styles.textStyle}>TAKE NEW PHOTO</Text>
-              </TouchableHighlight>
-              <TouchableHighlight
-                style={styles.selectPhotoButton}
-                onPress={() => {
-                  openImagePickerAsync();
-                  setModalVisible(!modalVisible);
-                }}
-              >
-                <Text style={styles.textStyle}>SELECT PHOTO FROM GALERY</Text>
-              </TouchableHighlight>
-              <TouchableHighlight
-                style={styles.cancelButton}
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-                }}
-              >
-                <Text style={styles.textStyle}>CANCEL</Text>
-              </TouchableHighlight>
-            </View>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <TouchableHighlight
+                    style={styles.takePhotoButton}
+                    onPress={() => {
+                      takePicture();
+                      setModalVisible(!modalVisible);
+                    }}
+                  >
+                    <Text style={styles.textStyle}>TAKE NEW PHOTO</Text>
+                  </TouchableHighlight>
+                  <TouchableHighlight
+                    style={styles.selectPhotoButton}
+                    onPress={() => {
+                      openImagePickerAsync();
+                      setModalVisible(!modalVisible);
+                    }}
+                  >
+                    <Text style={styles.textStyle}>
+                      SELECT PHOTO FROM GALERY
+                    </Text>
+                  </TouchableHighlight>
+                  <TouchableHighlight
+                    style={styles.cancelButton}
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                    }}
+                  >
+                    <Text style={styles.textStyle}>CANCEL</Text>
+                  </TouchableHighlight>
+                </View>
+              </View>
+            </Modal>
           </View>
-        </Modal>
+        </ScrollView>
       </View>
-    </View>
+    </Screen>
   );
 }
 
@@ -329,17 +354,20 @@ const styles = StyleSheet.create({
   minitext: {
     marginTop: 5,
     textAlign: "center",
-    fontSize: 12,
+    fontSize: 10,
   },
   viewDemotext: {
-    marginTop: 13,
-    marginLeft: 28,
-    position: "absolute",
+    marginTop: 10,
+    alignItems: "center",
   },
   demotext: {
     fontSize: 35,
     color: colors.primary,
     fontWeight: "bold",
+  },
+  screen: {
+    paddingTop: 20,
+    backgroundColor: colors.light,
   },
 });
 
