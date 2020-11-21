@@ -14,6 +14,7 @@ import {
   Alert,
   RefreshControl,
 } from "react-native";
+import { SearchBar } from 'react-native-elements';
 import { render } from "react-dom";
 
 /* Custom components */
@@ -82,6 +83,7 @@ function RecipeTab(state) {
   const [refreshing, setRefreshing] = useState(false);
   const [love, setLove] = useState(false);
   const [heartImage, setHeartImage] = useState(null);
+  const [search, setSearch] = useState('');
 
   resetCategories = () => {
     setCategory(INITIAL_CATEGORIES_STATE);
@@ -272,6 +274,10 @@ function RecipeTab(state) {
     });
   }
 
+  const updateSearch = (search) => {
+    this.setState({ search });
+  };
+
   // Initial API pull
   useEffect(() => {
     loadRecipesFromSpoonacular();
@@ -293,20 +299,18 @@ function RecipeTab(state) {
 
   return (
     <Screen style={styles.screen}>
-      {/* <View>
-        <Container>
-          <Tabs>
-            <Tab heading='Recipes'>
-              <View style={styles.topNavContainer}>
-                <Text style={styles.topNavTitle}>Recipes</Text>
-              </View>
-            </Tab>
-            <Tab heading='Meal Planner'>
-              <MealPlanTab/>
-            </Tab>
-          </Tabs>
-        </Container>
-      </View> */}
+      {/* Search Bar engine */}
+      <SearchBar
+        round
+        platform={Platform.OS}
+        containerStyle={styles.searchBar}
+        inputContainerStyle={styles.inputSearchBar}
+        placeholder="Search recipes..."
+        onChangeText={updateSearch}
+        value={search}
+      />
+
+      {/* Filters Scroll Horizontal */}
       <View
         style={{
           marginLeft: screenWidth * 0.05,
@@ -412,6 +416,7 @@ function RecipeTab(state) {
                   Ingredients
                 </Text>
                 <FlatList
+                  showsHorizontalScrollIndicator={false}
                   data={getAllNeededIngredientsForRecipe(chosenRecipe)}
                   keyExtractor={(ingredient) =>
                     ingredient.ingredient.id.toString() + "-chosen"
@@ -534,13 +539,14 @@ function RecipeTab(state) {
         >
           {veryPopularRecipes.length > 0 && (
             <View>
-              <View style={{ padding: 16 }}>
+              <View style={styles.sectionHeader}>
                 <Text style={{ fontSize: 22, fontWeight: "bold" }}>
                   Very Popular
                 </Text>
               </View>
               <View>
                 <FlatList
+                  showsHorizontalScrollIndicator={false}
                   data={veryPopularRecipes}
                   horizontal={true}
                   keyExtractor={(recipe) => recipe.id.toString()}
@@ -554,7 +560,7 @@ function RecipeTab(state) {
                               setChosenRecipe(veryPopularRecipes[index]);
                             }}
                           >
-                            <View style={{ padding: 10 }}>
+                            <View style={{ padding: 9 }}>
                               <View style={{ flexDirection: "column" }}>
                                 <Image
                                   source={{
@@ -562,7 +568,7 @@ function RecipeTab(state) {
                                   }}
                                   style={{
                                     width: "100%",
-                                    marginRight: 14,
+                                    // marginRight: 14,
                                     height: 140,
                                     borderRadius: 10,
                                     marginRight: 8,
@@ -578,42 +584,36 @@ function RecipeTab(state) {
                                   }
                                   color={colors.font_red}
                                 />
-                                <Text
-                                  numberOfLines={2}
-                                  style={styles.recipeTitle}
-                                >
-                                  {veryPopularRecipes[index].title}
-                                </Text>
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.recipeLikes}
-                                >
-                                  {nFormatter(
-                                    veryPopularRecipes[index].likes,
-                                    1
-                                  )}{" "}
+                                {/* Hole all recipe info */}
+                                <View style={{ paddingRight: 3, paddingLeft: 3 }}>
+                                  <Text
+                                    numberOfLines={2}
+                                    style={styles.recipeTitle}
+                                  >
+                                    {veryPopularRecipes[index].title}
+                                  </Text>
+                                  <Text
+                                    numberOfLines={1}
+                                    style={styles.recipeLikes}
+                                  >
+                                    {nFormatter(
+                                      veryPopularRecipes[index].likes,
+                                      1
+                                    )}{" "}
                                   likes
                                 </Text>
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.recipeUsedIngredients}
-                                >
-                                  {
-                                    veryPopularRecipes[index].usedIngredients
-                                      .length
-                                  }{" "}
-                                  ingredients
-                                </Text>
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.recipeMissingIngredients}
-                                >
-                                  {
-                                    veryPopularRecipes[index].missedIngredients
-                                      .length
-                                  }{" "}
+                                  <Text
+                                    numberOfLines={1}
+                                    style={styles.recipeMissingIngredients}
+                                  >
+                                    {
+                                      veryPopularRecipes[index].missedIngredients
+                                        .length
+                                    }{" "}
                                   missings
                                 </Text>
+                                </View>
+
                               </View>
                             </View>
                           </TouchableOpacity>
@@ -627,13 +627,14 @@ function RecipeTab(state) {
           )}
           {veryHealthyRecipes.length > 0 && (
             <View>
-              <View style={{ padding: 16 }}>
+              <View style={styles.sectionHeader}>
                 <Text style={{ fontSize: 22, fontWeight: "bold" }}>
                   Very Healthy
                 </Text>
               </View>
               <View>
                 <FlatList
+                  showsHorizontalScrollIndicator={false}
                   data={veryHealthyRecipes}
                   horizontal={true}
                   keyExtractor={(recipe) => recipe.id.toString()}
@@ -670,6 +671,22 @@ function RecipeTab(state) {
                                   }
                                   color={colors.font_red}
                                 />
+                                {/* Hole all recipe info */}
+                                <View style={{ paddingRight: 3, paddingLeft: 3 }}>
+                                  <Text
+                                    numberOfLines={2}
+                                    style={styles.recipeTitle}
+                                  >
+                                    {veryHealthyRecipes[index].title}
+                                  </Text>
+                                  <Text
+                                    numberOfLines={1}
+                                    style={styles.recipeLikes}
+                                  >
+                                    {nFormatter(
+                                      veryHealthyRecipes[index].likes,
+                                      1
+                                    )}{" "}
                                 <Text
                                   numberOfLines={2}
                                   style={styles.recipeTitle}
@@ -686,26 +703,27 @@ function RecipeTab(state) {
                                   )}{" "}
                                   likes
                                 </Text>
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.recipeUsedIngredients}
-                                >
-                                  {
-                                    veryHealthyRecipes[index].usedIngredients
-                                      .length
-                                  }{" "}
+                                  <Text
+                                    numberOfLines={1}
+                                    style={styles.recipeUsedIngredients}
+                                  >
+                                    {
+                                      veryHealthyRecipes[index].usedIngredients
+                                        .length
+                                    }{" "}
                                   ingredients
                                 </Text>
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.recipeMissingIngredients}
-                                >
-                                  {
-                                    veryHealthyRecipes[index].missedIngredients
-                                      .length
-                                  }{" "}
+                                  <Text
+                                    numberOfLines={1}
+                                    style={styles.recipeMissingIngredients}
+                                  >
+                                    {
+                                      veryHealthyRecipes[index].missedIngredients
+                                        .length
+                                    }{" "}
                                   missings
                                 </Text>
+                                </View>
                               </View>
                             </View>
                           </TouchableOpacity>
@@ -719,13 +737,14 @@ function RecipeTab(state) {
           )}
           {vegetarianRecipes.length > 0 && (
             <View>
-              <View style={{ padding: 16 }}>
+              <View style={styles.sectionHeader}>
                 <Text style={{ fontSize: 22, fontWeight: "bold" }}>
                   Vegeterian
                 </Text>
               </View>
               <View>
                 <FlatList
+                  showsHorizontalScrollIndicator={false}
                   data={vegetarianRecipes}
                   horizontal={true}
                   keyExtractor={(recipe) => recipe.id.toString()}
@@ -762,42 +781,35 @@ function RecipeTab(state) {
                                   }
                                   color={colors.font_red}
                                 />
-                                <Text
-                                  numberOfLines={2}
-                                  style={styles.recipeTitle}
-                                >
-                                  {vegetarianRecipes[index].title}
-                                </Text>
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.recipeLikes}
-                                >
-                                  {nFormatter(
-                                    vegetarianRecipes[index].likes,
-                                    1
-                                  )}{" "}
+                                {/* Hole all recipe info */}
+                                <View style={{ paddingRight: 3, paddingLeft: 3 }}>
+                                  <Text
+                                    numberOfLines={2}
+                                    style={styles.recipeTitle}
+                                  >
+                                    {vegetarianRecipes[index].title}
+                                  </Text>
+                                  <Text
+                                    numberOfLines={1}
+                                    style={styles.recipeLikes}
+                                  >
+                                    {nFormatter(
+                                      vegetarianRecipes[index].likes,
+                                      1
+                                    )}{" "}
                                   likes
                                 </Text>
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.recipeUsedIngredients}
-                                >
-                                  {
-                                    vegetarianRecipes[index].usedIngredients
-                                      .length
-                                  }{" "}
-                                  ingredients
-                                </Text>
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.recipeMissingIngredients}
-                                >
-                                  {
-                                    vegetarianRecipes[index].missedIngredients
-                                      .length
-                                  }{" "}
+                                  <Text
+                                    numberOfLines={1}
+                                    style={styles.recipeMissingIngredients}
+                                  >
+                                    {
+                                      vegetarianRecipes[index].missedIngredients
+                                        .length
+                                    }{" "}
                                   missings
                                 </Text>
+                                </View>
                               </View>
                             </View>
                           </TouchableOpacity>
@@ -811,11 +823,12 @@ function RecipeTab(state) {
           )}
           {otherRecipes.length > 0 && (
             <View>
-              <View style={{ padding: 16 }}>
+              <View style={styles.sectionHeader}>
                 <Text style={{ fontSize: 22, fontWeight: "bold" }}>Others</Text>
               </View>
               <View>
                 <FlatList
+                  showsHorizontalScrollIndicator={false}
                   data={otherRecipes}
                   horizontal={true}
                   keyExtractor={(recipe) => recipe.id.toString()}
@@ -848,33 +861,30 @@ function RecipeTab(state) {
                                   }
                                   color={colors.font_red}
                                 />
-                                <Text
-                                  numberOfLines={2}
-                                  style={styles.recipeTitle}
-                                >
-                                  {otherRecipes[index].title}
-                                </Text>
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.recipeLikes}
-                                >
-                                  {nFormatter(otherRecipes[index].likes, 1)}{" "}
+                                {/* Hole all recipe info */}
+                                <View style={{ paddingRight: 3, paddingLeft: 3 }}>
+                                  <Text
+                                    numberOfLines={2}
+                                    style={styles.recipeTitle}
+                                  >
+                                    {otherRecipes[index].title}
+                                  </Text>
+                                  <Text
+                                    numberOfLines={1}
+                                    style={styles.recipeLikes}
+                                  >
+                                    {nFormatter(otherRecipes[index].likes, 1)}{" "}
                                   likes
                                 </Text>
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.recipeUsedIngredients}
-                                >
-                                  {otherRecipes[index].usedIngredients.length}{" "}
-                                  ingredients
-                                </Text>
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.recipeMissingIngredients}
-                                >
-                                  {otherRecipes[index].missedIngredients.length}{" "}
+
+                                  <Text
+                                    numberOfLines={1}
+                                    style={styles.recipeMissingIngredients}
+                                  >
+                                    {otherRecipes[index].missedIngredients.length}{" "}
                                   missings
                                 </Text>
+                                </View>
                               </View>
                             </View>
                           </TouchableOpacity>
@@ -895,11 +905,31 @@ function RecipeTab(state) {
 
 const styles = StyleSheet.create({
   screen: {
-    paddingVertical: 20,
     backgroundColor: colors.light,
   },
   container: {
     flex: 1,
+  },
+  searchBar: {
+    backgroundColor: colors.background,
+    marginLeft: screenWidth * 0.04,
+    marginRight: screenWidth * 0.04
+  },
+  inputSearchBar: {
+    borderRadius: 30,
+    paddingLeft: 10,
+    backgroundColor: 'white',
+    ...Platform.select({
+      ios: {
+        shadowColor: colors.primary,
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
   },
   navBar: {
     height: 55,
@@ -918,6 +948,12 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
+  },
+  sectionHeader: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 8,
+    paddingBottom: 8
   },
   recipeTitle: {
     fontSize: 16,
@@ -944,13 +980,13 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     backgroundColor: "white",
     borderRadius: 20,
-    width: screenWidth / 2,
+    width: screenWidth / 2.4,
     ...Platform.select({
       ios: {
-        shadowColor: "#000",
+        shadowColor: colors.primary,
         shadowOffset: { width: 2, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
+        shadowOpacity: 0.4,
+        shadowRadius: 5,
       },
       android: {
         elevation: 3,

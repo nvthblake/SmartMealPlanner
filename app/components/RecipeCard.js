@@ -28,6 +28,7 @@ class RecipeCard extends Component {
     this.state = {
       recipe: this.props.recipe,
       setChosenRecipeFunc: this.props.setChosenRecipeFunc,
+      header: this.props.header,
       heartImage: "heart",
     };
   }
@@ -35,6 +36,7 @@ class RecipeCard extends Component {
   componentDidMount() {
     this.setState({
       recipe: this.props.recipe,
+      header: this.props.header,
       setChosenRecipeFunc: this.props.setChosenRecipeFunc,
       heartImage: this.props.recipe.loved ? "heart" : "heart-outline",
     });
@@ -55,9 +57,8 @@ class RecipeCard extends Component {
     // console.log("RecipeCard -> render -> recipes", recipe)
     const isMan = Math.floor(Math.random() * Math.floor(2));
     const randomNumber = Math.floor(Math.random() * Math.floor(99));
-    const avaUrl = `https://randomuser.me/api/portraits/${
-      isMan ? "men" : "women"
-    }/${randomNumber}.jpg`;
+    const avaUrl = `https://randomuser.me/api/portraits/${isMan ? "men" : "women"
+      }/${randomNumber}.jpg`;
     const setChosenRecipeFunc = this.props.setChosenRecipeFunc;
 
     return (
@@ -69,7 +70,7 @@ class RecipeCard extends Component {
             }}
           >
             <View style={{ padding: 8 }}>
-              <View style={{ flexDirection: "column" }}>
+              <View style={{ flexDirection: "column", height: '100%', minHeight: 250 }}>
                 <Image
                   source={{ uri: recipe.image }}
                   style={{
@@ -80,16 +81,17 @@ class RecipeCard extends Component {
                     marginRight: 8,
                   }}
                 ></Image>
-                <Text numberOfLines={2} style={styles.recipeTitle}>
-                  {recipe.title}
-                </Text>
-                <Text numberOfLines={1} style={styles.recipeLikes}>
-                  {nFormatter(recipe.likes, 1)} likes
-                </Text>
-                <Text numberOfLines={1} style={styles.recipeMissingIngredients}>
-                  {recipe.missedIngredients.length} missings
-                </Text>
-                
+
+                <View style={styles.textHolder}>
+                  <Text numberOfLines={2} style={styles.recipeHeader}>
+                    {this.state.header}
+                  </Text>
+                  <Text numberOfLines={2} style={styles.recipeTitle}>
+                    {recipe.title}
+                  </Text>
+                </View>
+
+
               </View>
             </View>
           </TouchableOpacity>
@@ -107,11 +109,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingTop: 15,
   },
+  textHolder: {
+    alignItems: 'center'
+  },
+  recipeHeader: {
+    fontSize: 20,
+    marginTop: 6,
+    color: "#575B63",
+    fontWeight: "bold",
+  },
   recipeTitle: {
+    textAlign: 'center',
     fontSize: 15,
     marginTop: 6,
-    color: "#3c3c3c",
-    fontWeight: "bold",
+    color: "#AFAFAF",
   },
   recipeLikes: {
     fontSize: 12,
@@ -129,6 +140,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20,
     width: screenWidth / 2.4,
+    // height: '100%',
     ...Platform.select({
       ios: {
         shadowColor: colors.primary,
