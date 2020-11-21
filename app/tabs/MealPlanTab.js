@@ -318,6 +318,7 @@ function MealPlanTab(state) {
           markedDates={markedCurDate}
           onDateSelected={onDateSelect}
           selectedDate={curDate}
+          startingDate={curDate}
         />
 
 
