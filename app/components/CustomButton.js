@@ -44,7 +44,7 @@ function CustomButton({
 
 const styles = StyleSheet.create({
   button: {
-    flex: 1,
+    // flex: 1,
     // flexDirection: "row",
     backgroundColor: colors.white,
     justifyContent: "center",
