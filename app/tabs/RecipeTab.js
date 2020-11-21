@@ -459,11 +459,11 @@ function RecipeTab(state) {
                   chosenRecipe.loved = !chosenRecipe.loved;
                   console.log(chosenRecipe.loved);
                   chosenRecipe.loved
-                    ? setHeartImage("heart") 
+                    ? setHeartImage("heart")
                     : setHeartImage("heart-outline");
-                    chosenRecipe.loved
-                      ? addFavoriteRecipe(chosenRecipe) 
-                      : deleteFavoriteRecipe(chosenRecipe);
+                  chosenRecipe.loved
+                    ? addFavoriteRecipe(chosenRecipe)
+                    : deleteFavoriteRecipe(chosenRecipe);
                 }}
                 style={{ position: "absolute" }}
               >
@@ -673,46 +673,27 @@ function RecipeTab(state) {
                                 />
                                 {/* Hole all recipe info */}
                                 <View style={{ paddingRight: 3, paddingLeft: 3 }}>
+                                  {/* Title */}
                                   <Text
                                     numberOfLines={2}
                                     style={styles.recipeTitle}
                                   >
                                     {veryHealthyRecipes[index].title}
                                   </Text>
+                                  
+                                  {/* Likes */}
                                   <Text
                                     numberOfLines={1}
                                     style={styles.recipeLikes}
                                   >
                                     {nFormatter(
-                                      veryHealthyRecipes[index].likes,
+                                      veryPopularRecipes[index].likes,
                                       1
                                     )}{" "}
-                                <Text
-                                  numberOfLines={2}
-                                  style={styles.recipeTitle}
-                                >
-                                  {veryHealthyRecipes[index].title}
-                                </Text>
-                                <Text
-                                  numberOfLines={1}
-                                  style={styles.recipeLikes}
-                                >
-                                  {nFormatter(
-                                    veryHealthyRecipes[index].likes,
-                                    1
-                                  )}{" "}
                                   likes
                                 </Text>
-                                  <Text
-                                    numberOfLines={1}
-                                    style={styles.recipeUsedIngredients}
-                                  >
-                                    {
-                                      veryHealthyRecipes[index].usedIngredients
-                                        .length
-                                    }{" "}
-                                  ingredients
-                                </Text>
+
+                                  {/* Missings Ingre */}
                                   <Text
                                     numberOfLines={1}
                                     style={styles.recipeMissingIngredients}
@@ -898,8 +879,9 @@ function RecipeTab(state) {
           )}
           <View style={{ height: 60 }}></View>
         </ScrollView>
-      )}
-    </Screen>
+      )
+      }
+    </Screen >
   );
 }
 
