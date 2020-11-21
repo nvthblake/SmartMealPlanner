@@ -34,7 +34,8 @@ import {
   addRecipe,
   clearRecipe,
   addIngredientToCart,
-  toggleFavoriteRecipe,
+  addFavoriteRecipe,
+  deleteFavoriteRecipe,
 } from "../../actions";
 
 /* APIs */
@@ -67,7 +68,8 @@ function RecipeTab(state) {
     addRecipe,
     clearRecipe,
     addIngredientToCart,
-    toggleFavoriteRecipe,
+    addFavoriteRecipe,
+    deleteFavoriteRecipe,
   } = state;
 
   const ingredientsInFridge = ingredients.fridge;
@@ -450,11 +452,13 @@ function RecipeTab(state) {
               <TouchableOpacity
                 onPress={() => {
                   chosenRecipe.loved = !chosenRecipe.loved;
-                  // toggleFavoriteRecipe(chosenRecipe);
                   console.log(chosenRecipe.loved);
                   chosenRecipe.loved
-                    ? setHeartImage("heart")
+                    ? setHeartImage("heart") 
                     : setHeartImage("heart-outline");
+                    chosenRecipe.loved
+                      ? addFavoriteRecipe(chosenRecipe) 
+                      : deleteFavoriteRecipe(chosenRecipe);
                 }}
                 style={{ position: "absolute" }}
               >
@@ -656,6 +660,16 @@ function RecipeTab(state) {
                                     marginRight: 8,
                                   }}
                                 ></Image>
+                                <MaterialCommunityIcons
+                                  size={30}
+                                  style={{ position: "absolute" }}
+                                  name={
+                                    veryHealthyRecipes[index].loved
+                                      ? "heart"
+                                      : "heart-outline"
+                                  }
+                                  color={colors.font_red}
+                                />
                                 <Text
                                   numberOfLines={2}
                                   style={styles.recipeTitle}
@@ -974,7 +988,8 @@ const mapDispatchToProps = (dispatch) =>
       addRecipe,
       clearRecipe,
       addIngredientToCart,
-      toggleFavoriteRecipe,
+      addFavoriteRecipe,
+      deleteFavoriteRecipe,
     },
     dispatch
   );

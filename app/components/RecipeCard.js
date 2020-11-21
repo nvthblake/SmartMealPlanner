@@ -13,6 +13,8 @@ import {
 import { addRecipe } from "../../actions";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
+
+
 import colors from "../config/colors";
 import { nFormatter } from "../utils/NumberFormatting";
 
@@ -25,14 +27,16 @@ class RecipeCard extends Component {
     super(props);
     this.state = {
       recipe: this.props.recipe,
-      setChosenRecipeFunc: this.props.setChosenRecipeFunc
+      setChosenRecipeFunc: this.props.setChosenRecipeFunc,
+      heartImage: "heart",
     };
   }
 
   componentDidMount() {
     this.setState({
       recipe: this.props.recipe,
-      setChosenRecipeFunc: this.props.setChosenRecipeFunc
+      setChosenRecipeFunc: this.props.setChosenRecipeFunc,
+      heartImage: this.props.recipe.loved ? "heart" : "heart-outline",
     });
   }
 

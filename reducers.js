@@ -19,7 +19,7 @@ import {
   DELETE_MEAL_PLAN,
   CLEAR_MEAL_PLAN,
   // Favorite Recipes
-  TOGGLE_FAVORITE_RECIPE,
+  ADD_FAVORITE_RECIPE,
   DELETE_FAVORITE_RECIPE,
   CLEAR_FAVORITE_RECIPE,
 } from "./types";
@@ -159,11 +159,8 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
       newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return newState;
 
-    case TOGGLE_FAVORITE_RECIPE:
-      // favoriteRecipes.push(action.payload);
-      const toggledRecipe = recipes.findIndex((recipe => recipe.id === action.payload.id));
-      console.log(recipes[toggledRecipe].title, recipes[toggledRecipe].loved);
-      // recipes[toggledRecipe].loved = !recipes[toggledRecipe].loved;
+    case ADD_FAVORITE_RECIPE:
+      favoriteRecipes.push(action.payload);
       newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes  };
       return newState;
 
