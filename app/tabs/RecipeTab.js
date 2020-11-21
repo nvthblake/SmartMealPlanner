@@ -495,7 +495,7 @@ function RecipeTab(state) {
                 <CustomButton
                   color={colors.medium}
                   textColor={colors.white}
-                  title="Cancel"
+                  title="Back"
                   height={40}
                   onPress={() => {
                     setChosenRecipe(null);

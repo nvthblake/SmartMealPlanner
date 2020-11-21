@@ -405,34 +405,6 @@ function MealPlanTab(state) {
                 >
                   {chosenRecipe.title}
                 </Text>
-                {/* <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    paddingHorizontal: 8,
-                  }}
-                >
-                  <CircularOverview
-                    stat={chosenRecipe.servings.toString()}
-                    title={"Servings"}
-                    size={Math.floor(screenWidth / 5.5)}
-                  />
-                  <CircularOverview
-                    stat={chosenRecipe.readyInMinutes.toString() + " mins"}
-                    title={"Time"}
-                    size={Math.floor(screenWidth / 5.5)}
-                  />
-                  <CircularOverview
-                    stat={
-                      Math.floor(
-                        chosenRecipe.spoonacularScore * 0.05
-                      ).toString() + "/5"
-                    }
-                    title={"Ratings"}
-                    size={Math.floor(screenWidth / 5.5)}
-                  />
-                </View> */}
                 <View
                   style={{
                     height: 1,
