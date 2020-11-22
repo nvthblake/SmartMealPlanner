@@ -484,7 +484,7 @@ function RecipeTab(state) {
                 <MaterialCommunityIcons
                   name={chosenRecipe.loved ? "heart" : "heart-outline"}
                   size={40}
-                  color={colors.font_red}
+                  color={chosenRecipe.loved ? colors.font_red : colors.white}
                 />
               </TouchableOpacity>
 
@@ -606,7 +606,7 @@ function RecipeTab(state) {
                                         ? "heart"
                                         : "heart-outline"
                                     }
-                                    color={colors.font_red}
+                                    color={veryPopularRecipes[index].loved ? colors.font_red : colors.white}
                                   />
                                 </TouchableOpacity>
                                 {/* Hole all recipe info */}
@@ -705,7 +705,7 @@ function RecipeTab(state) {
                                         ? "heart"
                                         : "heart-outline"
                                     }
-                                    color={colors.font_red}
+                                    color={veryHealthyRecipes[index].loved ? colors.font_red : colors.white}
                                   />
                                 </TouchableOpacity>
                                 {/* Hole all recipe info */}
@@ -809,7 +809,7 @@ function RecipeTab(state) {
                                         ? "heart"
                                         : "heart-outline"
                                     }
-                                    color={colors.font_red}
+                                    color={vegetarianRecipes[index].loved ? colors.font_red : colors.white}
                                   />
                                 </TouchableOpacity>
                                 {/* Hole all recipe info */}
@@ -903,7 +903,7 @@ function RecipeTab(state) {
                                         ? "heart"
                                         : "heart-outline"
                                     }
-                                    color={colors.font_red}
+                                    color={otherRecipes[index].loved ? colors.font_red : colors.white}
                                   />
                                 </TouchableOpacity>
                                 {/* Hole all recipe info */}

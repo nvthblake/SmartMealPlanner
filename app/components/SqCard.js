@@ -44,21 +44,21 @@ function SqCard({
         />
         <View style={styles.detailsContainer}>
           {/* Ingredients Title */}
-          <AppText style={[styles.title, { fontSize: 0.035 * screenWidth }]}>
+          <AppText style={[styles.title, { fontSize: 0.04 * screenWidth }]}>
             {title}
           </AppText>
 
           <View style={{ flexDirection: 'row' }}>
             {/* Ingredients quantity */}
-            <AppText style={[styles.subTitle, { fontSize: 0.025 * screenWidth }]}>
+            <AppText style={[styles.subTitle, { fontSize: 0.03 * screenWidth }]}>
               {subTitle1}
             </AppText>
-            <Text style={[styles.subTitle, { fontSize: 0.025 * screenWidth }]}> | </Text>
+            <Text style={[styles.subTitle, { fontSize: 0.03 * screenWidth }]}> | </Text>
             {/* Ingredients exp days */}
             <AppText
               style={[
                 styles.subTitle,
-                { fontSize: 0.025 * screenWidth, color: expStatus },
+                { fontSize: 0.03 * screenWidth, color: expStatus },
               ]}
             >
               {subTitle2}
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   image: {
     marginTop: 3,
     width: "95%",
-    height: "65%",
+    height: "68%",
     borderRadius: 15,
     borderColor: colors.white,
     overflow: "hidden",
