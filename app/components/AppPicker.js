@@ -7,6 +7,7 @@ import {
   FlatList,
   TouchableHighlight,
   Text,
+  Platform,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import defaultStyles from "../config/styles";
@@ -125,6 +126,17 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     alignItems: "flex-start",
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
   },
   scrollContainer: {
     height: 300,
