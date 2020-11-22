@@ -33,8 +33,8 @@ class RecipeCard extends Component {
   }
 
   componentDidMount() {
-    console.log("----header", this.props.header);
-    console.log("----recipe", this.props.recipe);
+    // console.log("----header", this.props.header);
+    // console.log("----recipe", this.props.recipe);
     this.setState({
       recipe: this.props.recipe,
       horizontal: this.props.horizontal,
