@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
-  TouchableWithoutFeedback,
   View,
   FlatList,
   TouchableHighlight,
   Text,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import defaultStyles from "../config/styles";
@@ -18,9 +18,12 @@ import Modal from "react-native-modal";
 import { ScrollView } from "react-native-gesture-handler";
 import { Button } from "react-native-paper";
 import { CalendarPicker, Calendar } from "react-native-calendars";
+import pickerOptions from "../config/pickerOptions";
+import CustomButton from "../components/CustomButton";
 
-function MealPlanDatePicker({}) {
+function MealPlanDatePicker({ recipe, addToMealPlan }) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [optionVisible, setOptionVisible] = useState(false);
   const [mealDate, setMealDate] = useState("2020-11-28");
   const markedCurDate = {
     [mealDate]: {
@@ -48,7 +51,7 @@ function MealPlanDatePicker({}) {
     textMonthFontSize: 16,
     textDayHeaderFontSize: 16,
   };
-
+  const [daypicked, setDayPicked] = useState(new Date());
   return (
     <>
       <View style={styles.centeredView}>
@@ -64,25 +67,23 @@ function MealPlanDatePicker({}) {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>Hello World!</Text>
-
               <TouchableHighlight
-                style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                style={styles.cancelButton}
                 onPress={() => {
                   setModalVisible(!modalVisible);
                 }}
               >
-                <Text style={styles.textStyle}>
-                  Hideeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee Modal
-                </Text>
+                <Text style={styles.textStyle}>CANCEL</Text>
               </TouchableHighlight>
               <Calendar
                 style={styles.calendar}
                 theme={calendarTheme}
-                current={Date()}
-                minDate={Date()}
+                current={new Date()}
+                minDate={new Date()}
                 onDayPress={(day) => {
                   setMealDate(day.dateString);
+                  setDayPicked(day);
+                  setOptionVisible(true);
                 }}
                 hideExtraDays={true}
                 disableMonthChange={true}
@@ -94,6 +95,46 @@ function MealPlanDatePicker({}) {
             </View>
           </View>
         </Modal>
+        <Modal
+          backdropColor={"#F2F5F8"}
+          backdropOpacity={0.5}
+          coverScreen={true}
+          isVisible={optionVisible}
+          onBackdropPress={() => setOptionVisible(false)}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <TouchableHighlight
+                style={styles.cancelButton}
+                onPress={() => {
+                  setOptionVisible(!optionVisible);
+                }}
+              >
+                <Text style={styles.textStyle}>CANCEL</Text>
+              </TouchableHighlight>
+              <View style={styles.scrollContainer}>
+                <FlatList
+                  data={pickerOptions.mealtype}
+                  numColumns={1}
+                  renderItem={({ item }) => (
+                    <PickerItem
+                      item={item}
+                      label={item.label}
+                      onPress={() => {
+                        setOptionVisible(false);
+                        addToMealPlan(
+                          daypicked.timestamp,
+                          item.label.toString(),
+                          recipe
+                        );
+                      }}
+                    />
+                  )}
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
         <Button
           icon="calendar"
           mode="contained"
@@ -101,6 +142,7 @@ function MealPlanDatePicker({}) {
             console.log("Pressed");
             setModalVisible(true);
           }}
+          style={styles.button}
         >
           Add to meal plan
         </Button>
@@ -110,10 +152,28 @@ function MealPlanDatePicker({}) {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    borderRadius: 30,
+    padding: 10,
+    elevation: 2,
+  },
+  scrollContainer: {
+    height: 200,
+    width: 200,
+  },
+  cancelButton: {
+    backgroundColor: colors.font_red,
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    width: 300,
+  },
   textStyle: {
+    flex: 1,
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
+    fontSize: 40,
   },
   centeredView: {
     alignSelf: "center",

@@ -105,15 +105,19 @@ class RecipeCard extends Component {
                       </Text>
                       {/* likes */}
                       <Text numberOfLines={2} style={styles.recipeLikes}>
-                        {nFormatter(recipe.likes, 1)}{" "} likes
-                    </Text>
+                        {nFormatter(recipe.likes, 1)}{" "} 
+                        likes
+                      </Text>
+                      {/* Used Ingre */}
+                      <Text numberOfLines={1} style={styles.recipeUsedIngredients}>
+                        {recipe.usedIngredients.length}{" "}
+                        ingredients
+                      </Text>
                       {/* missing */}
-                      <Text
-                        numberOfLines={1}
-                        style={styles.recipeMissingIngredients}
-                      >
-                        {recipe.missedIngredients.length}{" "} missings
-                    </Text>
+                      <Text numberOfLines={1} style={styles.recipeMissingIngredients}>
+                        {recipe.missedIngredients.length}{" "} 
+                        missings
+                      </Text>
                     </View>
                   )}
                 </View>
@@ -193,7 +197,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   textHolder: {
-
+    // paddingLeft: 0,
   },
   recipeHeader: {
     fontSize: 20,
@@ -214,13 +218,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   recipeLikes: {
-    paddingLeft: 10,
+    paddingLeft: 8,
     fontSize: 12,
     marginTop: 3,
     color: "#B3B3B5",
   },
+  recipeUsedIngredients: {
+    fontSize: 12,
+    paddingLeft: 8,
+    marginTop: 5,
+    color: "#00C2CB",
+    fontWeight: "bold",
+  },
   recipeMissingIngredients: {
-    paddingLeft: 10,
+    paddingLeft: 8,
     marginTop: 2,
     fontSize: 12,
     fontWeight: "bold",

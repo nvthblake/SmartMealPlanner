@@ -16,6 +16,7 @@ import CalendarStrip from "react-native-calendar-strip";
 import moment from "moment";
 import Modal from "react-native-modal";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import CustomButton from "../components/CustomButton";
 
 // Redux
 import { connect, useSelector } from "react-redux";
@@ -73,18 +74,20 @@ function MealPlanTab(state) {
   const favoriteRecipes = ingredients.favoriteRecipes;
 
   const curDate = new Date();
+  const defaultMealPlan = 6;
 
   // State vars
   const [isLoading, setIsLoading] = useState(true);
   const [isResultEmpty, setIsResultEmpty] = useState(false);
   const [categories, setCategory] = useState(INITIAL_CATEGORIES_STATE);
   const [chosenRecipe, setChosenRecipe] = useState(null);
-  const [numMealPlans, setNumMealPlans] = useState(6);
+  const [numMealPlans, setNumMealPlans] = useState(0);
   const [selectDate, setSelectDate] = useState(curDate);
   const [heartImage, setHeartImage] = useState(null);
   const [selectMealPlan, getMealPlanOnDate] = useState([]);
   const [maxlength, setMaxLength] = useState(0);
   const [mealPlan, setMealPlan] = useState([]);
+  const [otherRecipes, setOtherRecipes] = useState([]);
   const reactiveRecipes = useSelector((tempState) => tempState.ingredients);
 
   useEffect(() => {
@@ -98,6 +101,19 @@ function MealPlanTab(state) {
     }
   }, [reactiveRecipes]);
 
+  // add favorite into mealplan
+  const addToMealPlan = (date, selection, recipe) => {
+    var msDiff = date - new Date().getTime(); //Future date - current date
+    var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 2;
+    console.log(index);
+    let old = mealPlan;
+    let meal = {
+      mealType: selection,
+      recipeObj: recipe,
+    };
+    old[index].push(meal);
+    setMealPlan(old);
+  };
   // Vars related to calendar
   let datesWhitelist = (num) => {
     return [
@@ -187,6 +203,11 @@ function MealPlanTab(state) {
    */
   const generateMealPlan = () => {
     const filteredRecipes = getRecipesBasedOnFilter(recipes);
+    const otherRecipes = filteredRecipes.filter(
+      (recipe) =>
+        !recipe.vegetarian && !recipe.veryPopular && !recipe.veryHealthy
+    );
+    setOtherRecipes(otherRecipes);
     let breakfastType = ["breakfast", "salad", "soup", "sauce", "side dish"];
     let lunchDinnerType = ["main course", "snack", "dinner", "lunch"];
 
@@ -243,6 +264,13 @@ function MealPlanTab(state) {
       dinnerRecipes.length
     );
     setMaxLength(maxlengthNew - 1);
+    if (maxlengthNew < numMealPlans) {
+      // maxlengthNew = numMealPlans + 1;
+      setMaxLength(maxlengthNew);
+      setNumMealPlans(maxlengthNew);
+    } else {
+      setNumMealPlans(defaultMealPlan);
+    }
     let minlength = Math.min(
       breakfastRecipes.length,
       lunchRecipes.length,
@@ -301,37 +329,15 @@ function MealPlanTab(state) {
     });
     return result;
   };
-  const handleDelete = (recipe) => {
-    Alert.alert(
-      "Done Eating?",
-      "This recipe will be removed from your meal planner",
-      [
-        {
-          text: "Yes",
-          onPress: () => {
-            // console.log(recipe);
-            // Delete from reduce
-            deleteMealPlan(recipe);
-          },
-        },
-        {
-          text: "No",
-          style: "cancel",
-        },
-      ],
-      { cancelable: true }
-    );
-  };
 
   useEffect(() => {
-    setNumMealPlans(maxlength);
     getMealPlanOnDate(mealPlan[0]);
     onDateSelect(curDate);
   }, [ingredientsInFridge]);
 
-  useEffect(() => {
-    setNumMealPlans(maxlength);
-  }, [maxlength]);
+  // useEffect(() => {
+  //   setNumMealPlans(maxlength);
+  // }, [maxlength]);
 
   return (
     <Screen style={styles.screen}>
@@ -404,7 +410,7 @@ function MealPlanTab(state) {
               <View>
                 {/* Horizontal Scroll Bar of Recipe Card */}
                 <FlatList
-                  style={styles.recipeScroll}
+                  style={styles.recipeScrollHeader}
                   showsHorizontalScrollIndicator={false}
                   data={Object.keys(selectMealPlan)}
                   horizontal={true}
@@ -422,6 +428,8 @@ function MealPlanTab(state) {
               </View>
             </View>
           )}
+
+          <View style={styles.separator}></View>
 
           {/* Favorite section */}
           {favoriteRecipes.length > 0 && (
@@ -447,12 +455,41 @@ function MealPlanTab(state) {
                     />
                   );
                 }}
-              ></FlatList>
-              {/* <RecipeCard recipe={favoriteRecipes[0]} setChosenRecipeFunc={setChosenRecipe}/> */}
+              />
+            </View>
+          )}
+
+          {/* Exploring */}
+          {otherRecipes.length > 0 && (
+            <View>
+              {/* Header */}
+              <View style={styles.sectionHeader}>
+                <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                  Exploring
+                </Text>
+              </View>
+
+              {/* Recipe Cards */}
+              <FlatList
+                style={styles.recipeScroll}
+                data={otherRecipes}
+                horizontal={true}
+                keyExtractor={(recipe) => recipe.id.toString()}
+                renderItem={({ recipe, index }) => {
+                  return (
+                    <RecipeCard
+                      recipe={otherRecipes[index]}
+                      setChosenRecipeFunc={setChosenRecipe}
+                    />
+                  );
+                }}
+              />
             </View>
           )}
         </ScrollView>
       )}
+
+      {/* Modal Section */}
       <Modal
         isVisible={!!chosenRecipe}
         coverScreen={true}
@@ -463,7 +500,7 @@ function MealPlanTab(state) {
         <View style={styles.modalCard}>
           {!!chosenRecipe && (
             <View style={{ flex: 1, justifyContent: "space-between" }}>
-              <View>
+              <View style={{ flex: 1 }}>
                 <Image
                   resizeMode={"cover"}
                   source={{ uri: chosenRecipe.image }}
@@ -472,7 +509,6 @@ function MealPlanTab(state) {
                     marginRight: 14,
                     height: 160,
                     borderRadius: 10,
-                    marginRight: 8,
                   }}
                 ></Image>
                 <TouchableOpacity
@@ -506,7 +542,10 @@ function MealPlanTab(state) {
                 >
                   {chosenRecipe.title}
                 </Text>
-                <MealPlanDatePicker />
+                <MealPlanDatePicker
+                  recipe={chosenRecipe}
+                  addToMealPlan={addToMealPlan}
+                />
                 <View
                   style={{
                     height: 1,
@@ -563,68 +602,23 @@ function MealPlanTab(state) {
                   justifyContent: "space-between",
                 }}
               >
-                <TouchableOpacity
-                  style={{
-                    borderColor: "#3E73FB",
-                    width: Math.floor(screenWidth / 4),
-                    borderRadius: 8,
-                    paddingVertical: 8,
-                    borderWidth: 1,
-                  }}
-                  onPress={() => {
-                    setChosenRecipe(null);
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "#3E73FB",
-                      fontSize: 16,
-                      textAlign: "center",
-                    }}
-                  >
-                    Back
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#3E73FB",
-                    width: Math.floor(screenWidth / 4),
-                    borderRadius: 8,
-                    paddingVertical: 8,
-                  }}
+                <CustomButton
+                  color={colors.primary}
+                  title="See Details"
+                  height={40}
                   onPress={() =>
                     openURLInDefaultBrowser(chosenRecipe.sourceUrl)
                   }
-                >
-                  <Text
-                    style={{
-                      color: "white",
-                      fontSize: 16,
-                      textAlign: "center",
-                    }}
-                  >
-                    See Details
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#FFBE6A",
-                    width: Math.floor(screenWidth / 4),
-                    borderRadius: 8,
-                    paddingVertical: 8,
+                ></CustomButton>
+                <CustomButton
+                  color={colors.medium}
+                  textColor={colors.white}
+                  title="Back"
+                  height={40}
+                  onPress={() => {
+                    setChosenRecipe(null);
                   }}
-                  onPress={() => handleDelete(chosenRecipe)}
-                >
-                  <Text
-                    style={{
-                      color: "white",
-                      fontSize: 16,
-                      textAlign: "center",
-                    }}
-                  >
-                    Finish Eating
-                  </Text>
-                </TouchableOpacity>
+                ></CustomButton>
               </View>
             </View>
           )}
@@ -647,7 +641,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 10,
-    paddingBottom: 10,
+    // paddingBottom: 5,
   },
   shadowBox: {
     // shadow
@@ -660,10 +654,17 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 9,
   },
+  recipeScrollHeader: {
+    marginLeft: 6,
+    height: screenHeight / 3.7,
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
   recipeScroll: {
     marginLeft: 6,
-    height: 240,
-    paddingBottom: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
+    height: screenHeight / 3.3,
   },
   recipeTitle: {
     fontSize: 16,
@@ -720,6 +721,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     // marginTop: screenHeight / 7,
     padding: 12,
+  },
+  separator: {
+    marginTop: 10,
+    marginBottom: 5,
+    marginRight: 15,
+    marginLeft: 20,
+    height: 1,
+    backgroundColor: colors.lightGrey,
   },
 });
 
