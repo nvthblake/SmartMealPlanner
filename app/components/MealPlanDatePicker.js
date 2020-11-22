@@ -6,7 +6,7 @@ import {
   TouchableHighlight,
   Text,
   Alert,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import defaultStyles from "../config/styles";
@@ -95,12 +95,12 @@ function MealPlanDatePicker({}) {
           </View>
         </Modal>
         <Modal
-        backdropColor={"#F2F5F8"}
-        backdropOpacity={0.5}
-        coverScreen={true}
-        isVisible={optionVisible}
-        onBackdropPress={() => setOptionVisible(false)}
-      >
+          backdropColor={"#F2F5F8"}
+          backdropOpacity={0.5}
+          coverScreen={true}
+          isVisible={optionVisible}
+          onBackdropPress={() => setOptionVisible(false)}
+        >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <TouchableHighlight
@@ -112,22 +112,21 @@ function MealPlanDatePicker({}) {
                 <Text style={styles.textStyle}>CANCEL</Text>
               </TouchableHighlight>
               <View style={styles.scrollContainer}>
-              <FlatList
-                data={pickerOptions.mealtype}
-                numColumns={1}
-                renderItem={({ item }) => (
-                  <PickerItem
-                    item={item}
-                    label={item.label}
-                    onPress={() => {
-                      setOptionVisible(false);
-                      console.log(item.label)
-                    }}
-                  />
-                )}
-              />
+                <FlatList
+                  data={pickerOptions.mealtype}
+                  numColumns={1}
+                  renderItem={({ item }) => (
+                    <PickerItem
+                      item={item}
+                      label={item.label}
+                      onPress={() => {
+                        setOptionVisible(false);
+                        console.log(item.label);
+                      }}
+                    />
+                  )}
+                />
               </View>
-              
             </View>
           </View>
         </Modal>

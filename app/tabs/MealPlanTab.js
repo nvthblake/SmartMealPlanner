@@ -16,6 +16,7 @@ import CalendarStrip from "react-native-calendar-strip";
 import moment from "moment";
 import Modal from "react-native-modal";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import CustomButton from "../components/CustomButton";
 
 // Redux
 import { connect } from "react-redux";
@@ -413,8 +414,7 @@ function MealPlanTab(state) {
                     />
                   );
                 }}
-              ></FlatList>
-              {/* <RecipeCard recipe={favoriteRecipes[0]} setChosenRecipeFunc={setChosenRecipe}/> */}
+              />
             </View>
           )}
         </ScrollView>
@@ -529,68 +529,31 @@ function MealPlanTab(state) {
                   justifyContent: "space-between",
                 }}
               >
-                <TouchableOpacity
-                  style={{
-                    borderColor: "#3E73FB",
-                    width: Math.floor(screenWidth / 4),
-                    borderRadius: 8,
-                    paddingVertical: 8,
-                    borderWidth: 1,
-                  }}
-                  onPress={() => {
-                    setChosenRecipe(null);
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "#3E73FB",
-                      fontSize: 16,
-                      textAlign: "center",
-                    }}
-                  >
-                    Back
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#3E73FB",
-                    width: Math.floor(screenWidth / 4),
-                    borderRadius: 8,
-                    paddingVertical: 8,
-                  }}
+                <CustomButton
+                  color={"#FFBE6A"}
+                  title="Done Eating"
+                  height={40}
+                  // onPress={() =>
+                  //   addMissedIngredientsToCard(chosenRecipe.missedIngredients)
+                  // }
+                ></CustomButton>
+                <CustomButton
+                  color={colors.primary}
+                  title="See Details"
+                  height={40}
                   onPress={() =>
                     openURLInDefaultBrowser(chosenRecipe.sourceUrl)
                   }
-                >
-                  <Text
-                    style={{
-                      color: "white",
-                      fontSize: 16,
-                      textAlign: "center",
-                    }}
-                  >
-                    See Details
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#FFBE6A",
-                    width: Math.floor(screenWidth / 4),
-                    borderRadius: 8,
-                    paddingVertical: 8,
+                ></CustomButton>
+                <CustomButton
+                  color={colors.medium}
+                  textColor={colors.white}
+                  title="Back"
+                  height={40}
+                  onPress={() => {
+                    setChosenRecipe(null);
                   }}
-                  onPress={() => handleDelete(chosenRecipe)}
-                >
-                  <Text
-                    style={{
-                      color: "white",
-                      fontSize: 16,
-                      textAlign: "center",
-                    }}
-                  >
-                    Finish Eating
-                  </Text>
-                </TouchableOpacity>
+                ></CustomButton>
               </View>
             </View>
           )}
