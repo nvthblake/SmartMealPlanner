@@ -80,18 +80,17 @@ function MealPlanTab(state) {
   const [chosenRecipe, setChosenRecipe] = useState(null);
   const [numMealPlans, setNumMealPlans] = useState(6);
   const [selectDate, setSelectDate] = useState(curDate);
-  const header = ["Breakfast", "Lunch", "Dinner"];
   const [heartImage, setHeartImage] = useState(null);
   const [selectMealPlan, getMealPlanOnDate] = useState([]);
+  const [maxlength, getMaxLength] = useState(0);
+  const [mealPlan, setMealPlan] = useState([]);
   const reactiveRecipes = useSelector(tempState => tempState.ingredients);
-
-  let mealPlan = []
 
   useEffect(() => {
     // // console.log("Hello")
     // // console.log(recipes[0])
-    mealPlan = generateMealPlan()
-    console.log(mealPlan)
+    setMealPlan(generateMealPlan())
+    // console.log(mealPlan)
     getMealPlanOnDate(mealPlan[0])
   }, [reactiveRecipes]);
 
@@ -143,7 +142,7 @@ function MealPlanTab(state) {
     var msDiff = new Date(date).getTime() - new Date().getTime(); //Future date - current date
     var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 1;
 
-    console.log("date from today", index);
+    console.log("\ndate from today", index);
     console.log("mealPlan: ", Object.keys(mealPlan))
     console.log("selectMealPlan: ", mealPlan[index])
     if (mealPlan[index] != undefined) {
@@ -182,7 +181,6 @@ function MealPlanTab(state) {
    *     {"mealType": "dinner", "recipeObj": RecipeObj},
    * ]}
    */
-  let maxlength;
   const generateMealPlan = () => {
     const filteredRecipes = getRecipesBasedOnFilter(recipes);
     let breakfastRecipes = [];
@@ -234,63 +232,57 @@ function MealPlanTab(state) {
       main_course.length
     );
 
-    // console.log("------main_course");
-    // console.log(Object.keys(main_course));
-    // console.log("------breakfastRecipes");
-    // console.log(Object.keys(breakfastRecipes));
-    // console.log("------lunchRecipes");
-    // console.log(Object.keys(lunchRecipes));
-    // console.log("------dinnerRecipes");
-    // console.log(Object.keys(dinnerRecipes));
+    // display
+    console.log("-----Breakfast: ", breakfastRecipes);
+    console.log("-----Lunch: ", lunchRecipes);
+    console.log("-----Dinner: ", dinnerRecipes);
 
-    let mealPlan = {};
-    maxlength = Math.max(
+    let mealPlanGenerate = {};
+    getMaxLength (Math.max(
       breakfastRecipes.length,
       lunchRecipes.length,
       dinnerRecipes.length
-    );
+    ));
     const minlength = Math.min(
       breakfastRecipes.length,
       lunchRecipes.length,
       dinnerRecipes.length
     );
 
-    console.log("-----maxlength");
-    console.log(maxlength);
-    console.log("-----minlength");
-    console.log(minlength);
+    console.log("-----maxlength", maxlength);
+    console.log("-----minlength", minlength);
 
     // console.log("here", Math.ceil(main_course.length / 2));
     // console.log("here", Math.floor(main_course.length / 2));
     for (var i = 0; i < maxlength; i++) {
-      mealPlan[i] = [];
+      mealPlanGenerate[i] = [];
       let b = breakfastRecipes[i];
       let l = lunchRecipes[i];
       let d = dinnerRecipes[i];
 
       if (b !== undefined) {
         let meal = {
-          "mealType": "breakfast",
+          "mealType": "Breakfast",
           "recipeObj": b
         };
-        mealPlan[i].push(meal);
+        mealPlanGenerate[i].push(meal);
       }
       if (l !== undefined) {
         let meal = {
-          "mealType": "lunch",
+          "mealType": "Lunch",
           "recipeObj": l
         };
-        mealPlan[i].push(meal);
+        mealPlanGenerate[i].push(meal);
       }
       if (d !== undefined) {
         let meal = {
-          "mealType": "dinner",
+          "mealType": "Dinner",
           "recipeObj": d
         };
-        mealPlan[i].push(meal);
+        mealPlanGenerate[i].push(meal);
       }
     }
-    return mealPlan;
+    return mealPlanGenerate;
   };
 
   // Utils Functions
