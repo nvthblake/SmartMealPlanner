@@ -429,7 +429,7 @@ function MealPlanTab(state) {
         <View style={styles.modalCard}>
           {!!chosenRecipe && (
             <View style={{ flex: 1, justifyContent: "space-between" }}>
-              <View>
+              <View style={{ flex: 1 }}>
                 <Image
                   resizeMode={"cover"}
                   source={{ uri: chosenRecipe.image }}
