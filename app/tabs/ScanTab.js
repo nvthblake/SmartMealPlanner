@@ -119,7 +119,10 @@ function ScanTab(state) {
   return (
     <Screen>
       <View style={styles.container}>
+        {/* Scan Button that pops up Camera */}
         <CameraPage />
+
+        {/* Form */}
         <FlatList
           data={ingredientToScan}
           horizontal
