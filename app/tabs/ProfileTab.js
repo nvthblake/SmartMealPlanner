@@ -21,6 +21,10 @@ import colors from "../config/colors";
 import * as ImagePicker from "expo-image-picker";
 import ProgressBarAnimated from "react-native-progress-bar-animated";
 import Screen from "../components/Screen";
+// Database imports
+import { openDatabase } from "expo-sqlite";
+
+const db = openDatabase("db2.db");
 
 function Profile(state) {
   const screenWidth = Dimensions.get("window").width;
@@ -41,7 +45,7 @@ function Profile(state) {
       return;
     }
 
-    setSelectedImage({ localUri: pickerResult.uri });
+    handleUpdateUserImage(pickerResult.uri);
   };
 
   let openImagePickerAsync = async () => {
@@ -58,7 +62,7 @@ function Profile(state) {
       return;
     }
 
-    setSelectedImage({ localUri: pickerResult.uri });
+    handleUpdateUserImage(pickerResult.uri);
   };
 
   // Progress bar logic
@@ -89,6 +93,38 @@ function Profile(state) {
 
   // Model State
   const [modalVisible, setModalVisible] = useState(false);
+
+  const getInitUserImage = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `SELECT userProfileImageUri FROM UserProfile WHERE id = 0;`,
+        [],
+        (_, { rows }) => {
+          setSelectedImage({ localUri: rows._array[0].userProfileImageUri });
+        },  
+        (_, error) => console.log("ProfileTab getInitUserImage SQLite -> ", error),
+      )
+    })
+  }
+
+  const handleUpdateUserImage = (imagePath) => {
+    console.log("HandleUpdateUserIamge -> ", imagePath);
+    setSelectedImage({ localUri: imagePath });
+    db.transaction((tx) => {
+      tx.executeSql(
+        `UPDATE UserProfile \
+        SET userProfileImageUri = ? \
+        WHERE id = 0;`,
+        [imagePath],
+        [],
+        (_, error) =>
+            console.log("ProfileTab handleUpdateUserImage SQLite -> ", error)
+      )
+    })
+    console.log("uri is ", userImageUri);
+  }
+
+  useEffect(getInitUserImage, []);
 
   return (
     <Screen style={styles.screen} headerTitle="Welcome to SmartFridge">
