@@ -271,7 +271,7 @@ function Profile(state) {
                 fontColor={colors.grey}
               />
             </View>
-          </CardView>
+          {/* </CardView>
           <Text
             style={[
               { marginLeft: screenWidth * 0.06, fontSize: screenWidth * 0.06 },
@@ -286,7 +286,7 @@ function Profile(state) {
               eiusmod tempor incididunt ut labore et dolore magna aliqua aliquip
               ex ea commodo consequat.{" "}
             </Text>
-          </CardView>
+          </CardView> */}
           <View style={styles.centeredView}>
             <Modal
               backdropColor={"#F2F5F8"}
