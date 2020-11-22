@@ -1,7 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { addIngredientToFridge } from "../../actions";
+import {
+  addIngredientToFridge,
+  updateIngredientInFridge,
+  cleanZeroedIngredientsInFridge,
+} from "../../actions";
 import {
   StyleSheet,
   View,
@@ -9,10 +13,10 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
-  Modal,
   TouchableHighlight,
   ScrollView,
-  ImageBackground,
+  LogBox,
+  FlatList,
 } from "react-native";
 import CardView from "../components/CardView";
 import AppText from "../components/AppText";
@@ -23,12 +27,19 @@ import ProgressBarAnimated from "react-native-progress-bar-animated";
 import Screen from "../components/Screen";
 // Database imports
 import { openDatabase } from "expo-sqlite";
+import { default as ModalSlider } from "react-native-modal";
+import IngredientSlider from "../components/IngredientSlider";
+import CustomButton from "../components/CustomButton";
 
 const db = openDatabase("db2.db");
+const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 
 function Profile(state) {
-  const screenWidth = Dimensions.get("window").width;
-  const screenHeight = Dimensions.get("window").height;
+  useEffect(() => {
+    LogBox.ignoreLogs(["Animated: `useNativeDriver`"]);
+  }, []);
+
   // Camera logic
   const [selectedImage, setSelectedImage] = useState("");
   const takePicture = async () => {
@@ -67,7 +78,12 @@ function Profile(state) {
 
   // Progress bar logic
   const barWidth = screenWidth * 0.66;
-  const { ingredients, addIngredientToFridge } = state;
+  const {
+    ingredients,
+    addIngredientToFridge,
+    updateIngredientInFridge,
+    cleanZeroedIngredientsInFridge,
+  } = state;
   const ingredientsInFridge = ingredients.fridge;
   const Limit = 100;
   let Item = 0;
@@ -90,9 +106,14 @@ function Profile(state) {
     }
   });
   let fridgePct = Item < Limit ? Math.floor((Item / Limit) * 100) : 100;
+  const [sliderValues, setSliderValues] = useState(
+    new Array(ingredientsInFridge.length)
+  );
+  let sliderArrayTemp = [...sliderValues];
 
   // Model State
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalSliderVisible, setModalSliderVisible] = useState(false);
 
   const handleUpdateUserImage = (imagePath) => {
     setSelectedImage({ localUri: imagePath });
@@ -147,31 +168,76 @@ function Profile(state) {
             </TouchableOpacity>
           </View>
           <CardView>
-            <Text style={{marginTop: screenHeight*0.005, marginLeft: screenWidth*0.02, fontSize: screenHeight*0.04, fontWeight: "bold", color: colors.grey}}>Your Fridge</Text>
-            <View style={{marginTop: screenHeight*0.015, marginLeft: screenWidth*0.02, flexDirection: "row"}}>
+            <Text
+              style={{
+                marginTop: screenHeight * 0.005,
+                marginLeft: screenWidth * 0.02,
+                fontSize: screenHeight * 0.04,
+                fontWeight: "bold",
+                color: colors.grey,
+              }}
+            >
+              Your Fridge
+            </Text>
+            <View
+              style={{
+                marginTop: screenHeight * 0.015,
+                marginLeft: screenWidth * 0.02,
+                flexDirection: "row",
+              }}
+            >
               <Image
                 source={require("../assets/appIcon/fridge2.png")}
-                style={{height: screenWidth*0.05, width: screenWidth*0.05}}
+                style={{
+                  height: screenWidth * 0.05,
+                  width: screenWidth * 0.05,
+                }}
               />
-              <View style={[{marginLeft: screenWidth*0.03}, styles.fridgestatus]}>
+              <View
+                style={[
+                  { marginLeft: screenWidth * 0.03 },
+                  styles.fridgestatus,
+                ]}
+              >
                 <ProgressBarAnimated
                   width={barWidth}
-                  height={screenWidth*0.05}
+                  height={screenWidth * 0.05}
+                  borderRadius={screenWidth * 0.025}
                   backgroundColor={colors.primary}
                   value={fridgePct}
                 />
               </View>
             </View>
-            <Text style={{marginTop: screenHeight*0.015, marginLeft: screenWidth*0.02, fontSize: screenHeight*0.02}}>
+            <Text
+              style={{
+                marginTop: screenHeight * 0.015,
+                marginLeft: screenWidth * 0.02,
+                fontSize: screenHeight * 0.02,
+              }}
+            >
               Your fridge is {fridgePct}% full
             </Text>
-            <Text style={{marginTop: screenHeight*0.005, marginLeft: screenWidth*0.02, fontSize: screenHeight*0.02}}>
+            <Text
+              style={{
+                marginTop: screenHeight * 0.005,
+                marginLeft: screenWidth * 0.02,
+                fontSize: screenHeight * 0.02,
+              }}
+            >
               Need to go shopping in the next 10 days
             </Text>
-            <View style={[{marginTop: screenHeight*0.015, marginHorizontal: screenWidth*0.02}, styles.seperatorline]} />
+            <View
+              style={[
+                {
+                  marginTop: screenHeight * 0.015,
+                  marginHorizontal: screenWidth * 0.02,
+                },
+                styles.seperatorline,
+              ]}
+            />
             <View
               style={{
-                marginTop: screenHeight*0.02,
+                marginTop: screenHeight * 0.02,
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
@@ -182,29 +248,39 @@ function Profile(state) {
                 stat={Expirein3}
                 title={"Items expiring"}
                 title2={"in 3 days"}
-                size={Math.floor(screenWidth*0.2)}
-                fontSize={screenWidth*0.1}
+                size={Math.floor(screenWidth * 0.2)}
+                fontSize={screenWidth * 0.1}
                 fontColor={colors.grey}
               />
               <CircularOverview
                 stat={Expirein10}
-                title={"Items expiring"}
-                title2={"in 10 days"}
-                size={Math.floor(screenWidth*0.2)}
-                fontSize={screenWidth*0.1}
+                title={"Items need to"}
+                title2={"update"}
+                size={Math.floor(screenWidth * 0.2)}
+                fontSize={screenWidth * 0.1}
                 fontColor={colors.grey}
+                onPress={() => {
+                  setModalSliderVisible(true);
+                }}
               />
               <CircularOverview
                 stat={Expired}
                 title={"Items already"}
                 title2={"expired"}
-                size={Math.floor(screenWidth*0.2)}
-                fontSize={screenWidth*0.1}
+                size={Math.floor(screenWidth * 0.2)}
+                fontSize={screenWidth * 0.1}
                 fontColor={colors.grey}
               />
             </View>
           </CardView>
-          <Text style={[{marginLeft: screenWidth*0.06, fontSize: screenWidth*0.06}, styles.suggestHeader]}>Suggested Meals</Text>
+          <Text
+            style={[
+              { marginLeft: screenWidth * 0.06, fontSize: screenWidth * 0.06 },
+              styles.suggestHeader,
+            ]}
+          >
+            Suggested Meals
+          </Text>
           <CardView>
             <Text style={styles.suggestHeader}>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -213,12 +289,128 @@ function Profile(state) {
             </Text>
           </CardView>
           <View style={styles.centeredView}>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible}
+            <ModalSlider
+              backdropColor={"#F2F5F8"}
+              backdropOpacity={1}
+              coverScreen={true}
+              isVisible={modalSliderVisible}
+              onBackdropPress={() => setModalSliderVisible(false)}
             >
               <View style={styles.centeredView}>
+                <View style={styles.modalSliderView}>
+                  <View style={{ alignItems: "center", marginBottom: 10 }}>
+                    <AppText
+                      style={{
+                        color: colors.primary,
+                        fontWeight: "bold",
+                      }}
+                      fontSize={20}
+                    >
+                      How much ingredient did you use??
+                    </AppText>
+                  </View>
+                  <FlatList
+                    data={ingredientsInFridge}
+                    showsVerticalScrollIndicator={false}
+                    keyExtractor={(ingredient) => ingredient.id.toString()}
+                    renderItem={({ ingredient, index }) => (
+                      <IngredientSlider
+                        title={ingredientsInFridge[index].ingredient}
+                        value={(measure) => {
+                          console.log(
+                            measure +
+                              " " +
+                              ingredientsInFridge[index].ingredient
+                          );
+                          // let sliderArray = [...sliderValues];
+                          sliderArrayTemp.splice(index, 1, measure);
+                          // console.log(sliderValues);
+                        }}
+                      />
+                    )}
+                  />
+                  <View style={styles.buttonContainer}>
+                    <CustomButton
+                      title="SAVE"
+                      color={colors.primary}
+                      textColor={colors.white}
+                      onPress={() => {
+                        ingredientsInFridge.forEach((ingre, index) => {
+                          let newQty = round(
+                            ingre.qty * (1.0 - parseFloat(sliderValues[index])),
+                            1
+                          );
+                          // let newQty = ingre.qty;
+                          console.log(
+                            ingre.ingredient,
+                            sliderValues[index],
+                            newQty
+                          );
+                          setSliderValues(sliderArrayTemp);
+                          db.transaction((tx) => {
+                            tx.executeSql(
+                              "UPDATE FactFridge SET qty = ? WHERE id = ?;",
+                              [newQty, ingre.id],
+                              [],
+                              (_, error) =>
+                                console.log(
+                                  "ProfileTab updateIngre SQLite -> ",
+                                  error
+                                )
+                            );
+                          }, null);
+                          updateIngredientInFridge({
+                            id: ingre.id,
+                            ingredient: ingre.ingredient,
+                            category: ingre.category,
+                            qty: newQty,
+                            expDate: ingre.expDate,
+                            unit: ingre.unit,
+                            imageUri: ingre.imageUri,
+                          });
+                        });
+                        cleanZeroedIngredientsInFridge();
+                        db.transaction((tx) => {
+                          tx.executeSql(
+                            "DELETE FROM FactFridge WHERE qty = 0;",
+                            [],
+                            [],
+                            (_, error) =>
+                              console.log(
+                                "ProfileTab cleanIngre SQLite -> ",
+                                error
+                              )
+                          );
+                        }, null);
+                        setModalSliderVisible(false);
+                      }}
+                    />
+                    <CustomButton
+                      title="DELETE"
+                      // onPress={() => handleDelete(selectedIngre)}
+                      color={colors.danger}
+                      textColor={colors.white}
+                    />
+                    <CustomButton
+                      title="CANCEL"
+                      onPress={() => setModalSliderVisible(false)}
+                      color={colors.medium}
+                      textColor={colors.white}
+                    />
+                  </View>
+                </View>
+              </View>
+            </ModalSlider>
+          </View>
+          <View style={styles.centeredView}>
+            <ModalSlider
+              backdropColor={"#F2F5F8"}
+              backdropOpacity={0.5}
+              coverScreen={true}
+              isVisible={modalVisible}
+              onBackdropPress={() => setModalVisible(false)}
+            >
+              <View style={styles.bottomedView}>
                 <View style={styles.modalView}>
                   <TouchableHighlight
                     style={styles.takePhotoButton}
@@ -250,7 +442,7 @@ function Profile(state) {
                   </TouchableHighlight>
                 </View>
               </View>
-            </Modal>
+            </ModalSlider>
           </View>
         </ScrollView>
       </View>
@@ -259,6 +451,27 @@ function Profile(state) {
 }
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  modalSliderView: {
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 10,
+  },
   suggestHeader: {
     // marginLeft: 20,
     // fontSize: 12,
@@ -267,10 +480,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   modalView: {
-    margin: 20,
+    // margin: 20,
     backgroundColor: "white",
-    borderRadius: 20,
+    // borderRadius: 20,
     padding: 20,
+    // width: "100%",
     alignItems: "flex-start",
     shadowColor: "#000",
     shadowOffset: {
@@ -280,6 +494,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  bottomedView: {
+    // flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: screenHeight - 220,
   },
   centeredView: {
     flex: 1,
@@ -402,6 +622,11 @@ const styles = StyleSheet.create({
   },
 });
 
+function round(value, precision) {
+  var multiplier = Math.pow(10, precision || 0);
+  return Math.round(value * multiplier) / multiplier;
+}
+
 const mapStateToProps = (state) => {
   const { ingredients } = state;
   return { ingredients };
@@ -411,6 +636,8 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       addIngredientToFridge,
+      updateIngredientInFridge,
+      cleanZeroedIngredientsInFridge,
     },
     dispatch
   );

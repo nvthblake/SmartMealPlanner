@@ -14,7 +14,6 @@ import AppText from "./AppText";
 import Screen from "./Screen";
 import PickerItem from "./PickerItem";
 import colors from "../config/colors";
-import { Picker } from "@react-native-picker/picker";
 import Modal from "react-native-modal";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -33,10 +32,6 @@ function AppPicker({
   ...otherProps
 }) {
   const [modalVisible, setModalVisible] = useState(false);
-
-  const pickerItems = items.map((item) => (
-    <Picker.Item label={item.label} value={item.label} />
-  ));
 
   return (
     <>
