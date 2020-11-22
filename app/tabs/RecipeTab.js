@@ -349,13 +349,7 @@ function RecipeTab(state) {
                 <Image
                   resizeMode={"cover"}
                   source={{ uri: chosenRecipe.image }}
-                  style={{
-                    width: "100%",
-                    marginRight: 14,
-                    height: 131,
-                    borderRadius: 10,
-                    marginRight: 8,
-                  }}
+                  style={styles.imageHolder}
                 ></Image>
                 <Text
                   style={{
@@ -566,13 +560,7 @@ function RecipeTab(state) {
                                   source={{
                                     uri: veryPopularRecipes[index].image,
                                   }}
-                                  style={{
-                                    width: "100%",
-                                    // marginRight: 14,
-                                    height: 131,
-                                    borderRadius: 10,
-                                    marginRight: 8,
-                                  }}
+                                  style={styles.imageHolder}
                                 ></Image>
                                 <TouchableOpacity
                                   style={{ position: "absolute", padding: 5 }}
@@ -652,13 +640,7 @@ function RecipeTab(state) {
                                   source={{
                                     uri: veryHealthyRecipes[index].image,
                                   }}
-                                  style={{
-                                    width: "100%",
-                                    marginRight: 14,
-                                    height: 131,
-                                    borderRadius: 10,
-                                    marginRight: 8,
-                                  }}
+                                  style={styles.imageHolder}
                                 ></Image>
                                 <TouchableOpacity
                                   style={{ position: "absolute", padding: 5 }}
@@ -743,13 +725,7 @@ function RecipeTab(state) {
                                   source={{
                                     uri: vegetarianRecipes[index].image,
                                   }}
-                                  style={{
-                                    width: "100%",
-                                    marginRight: 14,
-                                    height: 131,
-                                    borderRadius: 10,
-                                    marginRight: 8,
-                                  }}
+                                  style={styles.imageHolder}
                                 ></Image>
                                 <TouchableOpacity
                                   style={{ position: "absolute", padding: 5 }}
@@ -823,13 +799,7 @@ function RecipeTab(state) {
                               <View style={{ flexDirection: "column" }}>
                                 <Image
                                   source={{ uri: otherRecipes[index].image }}
-                                  style={{
-                                    width: "100%",
-                                    marginRight: 14,
-                                    height: 131,
-                                    borderRadius: 10,
-                                    marginRight: 8,
-                                  }}
+                                  style={styles.imageHolder}
                                 ></Image>
                                 <TouchableOpacity
                                   style={{ position: "absolute", padding: 5 }}
@@ -941,6 +911,13 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingTop: 8,
     paddingBottom: 8,
+  },
+  imageHolder: {
+    width: "100%",
+    marginRight: 14,
+    height: 131,
+    borderRadius: 10,
+    // marginRight: 8,
   },
   recipeTitle: {
     fontSize: 16,
