@@ -9,6 +9,7 @@ export default function CircularOverview({
   fontSize = 16,
   fontColor = "black",
   onPress,
+  borderColor = "#3E73FB",
 }) {
   return (
     <TouchableOpacity
@@ -25,7 +26,7 @@ export default function CircularOverview({
           backgroundColor: "#F3F6F9",
           borderRadius: Math.floor(size / 2),
           borderWidth: 2,
-          borderColor: "#3E73FB",
+          borderColor: borderColor,
         }}
       >
         <Text

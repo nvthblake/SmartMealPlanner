@@ -24,7 +24,7 @@ import CustomButton from "../components/CustomButton";
 function MealPlanDatePicker({ recipe, addToMealPlan }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [optionVisible, setOptionVisible] = useState(false);
-  const [mealDate, setMealDate] = useState("2020-11-28");
+  const [mealDate, setMealDate] = useState(Date());
   const markedCurDate = {
     [mealDate]: {
       selected: true,

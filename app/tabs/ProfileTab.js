@@ -93,6 +93,7 @@ function Profile(state) {
   let Expirein3 = 0;
   let Expirein10 = 0;
   let Expired = 0;
+  const ingreCount = ingredientsInFridge.length;
   ingredientsInFridge.forEach((element) => {
     const today = new Date();
     const expDate = Date.parse(element.expDate);
@@ -106,10 +107,7 @@ function Profile(state) {
     }
   });
   let fridgePct = Item < Limit ? Math.floor((Item / Limit) * 100) : 100;
-  const [sliderValues, setSliderValues] = useState(
-    new Array(ingredientsInFridge.length)
-  );
-  let sliderArrayTemp = [...sliderValues];
+  let sliderArrayTemp = Array(ingredientsInFridge.length);
 
   // Model State
   const [modalVisible, setModalVisible] = useState(false);
@@ -253,12 +251,13 @@ function Profile(state) {
                 fontColor={colors.grey}
               />
               <CircularOverview
-                stat={Expirein10}
+                stat={ingreCount}
                 title={"Items need to"}
                 title2={"update"}
                 size={Math.floor(screenWidth * 0.2)}
                 fontSize={screenWidth * 0.1}
                 fontColor={colors.grey}
+                borderColor={ingreCount > 0 ? colors.font_red : colors.grey}
                 onPress={() => {
                   setModalSliderVisible(true);
                 }}
@@ -306,7 +305,7 @@ function Profile(state) {
                       }}
                       fontSize={20}
                     >
-                      How much ingredient did you use??
+                      How much ingredient do you have left?
                     </AppText>
                   </View>
                   <FlatList
@@ -315,16 +314,9 @@ function Profile(state) {
                     keyExtractor={(ingredient) => ingredient.id.toString()}
                     renderItem={({ ingredient, index }) => (
                       <IngredientSlider
-                        title={ingredientsInFridge[index].ingredient}
-                        value={(measure) => {
-                          console.log(
-                            measure +
-                              " " +
-                              ingredientsInFridge[index].ingredient
-                          );
-                          // let sliderArray = [...sliderValues];
-                          sliderArrayTemp.splice(index, 1, measure);
-                          // console.log(sliderValues);
+                        ingredient={ingredientsInFridge[index]}
+                        value={(measure, newQty) => {
+                          sliderArrayTemp.splice(index, 1, newQty);
                         }}
                       />
                     )}
@@ -335,19 +327,9 @@ function Profile(state) {
                       color={colors.primary}
                       textColor={colors.white}
                       onPress={() => {
+                        console.log("Slider temp ", sliderArrayTemp);
                         ingredientsInFridge.forEach((ingre, index) => {
-                          let ratio = sliderValues[index] ? sliderValues[index] : 0;
-                          let newQty = round(
-                            ingre.qty * (1.0 - ratio),
-                            1
-                          );
-                          // let newQty = ingre.qty;
-                          console.log(
-                            ingre.ingredient,
-                            sliderValues[index],
-                            newQty
-                          );
-                          setSliderValues(sliderArrayTemp);
+                          let newQty = sliderArrayTemp[index] ? sliderArrayTemp[index] : ingre.qty;
                           db.transaction((tx) => {
                             tx.executeSql(
                               "UPDATE FactFridge SET qty = ? WHERE id = ?;",

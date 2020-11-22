@@ -522,12 +522,12 @@ function MealPlanTab(state) {
                       ? addFavoriteRecipe(chosenRecipe)
                       : deleteFavoriteRecipe(chosenRecipe);
                   }}
-                  style={{ position: "absolute" }}
+                  style={{ position: "absolute", padding: 5 }}
                 >
                   <MaterialCommunityIcons
                     name={chosenRecipe.loved ? "heart" : "heart-outline"}
                     size={40}
-                    color={colors.font_red}
+                    color={chosenRecipe.loved ? colors.font_red : colors.white}
                   />
                 </TouchableOpacity>
                 <Text
