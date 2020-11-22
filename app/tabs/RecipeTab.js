@@ -603,7 +603,7 @@ function RecipeTab(state) {
                                 </TouchableOpacity>
                                 {/* Hole all recipe info */}
                                 <View style={{ paddingRight: 3, paddingLeft: 3 }}>
-                                  <Text numberOfLines={2} style={styles.recipeTitle}>
+                                  <Text numberOfLines={1} style={styles.recipeTitle}>
                                     {veryPopularRecipes[index].title}
                                   </Text>
                                   <Text numberOfLines={1} style={styles.recipeLikes}>
@@ -685,7 +685,7 @@ function RecipeTab(state) {
                                 {/* Hole all recipe info */}
                                 <View style={{ paddingRight: 3, paddingLeft: 3 }}>
                                   {/* Title */}
-                                  <Text numberOfLines={2} style={styles.recipeTitle}>
+                                  <Text numberOfLines={1} style={styles.recipeTitle} >
                                     {veryHealthyRecipes[index].title}
                                   </Text>
 
@@ -770,7 +770,7 @@ function RecipeTab(state) {
                                 </TouchableOpacity>
                                 {/* Hole all recipe info */}
                                 <View style={{ paddingRight: 3, paddingLeft: 3 }}>
-                                  <Text numberOfLines={2} style={styles.recipeTitle}>
+                                  <Text numberOfLines={1} style={styles.recipeTitle}>
                                     {vegetarianRecipes[index].title}
                                   </Text>
                                   <Text numberOfLines={1} style={styles.recipeLikes}>
@@ -846,7 +846,7 @@ function RecipeTab(state) {
                                 </TouchableOpacity>
                                 {/* Hole all recipe info */}
                                 <View style={{ paddingRight: 3, paddingLeft: 3 }}>
-                                  <Text numberOfLines={2} style={styles.recipeTitle}>
+                                  <Text numberOfLines={1} style={styles.recipeTitle}>
                                     {otherRecipes[index].title}
                                   </Text>
                                   <Text numberOfLines={1} style={styles.recipeLikes}>

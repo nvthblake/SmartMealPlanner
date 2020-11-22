@@ -417,11 +417,24 @@ function MealPlanTab(state) {
                   // keyExtractor={(recipe) => recipe.id.toString()}
                   renderItem={({ value, index }) => {
                     return (
-                      <RecipeCard
-                        header={selectMealPlan[index]["mealType"]}
-                        recipe={selectMealPlan[index]["recipeObj"]}
-                        setChosenRecipeFunc={setChosenRecipe}
-                      />
+                      <View style={{...Platform.select({
+                        ios: {
+                          shadowColor: colors.primary,
+                          shadowOffset: { width: 2, height: 2 },
+                          shadowOpacity: 0.4,
+                          shadowRadius: 5,
+                        },
+                        android: {
+                          elevation: 3,
+                        },
+                      }),}}>
+                        <RecipeCard
+                          header={selectMealPlan[index]["mealType"]}
+                          recipe={selectMealPlan[index]["recipeObj"]}
+                          setChosenRecipeFunc={setChosenRecipe}
+                        />
+
+                      </View>
                     );
                   }}
                 ></FlatList>
@@ -659,6 +672,8 @@ const styles = StyleSheet.create({
     height: screenHeight / 3.7,
     paddingTop: 10,
     paddingBottom: 10,
+    // marginVertical: 5,
+    // backgroundColor: "red"
   },
   recipeScroll: {
     marginLeft: 6,
