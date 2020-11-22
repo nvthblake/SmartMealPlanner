@@ -33,6 +33,7 @@ import {
 import LoadingAnimation from "../components/LoadingAnimation";
 import Screen from "../components/Screen";
 import RecipeCard from "../components/RecipeCard";
+import MealPlanDatePicker from "../components/MealPlanDatePicker";
 
 // API
 import { getRecipes, getRecipeInfoInBulk } from "../api/Spoonacular";
@@ -42,6 +43,7 @@ import colors from "../config/colors";
 import { ScrollView } from "react-native-gesture-handler";
 import { nFormatter } from "../utils/NumberFormatting";
 import { capitalize } from "../utils/TextFormatting";
+import { Button } from "react-native-paper";
 
 /* Copied from IngredientsTab */
 const screenWidth = Dimensions.get("window").width;
@@ -470,6 +472,7 @@ function MealPlanTab(state) {
                 >
                   {chosenRecipe.title}
                 </Text>
+                <MealPlanDatePicker/>
                 <View
                   style={{
                     height: 1,
