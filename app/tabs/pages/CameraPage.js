@@ -15,12 +15,10 @@ import {
 } from "react-native";
 import { Camera, requestPermissionsAsync } from "expo-camera";
 import * as Permissions from "expo-permissions";
-
 // import Screen from "./Screen";
 import { ref } from "yup";
 import AppButton from "../../components/AppButton";
 import colors from "../../config/colors";
-
 // Redux
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -36,28 +34,28 @@ import * as ImagePicker from "expo-image-picker";
 import CustomButton from "../../components/CustomButton";
 import CamButton from "../../components/CamButton";
 
+import * as jpeg from 'jpeg-js'
+
 // Tensorflow
 import * as tf from "@tensorflow/tfjs";
 import * as mobilenet from "@tensorflow-models/mobilenet";
+import { fetch } from '@tensorflow/tfjs-react-native'
 import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
 
-// Screen dim
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-// Main
 function CameraPage(state, { navigation }) {
-  // Hook
   const [modalVisible, setModalVisible] = useState(false);
   const [camVisibility, setCamVisibility] = useState(false);
+  const showCameraView = () => {
+    setCamVisibility(true);
+  };
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
   const [hasPermission, setHasPermission] = useState(null);
-  const [predictionFound, setPredictionFound] = useState(false);
   const [type, setType] = useState(Camera.Constants.Type.back);
-  const showCameraView = () => { setCamVisibility(true); };
 
-  // Redux
   const {
     ingredients,
     addIngredientToScan,
@@ -66,31 +64,22 @@ function CameraPage(state, { navigation }) {
   } = state;
   const ingredientToScan = ingredients.ingredientToScan;
 
-  // Tensorflow and Permissions
+  //state variables for image/translation processing
+  const [predictionFound, setPredictionFound] = useState(false);
+
+  //Tensorflow and Permissions
   const [mobilenetModel, setMobilenetModel] = useState(null);
   const [frameworkReady, setFrameworkReady] = useState(false);
-
-  // TF Camera Decorator
-  const TensorCamera = cameraWithTensors(Camera);
 
   //RAF ID
   let requestAnimationFrameId = 0;
 
-  //performance hacks (Platform dependent)
-  const textureDims =
-    Platform.OS === "ios"
-      ? { width: 1080, height: 1920 }
-      : { width: 1600, height: 1200 };
-  const tensorDims = { width: 152, height: 200 };
-
-  // 1. Check camera permissions
-  // 2. Initialize TensorFlow
-  // 3. Load Mobilenet Model
   useEffect(() => {
+    requestPermission();
     if (!frameworkReady) {
       (async () => {
         //check permissions
-        requestPermission();
+        // requestPermission();
 
         //we must always wait for the Tensorflow API to be ready before any TF operation...
         await tf.ready();
@@ -103,14 +92,6 @@ function CameraPage(state, { navigation }) {
     }
   }, []);
 
-  // Run onUnmount routine for cancelling animation if running to avoid leaks
-  useEffect(() => {
-    return () => {
-      cancelAnimationFrame(requestAnimationFrameId);
-    };
-  }, [requestAnimationFrameId]);
-
-  // Loads the mobilenet Tensorflow model:
   const loadMobileNetModel = async () => {
     const model = await mobilenet.load();
     return model;
@@ -126,14 +107,32 @@ function CameraPage(state, { navigation }) {
     setIsCameraReady(true);
   };
 
+  const imageToTensor = (rawImageData) => {
+    const TO_UINT8ARRAY = true
+    const { width, height, data } = jpeg.decode(rawImageData, TO_UINT8ARRAY)
+    // Drop the alpha channel info for mobilenet
+    const buffer = new Uint8Array(width * height * 3)
+    let offset = 0 // offset into original data
+    for (let i = 0; i < buffer.length; i += 3) {
+      buffer[i] = data[offset]
+      buffer[i + 1] = data[offset + 1]
+      buffer[i + 2] = data[offset + 2]
+
+      offset += 4
+    }
+
+    return tf.tensor3d(buffer, [height, width, 3])
+  }
+
   const cameraRef = useRef();
 
   const takePicture = async () => {
-    console.log("---takePicture");
+    console.log("\n----takePicture");
     if (cameraRef.current) {
       const options = { quality: 0.5, base64: true, skipProcessing: true };
       const data = await cameraRef.current.takePictureAsync(options);
       const source = data.uri;
+
       if (source) {
         // await cameraRef.current.pausePreview();
         // setIsPreview(true);
@@ -142,11 +141,24 @@ function CameraPage(state, { navigation }) {
           imageUri: source,
         });
         // console.log("IMAGE URI -> ", ingredientToScan);
+
+        // Classify the image.
+        const img = { uri: data.uri };
+        const imageAssetPath = Image.resolveAssetSource(img)
+        const response = await fetch(imageAssetPath.uri, {}, { isBinary: true })
+        const rawImageData = await response.arrayBuffer()
+        const imageTensor = imageToTensor(rawImageData)
+        const predictions = await mobilenetModel.classify(imageTensor)
+        predictions.forEach(function (value, index) {
+          if (value.probability > 0.3) {
+            console.log(`prediction: ${JSON.stringify(value)}`);
+          }
+        });
+        // console.log(predictions)
       }
     }
   };
-
-  const openImagePickerAsync = async () => {
+  let openImagePickerAsync = async () => {
     let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
 
     if (permissionResult.granted === false) {
@@ -183,35 +195,6 @@ function CameraPage(state, { navigation }) {
     );
   };
 
-  // get Prediction from tensor
-  const getPrediction = async (tensor) => {
-    if (!tensor) { return; }
-
-    // topk set to 1
-    const prediction = await mobilenetModel.classify(tensor, 1);
-
-    // if (!prediction || prediction.length === 0) { return; }
-
-    // only display to screen if probability is higher than 20%
-    if (prediction[0].probability > 0.3) {
-      console.log(`prediction: ${JSON.stringify(prediction)}`);
-
-      // stop looping!
-      // cancelAnimationFrame(requestAnimationFrameId);
-      // setPredictionFound(true);
-    }
-  };
-
-  // Tensorflow JS
-  const handleCameraStream = (imageAsTensors) => {
-    const loop = async () => {
-      const nextImageTensor = await imageAsTensors.next().value;
-      await getPrediction(nextImageTensor);
-      requestAnimationFrameId = requestAnimationFrame(loop);
-    };
-    if (!predictionFound) loop();
-  };
-
   return (
     <>
       <CamButton
@@ -244,19 +227,12 @@ function CameraPage(state, { navigation }) {
             justifyContent: "center",
           }}
         >
-          <TensorCamera
+          <Camera
             style={{ flex: 1 }}
             type={type}
-            // ref={cameraRef}
-            ratio={"1:1"}
-            zoom={0}
-            cameraTextureHeight={textureDims.height}
-            cameraTextureWidth={textureDims.width}
-            resizeHeight={tensorDims.height}
-            resizeWidth={tensorDims.width}
-            resizeDepth={3}
+            ref={cameraRef}
             onCameraReady={onCameraReady}
-            onReady={(imageAsTensors) => handleCameraStream(imageAsTensors)}
+            ratio={"1:1"}
           >
             <View
               style={{
@@ -286,7 +262,7 @@ function CameraPage(state, { navigation }) {
                 {/* <Text style={{ fontSize: 18, color: "white" }}>Flip</Text> */}
               </TouchableOpacity>
             </View>
-          </TensorCamera>
+          </Camera>
         </View>
         <View
           style={{
