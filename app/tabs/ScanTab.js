@@ -119,7 +119,10 @@ function ScanTab(state) {
   return (
     <Screen>
       <View style={styles.container}>
+        {/* Scan Button that pops up Camera */}
         <CameraPage />
+
+        {/* Form */}
         <FlatList
           data={ingredientToScan}
           horizontal
@@ -139,7 +142,7 @@ function ScanTab(state) {
               >
                 <View
                   style={{ flex: 1 }}
-                  // showsVerticalScrollIndicator={false}
+                // showsVerticalScrollIndicator={false}
                 >
                   <AppForm
                     initialValues={{
