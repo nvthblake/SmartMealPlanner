@@ -122,7 +122,7 @@ function MealPlanDatePicker({ recipe, addToMealPlan }) {
                 enableSwipeMonths={true}
                 markedDates={markedCurDate}
               />
-              <View style={[styles.buttonContainer, {justifyContent: "center", marginHorizontal: 10}]}>
+              <View style={[styles.buttonContainer, {justifyContent: "center", marginHorizontal: 8}]}>
                 <FlatList
                   data={pickerOptions.mealtype}
                   horizontal

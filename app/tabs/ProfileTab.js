@@ -150,6 +150,7 @@ function Profile(state) {
           marginLeft: screenWidth * 0.02,
           marginRight: screenWidth * 0.02,
           paddingBottom: 50,
+          paddingTop: 55,
         }}
       >
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -538,6 +539,7 @@ const styles = StyleSheet.create({
   },
   imageView: {
     alignItems: "center",
+    paddingBottom: 30,
   },
   fridgeheader: {
     marginTop: 20,
