@@ -139,7 +139,7 @@ function ScanTab(state) {
               >
                 <View
                   style={{ flex: 1 }}
-                  // showsVerticalScrollIndicator={false}
+                // showsVerticalScrollIndicator={false}
                 >
                   <AppForm
                     initialValues={{
