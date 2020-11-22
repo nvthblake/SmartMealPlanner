@@ -18,7 +18,7 @@ import Modal from "react-native-modal";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Redux
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
   addMealPlan,
@@ -80,6 +80,18 @@ function MealPlanTab(state) {
   const [selectDate, setSelectDate] = useState(curDate);
   const header = ["Breakfast", "Lunch", "Dinner"];
   const [heartImage, setHeartImage] = useState(null);
+  const [selectMealPlan, getMealPlanOnDate] = useState([]);
+  const reactiveRecipes = useSelector(tempState => tempState.ingredients);
+
+  let mealPlan = []
+
+  useEffect(() => {
+    // // console.log("Hello")
+    // // console.log(recipes[0])
+    mealPlan = generateMealPlan()
+    console.log(mealPlan)
+    getMealPlanOnDate(mealPlan[0])
+  }, [reactiveRecipes]);
 
   // Vars related to calendar
   let datesWhitelist = (num) => {
@@ -102,7 +114,7 @@ function MealPlanTab(state) {
   ];
 
   const getDateHeader = (date) => {
-    console.log("date: ", date, curDate);
+    // console.log("date: ", date, curDate);
     var msDateA = Date.UTC(
       date.getFullYear(),
       date.getMonth() + 1,
@@ -123,14 +135,14 @@ function MealPlanTab(state) {
   };
 
   const onDateSelect = (date) => {
-    console.log(date);
+    // console.log(date);
     let d = new Date(date);
     setSelectDate(d);
     var msDiff = new Date(date).getTime() - new Date().getTime(); //Future date - current date
     var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 1;
-    console.log(index);
+    // console.log(index);
     if (mealPlan[index] != undefined) {
-      console.log(Object.keys(mealPlan[index]));
+      // console.log(Object.keys(mealPlan[index]));
       getMealPlanOnDate(mealPlan[index]);
     }
     return date;
@@ -202,8 +214,8 @@ function MealPlanTab(state) {
       }
     });
 
-    console.log("------main_course");
-    console.log(Object.keys(main_course));
+    // console.log("------main_course");
+    // console.log(Object.keys(main_course));
 
     lunchRecipes = main_course.slice(0, Math.ceil(main_course.length / 2));
     dinnerRecipes = main_course.slice(
@@ -211,12 +223,12 @@ function MealPlanTab(state) {
       main_course.length
     );
 
-    console.log("------breakfastRecipes");
-    console.log(Object.keys(breakfastRecipes));
-    console.log("------lunchRecipes");
-    console.log(Object.keys(lunchRecipes));
-    console.log("------dinnerRecipes");
-    console.log(Object.keys(dinnerRecipes));
+    // console.log("------breakfastRecipes");
+    // console.log(Object.keys(breakfastRecipes));
+    // console.log("------lunchRecipes");
+    // console.log(Object.keys(lunchRecipes));
+    // console.log("------dinnerRecipes");
+    // console.log(Object.keys(dinnerRecipes));
 
     let mealPlan = {};
     maxlength = Math.max(
@@ -235,28 +247,30 @@ function MealPlanTab(state) {
     console.log("-----minlength");
     console.log(minlength);
 
-    console.log("here", Math.ceil(main_course.length / 2));
-    console.log("here", Math.floor(main_course.length / 2));
+    // console.log("here", Math.ceil(main_course.length / 2));
+    // console.log("here", Math.floor(main_course.length / 2));
     for (var i = 0; i < maxlength; i++) {
       let b = breakfastRecipes[i];
       let l = lunchRecipes[i];
       let d = dinnerRecipes[i];
 
       if (b === undefined && minlength != 0) {
-        b = breakfastRecipes[minlength - 1];
+        // b = breakfastRecipes[minlength - 1];
       }
       if (l === undefined && minlength != 0) {
-        l = lunchRecipes[minlength - 1];
+        // l = lunchRecipes[minlength - 1];
       }
       if (d === undefined && minlength != 0) {
-        d = dinnerRecipes[minlength - 1];
+        // d = dinnerRecipes[minlength - 1];
       }
-      mealPlan[i] = [b, l, d];
+      mealPlan[i] = [l];
     }
     return mealPlan;
   };
-  let mealPlan = generateMealPlan();
-  const [selectMealPlan, getMealPlanOnDate] = useState(mealPlan[0]);
+
+  
+  // let mealPlan = generateMealPlan();
+  // const [selectMealPlan, getMealPlanOnDate] = useState(mealPlan[0]);
 
   // Utils Functions
   const openURLInDefaultBrowser = (url) => {
@@ -293,7 +307,7 @@ function MealPlanTab(state) {
         {
           text: "Yes",
           onPress: () => {
-            console.log(recipe);
+            // console.log(recipe);
             // Delete from reduce
             deleteMealPlan(recipe);
           },
@@ -442,7 +456,7 @@ function MealPlanTab(state) {
                 <TouchableOpacity
                   onPress={() => {
                     chosenRecipe.loved = !chosenRecipe.loved;
-                    console.log(chosenRecipe.loved);
+                    // console.log(chosenRecipe.loved);
                     chosenRecipe.loved
                       ? setHeartImage("heart")
                       : setHeartImage("heart-outline");
