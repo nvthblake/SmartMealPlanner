@@ -4,61 +4,63 @@ import AppText from "./AppText";
 import Slider from "@react-native-community/slider";
 import Screen from "./Screen";
 import CustomSlider from "./CustomSlider";
+import colors from "../config/colors";
 
-function IngredientSlider({ title = "Placeholder", value }) {
+function IngredientSlider({ title, value }) {
   const screenWidth = Dimensions.get("window").width;
   const [measure, setMeasure] = useState(0);
+
+  value(measure);
   return (
-    <Screen>
-      <View style={styles.container}>
-        <View style={styles.textContainer}>
-          <AppText style={{ width: 50, textAlign: "center" }}>{title}</AppText>
-        </View>
-        <View style={[styles.sliderContainer, {}]}>
-          <View>
-            <View style={styles.tickContainer}>
-              <View style={[styles.tickView]}>
-                <AppText fontSize={10}>None</AppText>
-              </View>
-              <View style={[styles.tickView]}>
-                <View style={styles.tickShort} />
-              </View>
-              <View style={[styles.tickView]}>
-                <View style={styles.tick} />
-              </View>
-              <View style={[styles.tickView]}>
-                <View style={styles.tickShort} />
-              </View>
-              <View style={[styles.tickView]}>
-                <View style={styles.tick} />
-              </View>
-              <View style={[styles.tickView]}>
-                <View style={styles.tickShort} />
-              </View>
-              <View style={[styles.tickView]}>
-                <View style={styles.tick} />
-              </View>
-              <View style={[styles.tickView]}>
-                <View style={styles.tickShort} />
-              </View>
-              <View style={[styles.tickView]}>
-                <AppText fontSize={10}>All</AppText>
-              </View>
+    <View style={styles.container}>
+      <View style={styles.textContainer}>
+        <AppText style={{ width: 50, textAlign: "center" }}>{title}</AppText>
+      </View>
+      <View style={[styles.sliderContainer, {}]}>
+        <View>
+          <View style={styles.tickContainer}>
+            <View style={[styles.tickView]}>
+              <AppText fontSize={10}>None</AppText>
+            </View>
+            <View style={[styles.tickView]}>
+              <View style={styles.tickShort} />
+            </View>
+            <View style={[styles.tickView]}>
+              <View style={styles.tick} />
+            </View>
+            <View style={[styles.tickView]}>
+              <View style={styles.tickShort} />
+            </View>
+            <View style={[styles.tickView]}>
+              <View style={styles.tick} />
+            </View>
+            <View style={[styles.tickView]}>
+              <View style={styles.tickShort} />
+            </View>
+            <View style={[styles.tickView]}>
+              <View style={styles.tick} />
+            </View>
+            <View style={[styles.tickView]}>
+              <View style={styles.tickShort} />
+            </View>
+            <View style={[styles.tickView]}>
+              <AppText fontSize={10}>All</AppText>
             </View>
           </View>
-          <Slider
-            style={{ width: "97%" }}
-            minimumValue={0}
-            maximumValue={1}
-            step={0.125}
-            onValueChange={(input) => {
-              setMeasure(input);
-              value = measure;
-            }}
-          />
         </View>
+        <Slider
+          style={{ width: "97%" }}
+          minimumValue={0}
+          maximumValue={1}
+          minimumTrackTintColor={colors.primary}
+          thumbTintColor={colors.primary}
+          step={0.125}
+          onValueChange={(input) => {
+            setMeasure(input);
+          }}
+        />
       </View>
-    </Screen>
+    </View>
   );
 }
 const styles = StyleSheet.create({

@@ -85,11 +85,11 @@ function MealPlanTab(state) {
   const [selectMealPlan, getMealPlanOnDate] = useState([]);
   const [maxlength, setMaxLength] = useState(0);
   const [mealPlan, setMealPlan] = useState([]);
-  const reactiveRecipes = useSelector(tempState => tempState.ingredients);
+  const reactiveRecipes = useSelector((tempState) => tempState.ingredients);
 
   useEffect(() => {
-    setMealPlan(generateMealPlan())
-    getMealPlanOnDate(mealPlan[0])
+    setMealPlan(generateMealPlan());
+    getMealPlanOnDate(mealPlan[0]);
     if (mealPlan[0] === undefined || mealPlan[0].length === 0) {
       // setIsResultEmpty(true)
     }
@@ -147,8 +147,8 @@ function MealPlanTab(state) {
     var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 1;
 
     console.log("\ndate from today", index);
-    console.log("mealPlan: ", Object.keys(mealPlan))
-    console.log("selectMealPlan: ", Object.keys(mealPlan[index]))
+    console.log("mealPlan: ", Object.keys(mealPlan));
+    // console.log("selectMealPlan: ", Object.keys(mealPlan[index]))
     if (mealPlan[index] != undefined) {
       console.log("onDateSelect mealPlan: ", Object.keys(mealPlan[index]));
       getMealPlanOnDate(mealPlan[index]);
@@ -178,7 +178,7 @@ function MealPlanTab(state) {
 
   /** Generate Meal Plan depending on current ingredients
    * max_length: max days that ingredients can afford
-   * min_length: 
+   * min_length:
    * @return {"date_from_today": [
    *     {"mealType": "breakfast", "recipeObj": RecipeObj},
    *     {"mealType": "lunch", "recipeObj": RecipeObj},
@@ -223,7 +223,10 @@ function MealPlanTab(state) {
     });
 
     // Divide lunch to half
-    lunchRecipes = allLunchDinner.slice(0, Math.ceil(allLunchDinner.length / 2));
+    lunchRecipes = allLunchDinner.slice(
+      0,
+      Math.ceil(allLunchDinner.length / 2)
+    );
     dinnerRecipes = allLunchDinner.slice(
       Math.ceil(allLunchDinner.length / 2),
       allLunchDinner.length
@@ -233,7 +236,7 @@ function MealPlanTab(state) {
     console.log("\n-----Breakfast: ", breakfastRecipes.length);
     console.log("-----Lunch: ", lunchRecipes.length);
     console.log("-----Dinner: ", dinnerRecipes.length);
-    
+
     let maxlengthNew = Math.max(
       breakfastRecipes.length,
       lunchRecipes.length,
@@ -253,25 +256,19 @@ function MealPlanTab(state) {
     let mealPlanGenerate = {};
     for (var i = 0; i < maxlengthNew; i++) {
       mealPlanGenerate[i] = [];
-      let dishRecipe = [
-        breakfastRecipes[i],
-        lunchRecipes[i],
-        dinnerRecipes[i]
-      ]
+      let dishRecipe = [breakfastRecipes[i], lunchRecipes[i], dinnerRecipes[i]];
       dishRecipe.forEach(function (item, index) {
         if (item !== undefined) {
           let meal = {
-            "mealType": header[index],
-            "recipeObj": item
+            mealType: header[index],
+            recipeObj: item,
           };
           mealPlanGenerate[i].push(meal);
-        }
-        else if (item === undefined && minlength > 0) {
+        } else if (item === undefined && minlength > 0) {
           let dishIndex = minlength - 1;
           let meal = mealPlanGenerate[dishIndex][index];
           mealPlanGenerate[i].push(meal);
         }
-
       });
     }
     return mealPlanGenerate;
@@ -366,7 +363,6 @@ function MealPlanTab(state) {
         startingDate={curDate}
       />
 
-
       {/* Today's Meal Plan */}
       {isLoading && (
         <View style={{ width: screenWidth, height: screenHeight / 1.5 }}>
@@ -415,7 +411,11 @@ function MealPlanTab(state) {
                   // keyExtractor={(recipe) => recipe.id.toString()}
                   renderItem={({ value, index }) => {
                     return (
-                      <RecipeCard header={selectMealPlan[index]["mealType"]} recipe={selectMealPlan[index]["recipeObj"]} setChosenRecipeFunc={setChosenRecipe} />
+                      <RecipeCard
+                        header={selectMealPlan[index]["mealType"]}
+                        recipe={selectMealPlan[index]["recipeObj"]}
+                        setChosenRecipeFunc={setChosenRecipe}
+                      />
                     );
                   }}
                 ></FlatList>
