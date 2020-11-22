@@ -12,7 +12,7 @@ import {
   Modal,
   TouchableHighlight,
   ScrollView,
-  ImageBackground,
+  LogBox,
 } from "react-native";
 import CardView from "../components/CardView";
 import AppText from "../components/AppText";
@@ -23,6 +23,10 @@ import ProgressBarAnimated from "react-native-progress-bar-animated";
 import Screen from "../components/Screen";
 
 function Profile(state) {
+  useEffect(() => {
+    LogBox.ignoreLogs(["Animated: `useNativeDriver`"]);
+  }, []);
+
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
   // Camera logic
@@ -113,31 +117,76 @@ function Profile(state) {
             </TouchableOpacity>
           </View>
           <CardView>
-            <Text style={{marginTop: screenHeight*0.005, marginLeft: screenWidth*0.02, fontSize: screenHeight*0.04, fontWeight: "bold", color: colors.grey}}>Your Fridge</Text>
-            <View style={{marginTop: screenHeight*0.015, marginLeft: screenWidth*0.02, flexDirection: "row"}}>
+            <Text
+              style={{
+                marginTop: screenHeight * 0.005,
+                marginLeft: screenWidth * 0.02,
+                fontSize: screenHeight * 0.04,
+                fontWeight: "bold",
+                color: colors.grey,
+              }}
+            >
+              Your Fridge
+            </Text>
+            <View
+              style={{
+                marginTop: screenHeight * 0.015,
+                marginLeft: screenWidth * 0.02,
+                flexDirection: "row",
+              }}
+            >
               <Image
                 source={require("../assets/appIcon/fridge2.png")}
-                style={{height: screenWidth*0.05, width: screenWidth*0.05}}
+                style={{
+                  height: screenWidth * 0.05,
+                  width: screenWidth * 0.05,
+                }}
               />
-              <View style={[{marginLeft: screenWidth*0.03}, styles.fridgestatus]}>
+              <View
+                style={[
+                  { marginLeft: screenWidth * 0.03 },
+                  styles.fridgestatus,
+                ]}
+              >
                 <ProgressBarAnimated
                   width={barWidth}
-                  height={screenWidth*0.05}
+                  height={screenWidth * 0.05}
+                  borderRadius={screenWidth * 0.025}
                   backgroundColor={colors.primary}
                   value={fridgePct}
                 />
               </View>
             </View>
-            <Text style={{marginTop: screenHeight*0.015, marginLeft: screenWidth*0.02, fontSize: screenHeight*0.02}}>
+            <Text
+              style={{
+                marginTop: screenHeight * 0.015,
+                marginLeft: screenWidth * 0.02,
+                fontSize: screenHeight * 0.02,
+              }}
+            >
               Your fridge is {fridgePct}% full
             </Text>
-            <Text style={{marginTop: screenHeight*0.005, marginLeft: screenWidth*0.02, fontSize: screenHeight*0.02}}>
+            <Text
+              style={{
+                marginTop: screenHeight * 0.005,
+                marginLeft: screenWidth * 0.02,
+                fontSize: screenHeight * 0.02,
+              }}
+            >
               Need to go shopping in the next 10 days
             </Text>
-            <View style={[{marginTop: screenHeight*0.015, marginHorizontal: screenWidth*0.02}, styles.seperatorline]} />
+            <View
+              style={[
+                {
+                  marginTop: screenHeight * 0.015,
+                  marginHorizontal: screenWidth * 0.02,
+                },
+                styles.seperatorline,
+              ]}
+            />
             <View
               style={{
-                marginTop: screenHeight*0.02,
+                marginTop: screenHeight * 0.02,
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
@@ -148,29 +197,36 @@ function Profile(state) {
                 stat={Expirein3}
                 title={"Items expiring"}
                 title2={"in 3 days"}
-                size={Math.floor(screenWidth*0.2)}
-                fontSize={screenWidth*0.1}
+                size={Math.floor(screenWidth * 0.2)}
+                fontSize={screenWidth * 0.1}
                 fontColor={colors.grey}
               />
               <CircularOverview
                 stat={Expirein10}
                 title={"Items expiring"}
                 title2={"in 10 days"}
-                size={Math.floor(screenWidth*0.2)}
-                fontSize={screenWidth*0.1}
+                size={Math.floor(screenWidth * 0.2)}
+                fontSize={screenWidth * 0.1}
                 fontColor={colors.grey}
               />
               <CircularOverview
                 stat={Expired}
                 title={"Items already"}
                 title2={"expired"}
-                size={Math.floor(screenWidth*0.2)}
-                fontSize={screenWidth*0.1}
+                size={Math.floor(screenWidth * 0.2)}
+                fontSize={screenWidth * 0.1}
                 fontColor={colors.grey}
               />
             </View>
           </CardView>
-          <Text style={[{marginLeft: screenWidth*0.06, fontSize: screenWidth*0.06}, styles.suggestHeader]}>Suggested Meals</Text>
+          <Text
+            style={[
+              { marginLeft: screenWidth * 0.06, fontSize: screenWidth * 0.06 },
+              styles.suggestHeader,
+            ]}
+          >
+            Suggested Meals
+          </Text>
           <CardView>
             <Text style={styles.suggestHeader}>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do

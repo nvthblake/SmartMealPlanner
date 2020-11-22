@@ -26,55 +26,57 @@ import reducers from "./reducers";
 // import ScanTab from "./app/tabs/newScanTab";
 import CameraButton from "./app/components/CameraButton";
 import CameraPage from "./app/tabs/pages/CameraPage";
-import MealPlanTab from "./app/tabs/MealPlanTab"; 
+import MealPlanTab from "./app/tabs/MealPlanTab";
+import IngredientSlider from "./app/components/IngredientSlider";
+import CustomSlider from "./app/components/CustomSlider";
 
 const store = createStore(reducers);
 const db = SQLite.openDatabase("db2.db");
 
 export default function App() {
-  
-  React.useEffect(() => {
-    // db.transaction(tx => {
-    //   tx.executeSql(
-    //     `DROP TABLE IF EXISTS FactFridge;`
-    //   );
-    //   });
-    db.transaction((tx) => {
-      tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS FactFridge \
-        (id INTEGER PRIMARY KEY NOT NULL, \
-        createdTs DATETIME DEFAULT CURRENT_TIMESTAMP, \
-        ingredient VARCHAR NOT NULL, \
-        qty INTEGER NOT NULL, \
-        unit VARCHAR NOT NULL, \
-        category VARCHAR NOT NULL, \
-        dayToExp INTEGER NOT NULL, \
-        expDate DATETIME NULL, \
-        inFridge INT(1), \
-        imageUri VARCHAR);`
-      );
-    });
-    // db.transaction(tx => {
-    //   tx.executeSql(
-    //     `DROP TABLE IF EXISTS ShoppingList;`
-    //   );
-    //   });
-    db.transaction((tx) => {
-      tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS ShoppingList \
-        (id INTEGER PRIMARY KEY NOT NULL, \
-        createdTs DATETIME DEFAULT CURRENT_TIMESTAMP, \
-        ingredient VARCHAR NOT NULL, \
-        checked INT(1) NOT NULL);`
-      );
-    });
-  }, []);
+  // React.useEffect(() => {
+  //   // db.transaction(tx => {
+  //   //   tx.executeSql(
+  //   //     `DROP TABLE IF EXISTS FactFridge;`
+  //   //   );
+  //   //   });
+  //   db.transaction((tx) => {
+  //     tx.executeSql(
+  //       `CREATE TABLE IF NOT EXISTS FactFridge \
+  //       (id INTEGER PRIMARY KEY NOT NULL, \
+  //       createdTs DATETIME DEFAULT CURRENT_TIMESTAMP, \
+  //       ingredient VARCHAR NOT NULL, \
+  //       qty INTEGER NOT NULL, \
+  //       unit VARCHAR NOT NULL, \
+  //       category VARCHAR NOT NULL, \
+  //       dayToExp INTEGER NOT NULL, \
+  //       expDate DATETIME NULL, \
+  //       inFridge INT(1), \
+  //       imageUri VARCHAR);`
+  //     );
+  //   });
+  //   // db.transaction(tx => {
+  //   //   tx.executeSql(
+  //   //     `DROP TABLE IF EXISTS ShoppingList;`
+  //   //   );
+  //   //   });
+  //   db.transaction((tx) => {
+  //     tx.executeSql(
+  //       `CREATE TABLE IF NOT EXISTS ShoppingList \
+  //       (id INTEGER PRIMARY KEY NOT NULL, \
+  //       createdTs DATETIME DEFAULT CURRENT_TIMESTAMP, \
+  //       ingredient VARCHAR NOT NULL, \
+  //       checked INT(1) NOT NULL);`
+  //     );
+  //   });
+  // }, []);
 
-  return (
-    <Provider store={store}>
-      <NavigationContainer>
-        <AppNavigator />
-      </NavigationContainer>
-    </Provider>
-  );
+  // return (
+  //   <Provider store={store}>
+  //     <NavigationContainer>
+  //       <AppNavigator />
+  //     </NavigationContainer>
+  //   </Provider>
+  // );
+  return <IngredientSlider />;
 }
