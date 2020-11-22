@@ -85,7 +85,7 @@ function RecipeTab(state) {
   const [heartImage, setHeartImage] = useState(null);
   const [search, setSearch] = useState("");
 
-  resetCategories = () => {
+  const resetCategories = () => {
     setCategory(INITIAL_CATEGORIES_STATE);
   };
 
@@ -352,7 +352,7 @@ function RecipeTab(state) {
                   style={{
                     width: "100%",
                     marginRight: 14,
-                    height: 160,
+                    height: 131,
                     borderRadius: 10,
                     marginRight: 8,
                   }}
@@ -569,22 +569,22 @@ function RecipeTab(state) {
                                   style={{
                                     width: "100%",
                                     // marginRight: 14,
-                                    height: 140,
+                                    height: 131,
                                     borderRadius: 10,
                                     marginRight: 8,
                                   }}
                                 ></Image>
                                 <TouchableOpacity
-                                    style={{ position: "absolute", padding: 5 }}
-                                    onPress={() => {
-                                      console.log("Pressed very popular!")
-                                      veryPopularRecipes[index].loved = !veryPopularRecipes[index].loved;
-                                      console.log(veryPopularRecipes[index].loved);
-                                      veryPopularRecipes[index].loved
-                                        ? addFavoriteRecipe(veryPopularRecipes[index]) 
-                                        : deleteFavoriteRecipe(veryPopularRecipes[index]);
+                                  style={{ position: "absolute", padding: 5 }}
+                                  onPress={() => {
+                                    console.log("Pressed very popular!")
+                                    veryPopularRecipes[index].loved = !veryPopularRecipes[index].loved;
+                                    console.log(veryPopularRecipes[index].loved);
+                                    veryPopularRecipes[index].loved
+                                      ? addFavoriteRecipe(veryPopularRecipes[index])
+                                      : deleteFavoriteRecipe(veryPopularRecipes[index]);
 
-                                    }}>
+                                  }}>
                                   <MaterialCommunityIcons
                                     size={30}
                                     name={
@@ -596,33 +596,20 @@ function RecipeTab(state) {
                                   />
                                 </TouchableOpacity>
                                 {/* Hole all recipe info */}
-                                <View
-                                  style={{ paddingRight: 3, paddingLeft: 3 }}
-                                >
-                                  <Text
-                                    numberOfLines={2}
-                                    style={styles.recipeTitle}
-                                  >
+                                <View style={{ paddingRight: 3, paddingLeft: 3 }}>
+                                  <Text numberOfLines={2} style={styles.recipeTitle}>
                                     {veryPopularRecipes[index].title}
                                   </Text>
-                                  <Text
-                                    numberOfLines={1}
-                                    style={styles.recipeLikes}
-                                  >
-                                    {nFormatter(
-                                      veryPopularRecipes[index].likes,
-                                      1
-                                    )}{" "}
+                                  <Text numberOfLines={1} style={styles.recipeLikes}>
+                                    {nFormatter(veryPopularRecipes[index].likes, 1)}{" "}
                                     likes
                                   </Text>
-                                  <Text
-                                    numberOfLines={1}
-                                    style={styles.recipeMissingIngredients}
-                                  >
-                                    {
-                                      veryPopularRecipes[index]
-                                        .missedIngredients.length
-                                    }{" "}
+                                  <Text numberOfLines={1} style={styles.recipeUsedIngredients}>
+                                    {veryPopularRecipes[index].usedIngredients.length}{" "}
+                                    ingredients
+                                  </Text>
+                                  <Text numberOfLines={1} style={styles.recipeMissingIngredients}>
+                                    {veryPopularRecipes[index].missedIngredients.length}{" "}
                                     missings
                                   </Text>
                                 </View>
@@ -668,22 +655,22 @@ function RecipeTab(state) {
                                   style={{
                                     width: "100%",
                                     marginRight: 14,
-                                    height: 140,
+                                    height: 131,
                                     borderRadius: 10,
                                     marginRight: 8,
                                   }}
                                 ></Image>
                                 <TouchableOpacity
-                                    style={{ position: "absolute", padding: 5 }}
-                                    onPress={() => {
-                                      console.log("Pressed very healthy!")
-                                      veryHealthyRecipes[index].loved = !veryHealthyRecipes[index].loved;
-                                      console.log(veryHealthyRecipes[index].loved);
-                                      veryHealthyRecipes[index].loved
-                                        ? addFavoriteRecipe(veryHealthyRecipes[index]) 
-                                        : deleteFavoriteRecipe(veryHealthyRecipes[index]);
+                                  style={{ position: "absolute", padding: 5 }}
+                                  onPress={() => {
+                                    console.log("Pressed very healthy!")
+                                    veryHealthyRecipes[index].loved = !veryHealthyRecipes[index].loved;
+                                    console.log(veryHealthyRecipes[index].loved);
+                                    veryHealthyRecipes[index].loved
+                                      ? addFavoriteRecipe(veryHealthyRecipes[index])
+                                      : deleteFavoriteRecipe(veryHealthyRecipes[index]);
 
-                                    }}>
+                                  }}>
                                   <MaterialCommunityIcons
                                     size={30}
                                     name={
@@ -695,38 +682,25 @@ function RecipeTab(state) {
                                   />
                                 </TouchableOpacity>
                                 {/* Hole all recipe info */}
-                                <View
-                                  style={{ paddingRight: 3, paddingLeft: 3 }}
-                                >
+                                <View style={{ paddingRight: 3, paddingLeft: 3 }}>
                                   {/* Title */}
-                                  <Text
-                                    numberOfLines={2}
-                                    style={styles.recipeTitle}
-                                  >
+                                  <Text numberOfLines={2} style={styles.recipeTitle}>
                                     {veryHealthyRecipes[index].title}
                                   </Text>
 
                                   {/* Likes */}
-                                  <Text
-                                    numberOfLines={1}
-                                    style={styles.recipeLikes}
-                                  >
-                                    {nFormatter(
-                                      veryHealthyRecipes[index].likes,
-                                      1
-                                    )}{" "}
+                                  <Text numberOfLines={1} style={styles.recipeLikes}>
+                                    {nFormatter(veryHealthyRecipes[index].likes, 1)}{" "}
                                     likes
                                   </Text>
-
+                                  {/* Used Ingre*/}
+                                  <Text numberOfLines={1} style={styles.recipeUsedIngredients}>
+                                    {veryHealthyRecipes[index].usedIngredients.length}{" "}
+                                    ingredients
+                                </Text>
                                   {/* Missings Ingre */}
-                                  <Text
-                                    numberOfLines={1}
-                                    style={styles.recipeMissingIngredients}
-                                  >
-                                    {
-                                      veryHealthyRecipes[index]
-                                        .missedIngredients.length
-                                    }{" "}
+                                  <Text numberOfLines={1} style={styles.recipeMissingIngredients}>
+                                    {veryHealthyRecipes[index].missedIngredients.length}{" "}
                                     missings
                                   </Text>
                                 </View>
@@ -772,22 +746,22 @@ function RecipeTab(state) {
                                   style={{
                                     width: "100%",
                                     marginRight: 14,
-                                    height: 140,
+                                    height: 131,
                                     borderRadius: 10,
                                     marginRight: 8,
                                   }}
                                 ></Image>
                                 <TouchableOpacity
-                                    style={{ position: "absolute", padding: 5 }}
-                                    onPress={() => {
-                                      console.log("Pressed vegetarian!")
-                                      vegetarianRecipes[index].loved = !vegetarianRecipes[index].loved;
-                                      console.log(vegetarianRecipes[index].loved);
-                                      vegetarianRecipes[index].loved
-                                        ? addFavoriteRecipe(vegetarianRecipes[index]) 
-                                        : deleteFavoriteRecipe(vegetarianRecipes[index]);
+                                  style={{ position: "absolute", padding: 5 }}
+                                  onPress={() => {
+                                    console.log("Pressed vegetarian!")
+                                    vegetarianRecipes[index].loved = !vegetarianRecipes[index].loved;
+                                    console.log(vegetarianRecipes[index].loved);
+                                    vegetarianRecipes[index].loved
+                                      ? addFavoriteRecipe(vegetarianRecipes[index])
+                                      : deleteFavoriteRecipe(vegetarianRecipes[index]);
 
-                                    }}>
+                                  }}>
                                   <MaterialCommunityIcons
                                     size={30}
                                     name={
@@ -799,33 +773,20 @@ function RecipeTab(state) {
                                   />
                                 </TouchableOpacity>
                                 {/* Hole all recipe info */}
-                                <View
-                                  style={{ paddingRight: 3, paddingLeft: 3 }}
-                                >
-                                  <Text
-                                    numberOfLines={2}
-                                    style={styles.recipeTitle}
-                                  >
+                                <View style={{ paddingRight: 3, paddingLeft: 3 }}>
+                                  <Text numberOfLines={2} style={styles.recipeTitle}>
                                     {vegetarianRecipes[index].title}
                                   </Text>
-                                  <Text
-                                    numberOfLines={1}
-                                    style={styles.recipeLikes}
-                                  >
-                                    {nFormatter(
-                                      vegetarianRecipes[index].likes,
-                                      1
-                                    )}{" "}
+                                  <Text numberOfLines={1} style={styles.recipeLikes}>
+                                    {nFormatter(vegetarianRecipes[index].likes, 1)}{" "}
                                     likes
                                   </Text>
-                                  <Text
-                                    numberOfLines={1}
-                                    style={styles.recipeMissingIngredients}
-                                  >
-                                    {
-                                      vegetarianRecipes[index].missedIngredients
-                                        .length
-                                    }{" "}
+                                  <Text numberOfLines={1} style={styles.recipeUsedIngredients}>
+                                    {vegetarianRecipes[index].usedIngredients.length}{" "}
+                                    ingredients
+                                  </Text>
+                                  <Text numberOfLines={1} style={styles.recipeMissingIngredients}>
+                                    {vegetarianRecipes[index].missedIngredients.length}{" "}
                                     missings
                                   </Text>
                                 </View>
@@ -865,22 +826,22 @@ function RecipeTab(state) {
                                   style={{
                                     width: "100%",
                                     marginRight: 14,
-                                    height: 140,
+                                    height: 131,
                                     borderRadius: 10,
                                     marginRight: 8,
                                   }}
                                 ></Image>
                                 <TouchableOpacity
-                                    style={{ position: "absolute", padding: 5 }}
-                                    onPress={() => {
-                                      console.log("Pressed other!")
-                                      otherRecipes[index].loved = !otherRecipes[index].loved;
-                                      console.log(otherRecipes[index].loved);
-                                      otherRecipes[index].loved
-                                        ? addFavoriteRecipe(otherRecipes[index]) 
-                                        : deleteFavoriteRecipe(otherRecipes[index]);
+                                  style={{ position: "absolute", padding: 5 }}
+                                  onPress={() => {
+                                    console.log("Pressed other!")
+                                    otherRecipes[index].loved = !otherRecipes[index].loved;
+                                    console.log(otherRecipes[index].loved);
+                                    otherRecipes[index].loved
+                                      ? addFavoriteRecipe(otherRecipes[index])
+                                      : deleteFavoriteRecipe(otherRecipes[index]);
 
-                                    }}>
+                                  }}>
                                   <MaterialCommunityIcons
                                     size={30}
                                     style={{ position: "absolute", padding: 5 }}
@@ -893,31 +854,20 @@ function RecipeTab(state) {
                                   />
                                 </TouchableOpacity>
                                 {/* Hole all recipe info */}
-                                <View
-                                  style={{ paddingRight: 3, paddingLeft: 3 }}
-                                >
-                                  <Text
-                                    numberOfLines={2}
-                                    style={styles.recipeTitle}
-                                  >
+                                <View style={{ paddingRight: 3, paddingLeft: 3 }}>
+                                  <Text numberOfLines={2} style={styles.recipeTitle}>
                                     {otherRecipes[index].title}
                                   </Text>
-                                  <Text
-                                    numberOfLines={1}
-                                    style={styles.recipeLikes}
-                                  >
+                                  <Text numberOfLines={1} style={styles.recipeLikes}>
                                     {nFormatter(otherRecipes[index].likes, 1)}{" "}
                                     likes
                                   </Text>
-
-                                  <Text
-                                    numberOfLines={1}
-                                    style={styles.recipeMissingIngredients}
-                                  >
-                                    {
-                                      otherRecipes[index].missedIngredients
-                                        .length
-                                    }{" "}
+                                  <Text numberOfLines={1} style={styles.recipeUsedIngredients}>
+                                    {otherRecipes[index].usedIngredients.length}{" "}
+                                    ingredients
+                                  </Text>
+                                  <Text numberOfLines={1} style={styles.recipeMissingIngredients}>
+                                    {otherRecipes[index].missedIngredients.length}{" "}
                                     missings
                                   </Text>
                                 </View>
@@ -995,23 +945,25 @@ const styles = StyleSheet.create({
   recipeTitle: {
     fontSize: 16,
     marginTop: 6,
-    color: "#3c3c3c",
+    color: colors.grey,
     fontWeight: "bold",
   },
   recipeLikes: {
-    fontSize: 15,
+    fontSize: 12,
     marginTop: 3,
     color: "#B3B3B5",
   },
   recipeUsedIngredients: {
-    fontSize: 15,
-    marginTop: 12,
-    color: "#5BCBC5",
+    fontSize: 12,
+    marginTop: 5,
+    color: "#00C2CB",
+    fontWeight: "bold",
   },
   recipeMissingIngredients: {
-    fontSize: 15,
+    fontSize: 12,
     marginTop: 3,
-    color: "#D76774",
+    color: "#FF5757",
+    fontWeight: "bold",
   },
   recipeCard: {
     marginLeft: 16,
