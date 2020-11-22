@@ -271,8 +271,8 @@ function Profile(state) {
                 fontColor={colors.grey}
               />
             </View>
-          {/* </CardView>
-          <Text
+          </CardView>
+          {/* <Text
             style={[
               { marginLeft: screenWidth * 0.06, fontSize: screenWidth * 0.06 },
               styles.suggestHeader,
