@@ -159,7 +159,15 @@ function MealPlanTab(state) {
     return result;
   };
 
-  // Generate meal plan
+  /** Generate Meal Plan depending on current ingredients
+   * max_length: max days that ingredients can afford
+   * min_length: 
+   * @return {"date_from_today": [
+   *     {"mealType": "breakfast", "recipeObj": RecipeObj},
+   *     {"mealType": "lunch", "recipeObj": RecipeObj},
+   *     {"mealType": "dinner", "recipeObj": RecipeObj},
+   * ]}
+   */
   let maxlength;
   const generateMealPlan = () => {
     const filteredRecipes = getRecipesBasedOnFilter(recipes);
@@ -205,15 +213,15 @@ function MealPlanTab(state) {
       }
     });
 
-    // console.log("------main_course");
-    // console.log(Object.keys(main_course));
-
+    // Divide lunch to half
     lunchRecipes = main_course.slice(0, Math.ceil(main_course.length / 2));
     dinnerRecipes = main_course.slice(
       Math.ceil(main_course.length / 2),
       main_course.length
     );
 
+    // console.log("------main_course");
+    // console.log(Object.keys(main_course));
     // console.log("------breakfastRecipes");
     // console.log(Object.keys(breakfastRecipes));
     // console.log("------lunchRecipes");
@@ -247,21 +255,21 @@ function MealPlanTab(state) {
       if (b !== undefined) {
         let meal = {
           "mealType": "breakfast",
-          "recipe_obj": b
+          "recipeObj": b
         };
         mealPlan[i].push(meal);
       }
       if (l !== undefined) {
         let meal = {
           "mealType": "lunch",
-          "recipe_obj": l
+          "recipeObj": l
         };
         mealPlan[i].push(meal);
       }
       if (d !== undefined) {
         let meal = {
           "mealType": "dinner",
-          "recipe_obj": d
+          "recipeObj": d
         };
         mealPlan[i].push(meal);
       }
@@ -391,7 +399,7 @@ function MealPlanTab(state) {
                   // keyExtractor={(recipe) => recipe.id.toString()}
                   renderItem={({ value, index }) => {
                     return (
-                      <RecipeCard header={selectMealPlan[index]["mealType"]} recipe={selectMealPlan[index]["recipe_obj"]} setChosenRecipeFunc={setChosenRecipe} />
+                      <RecipeCard header={selectMealPlan[index]["mealType"]} recipe={selectMealPlan[index]["recipeObj"]} setChosenRecipeFunc={setChosenRecipe} />
                     );
                   }}
                 ></FlatList>
