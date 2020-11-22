@@ -883,7 +883,7 @@ function RecipeTab(state) {
                                     }}>
                                   <MaterialCommunityIcons
                                     size={30}
-                                    style={{ position: "absolute" }}
+                                    style={{ position: "absolute", padding: 5 }}
                                     name={
                                       otherRecipes[index].loved
                                         ? "heart"
