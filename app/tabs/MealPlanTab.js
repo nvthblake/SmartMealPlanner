@@ -104,14 +104,14 @@ function MealPlanTab(state) {
   const addToMealPlan = (date, selection, recipe) => {
     var msDiff = date - new Date().getTime(); //Future date - current date
     var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 1;
-    console.log(index)
     let old = mealPlan;
     let meal = {
       "mealType": selection,
       "recipeObj": recipe
     }
+    // const mealPushIndex = old[index].map(meal => meal.mealType).lastIndexOf(selection);
+    
     old[index].push(meal);
-    setMealPlan(old);
   }
   // Vars related to calendar
   let datesWhitelist = (num) => {
