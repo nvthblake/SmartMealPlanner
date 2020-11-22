@@ -94,21 +94,7 @@ function Profile(state) {
   // Model State
   const [modalVisible, setModalVisible] = useState(false);
 
-  const getInitUserImage = () => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        `SELECT userProfileImageUri FROM UserProfile WHERE id = 0;`,
-        [],
-        (_, { rows }) => {
-          setSelectedImage({ localUri: rows._array[0].userProfileImageUri });
-        },  
-        (_, error) => console.log("ProfileTab getInitUserImage SQLite -> ", error),
-      )
-    })
-  }
-
   const handleUpdateUserImage = (imagePath) => {
-    console.log("HandleUpdateUserIamge -> ", imagePath);
     setSelectedImage({ localUri: imagePath });
     db.transaction((tx) => {
       tx.executeSql(
@@ -121,7 +107,19 @@ function Profile(state) {
             console.log("ProfileTab handleUpdateUserImage SQLite -> ", error)
       )
     })
-    console.log("uri is ", userImageUri);
+  }
+
+  const getInitUserImage = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `SELECT userProfileImageUri FROM UserProfile WHERE id = 0;`,
+        [],
+        (_, { rows }) => {
+          setSelectedImage({ localUri: rows._array[0].userProfileImageUri });
+        },  
+        (_, error) => console.log("ProfileTab getInitUserImage SQLite -> ", error),
+      )
+    })
   }
 
   useEffect(getInitUserImage, []);

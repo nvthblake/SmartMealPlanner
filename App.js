@@ -70,10 +70,7 @@ export default function App() {
           db.transaction((tx) => {
             tx.executeSql(
               "INSERT INTO UserProfile (id, userName, userProfileImageUri) values (0, 'Best Person Ever', '')"
-            )
-          })
-        }
-      );
+            )})});
     });
     // db.transaction(tx => {
     //   tx.executeSql(
@@ -83,9 +80,9 @@ export default function App() {
     db.transaction((tx) => {
       tx.executeSql(
         `CREATE TABLE IF NOT EXISTS ShoppingList \
-        (id INTEGER PRIMARY KEY NOT NULL, \
+        (id VARCHAR, \
         createdTs DATETIME DEFAULT CURRENT_TIMESTAMP, \
-        ingredient VARCHAR NOT NULL, \
+        name VARCHAR NOT NULL, \
         checked INT(1) NOT NULL);`
       );
     });
