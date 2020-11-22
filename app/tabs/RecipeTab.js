@@ -465,7 +465,7 @@ function RecipeTab(state) {
                     ? addFavoriteRecipe(chosenRecipe)
                     : deleteFavoriteRecipe(chosenRecipe);
                 }}
-                style={{ position: "absolute" }}
+                style={{ position: "absolute", padding: 5 }}
               >
                 <MaterialCommunityIcons
                   name={chosenRecipe.loved ? "heart" : "heart-outline"}
@@ -500,7 +500,7 @@ function RecipeTab(state) {
                 <CustomButton
                   color={colors.medium}
                   textColor={colors.white}
-                  title="Cancel"
+                  title="Back"
                   height={40}
                   onPress={() => {
                     setChosenRecipe(null);
@@ -574,16 +574,27 @@ function RecipeTab(state) {
                                     marginRight: 8,
                                   }}
                                 ></Image>
-                                <MaterialCommunityIcons
-                                  size={30}
-                                  style={{ position: "absolute" }}
-                                  name={
-                                    veryPopularRecipes[index].loved
-                                      ? "heart"
-                                      : "heart-outline"
-                                  }
-                                  color={colors.font_red}
-                                />
+                                <TouchableOpacity
+                                    style={{ position: "absolute", padding: 5 }}
+                                    onPress={() => {
+                                      console.log("Pressed very popular!")
+                                      veryPopularRecipes[index].loved = !veryPopularRecipes[index].loved;
+                                      console.log(veryPopularRecipes[index].loved);
+                                      veryPopularRecipes[index].loved
+                                        ? addFavoriteRecipe(veryPopularRecipes[index]) 
+                                        : deleteFavoriteRecipe(veryPopularRecipes[index]);
+
+                                    }}>
+                                  <MaterialCommunityIcons
+                                    size={30}
+                                    name={
+                                      veryPopularRecipes[index].loved
+                                        ? "heart"
+                                        : "heart-outline"
+                                    }
+                                    color={colors.font_red}
+                                  />
+                                </TouchableOpacity>
                                 {/* Hole all recipe info */}
                                 <View
                                   style={{ paddingRight: 3, paddingLeft: 3 }}
@@ -662,16 +673,27 @@ function RecipeTab(state) {
                                     marginRight: 8,
                                   }}
                                 ></Image>
-                                <MaterialCommunityIcons
-                                  size={30}
-                                  style={{ position: "absolute" }}
-                                  name={
-                                    veryHealthyRecipes[index].loved
-                                      ? "heart"
-                                      : "heart-outline"
-                                  }
-                                  color={colors.font_red}
-                                />
+                                <TouchableOpacity
+                                    style={{ position: "absolute", padding: 5 }}
+                                    onPress={() => {
+                                      console.log("Pressed very healthy!")
+                                      veryHealthyRecipes[index].loved = !veryHealthyRecipes[index].loved;
+                                      console.log(veryHealthyRecipes[index].loved);
+                                      veryHealthyRecipes[index].loved
+                                        ? addFavoriteRecipe(veryHealthyRecipes[index]) 
+                                        : deleteFavoriteRecipe(veryHealthyRecipes[index]);
+
+                                    }}>
+                                  <MaterialCommunityIcons
+                                    size={30}
+                                    name={
+                                      veryHealthyRecipes[index].loved
+                                        ? "heart"
+                                        : "heart-outline"
+                                    }
+                                    color={colors.font_red}
+                                  />
+                                </TouchableOpacity>
                                 {/* Hole all recipe info */}
                                 <View
                                   style={{ paddingRight: 3, paddingLeft: 3 }}
@@ -755,16 +777,27 @@ function RecipeTab(state) {
                                     marginRight: 8,
                                   }}
                                 ></Image>
-                                <MaterialCommunityIcons
-                                  size={30}
-                                  style={{ position: "absolute" }}
-                                  name={
-                                    vegetarianRecipes[index].loved
-                                      ? "heart"
-                                      : "heart-outline"
-                                  }
-                                  color={colors.font_red}
-                                />
+                                <TouchableOpacity
+                                    style={{ position: "absolute", padding: 5 }}
+                                    onPress={() => {
+                                      console.log("Pressed vegetarian!")
+                                      vegetarianRecipes[index].loved = !vegetarianRecipes[index].loved;
+                                      console.log(vegetarianRecipes[index].loved);
+                                      vegetarianRecipes[index].loved
+                                        ? addFavoriteRecipe(vegetarianRecipes[index]) 
+                                        : deleteFavoriteRecipe(vegetarianRecipes[index]);
+
+                                    }}>
+                                  <MaterialCommunityIcons
+                                    size={30}
+                                    name={
+                                      vegetarianRecipes[index].loved
+                                        ? "heart"
+                                        : "heart-outline"
+                                    }
+                                    color={colors.font_red}
+                                  />
+                                </TouchableOpacity>
                                 {/* Hole all recipe info */}
                                 <View
                                   style={{ paddingRight: 3, paddingLeft: 3 }}
@@ -837,16 +870,28 @@ function RecipeTab(state) {
                                     marginRight: 8,
                                   }}
                                 ></Image>
-                                <MaterialCommunityIcons
-                                  size={30}
-                                  style={{ position: "absolute" }}
-                                  name={
-                                    otherRecipes[index].loved
-                                      ? "heart"
-                                      : "heart-outline"
-                                  }
-                                  color={colors.font_red}
-                                />
+                                <TouchableOpacity
+                                    style={{ position: "absolute", padding: 5 }}
+                                    onPress={() => {
+                                      console.log("Pressed other!")
+                                      otherRecipes[index].loved = !otherRecipes[index].loved;
+                                      console.log(otherRecipes[index].loved);
+                                      otherRecipes[index].loved
+                                        ? addFavoriteRecipe(otherRecipes[index]) 
+                                        : deleteFavoriteRecipe(otherRecipes[index]);
+
+                                    }}>
+                                  <MaterialCommunityIcons
+                                    size={30}
+                                    style={{ position: "absolute" }}
+                                    name={
+                                      otherRecipes[index].loved
+                                        ? "heart"
+                                        : "heart-outline"
+                                    }
+                                    color={colors.font_red}
+                                  />
+                                </TouchableOpacity>
                                 {/* Hole all recipe info */}
                                 <View
                                   style={{ paddingRight: 3, paddingLeft: 3 }}

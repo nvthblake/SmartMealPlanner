@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import CardView from "../components/CardView";
 import AppText from "../components/AppText";
+import CircularOverview from "../components/CircularOverview";
 import colors from "../config/colors";
 import * as ImagePicker from "expo-image-picker";
 import ProgressBarAnimated from "react-native-progress-bar-animated";
@@ -23,6 +24,7 @@ import Screen from "../components/Screen";
 
 function Profile(state) {
   const screenWidth = Dimensions.get("window").width;
+  const screenHeight = Dimensions.get("window").height;
   // Camera logic
   const [selectedImage, setSelectedImage] = useState("");
   const takePicture = async () => {
@@ -60,7 +62,7 @@ function Profile(state) {
   };
 
   // Progress bar logic
-  const barWidth = screenWidth * 0.52;
+  const barWidth = screenWidth * 0.66;
   const { ingredients, addIngredientToFridge } = state;
   const ingredientsInFridge = ingredients.fridge;
   const Limit = 100;
@@ -83,6 +85,7 @@ function Profile(state) {
       Expired += 1;
     }
   });
+  let fridgePct = Item < Limit ? Math.floor((Item / Limit) * 100) : 100;
 
   // Model State
   const [modalVisible, setModalVisible] = useState(false);
@@ -91,14 +94,13 @@ function Profile(state) {
     <Screen style={styles.screen} headerTitle="Welcome to SmartFridge">
       <View
         style={{
-          marginLeft: screenWidth * 0.05,
-          marginRight: screenWidth * 0.05,
+          marginLeft: screenWidth * 0.02,
+          marginRight: screenWidth * 0.02,
           paddingBottom: 50,
         }}
       >
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.imageView}>
-            {/* <AppText style={styles.welcome}>{"Welcome to SmartFridge"}</AppText> */}
             <TouchableOpacity
               onPress={() => {
                 setModalVisible(true);
@@ -111,69 +113,64 @@ function Profile(state) {
             </TouchableOpacity>
           </View>
           <CardView>
-            <Text style={styles.fridgeheader}>Your Fridge</Text>
-            <View style={styles.fridgeview}>
+            <Text style={{marginTop: screenHeight*0.005, marginLeft: screenWidth*0.02, fontSize: screenHeight*0.04, fontWeight: "bold", color: colors.grey}}>Your Fridge</Text>
+            <View style={{marginTop: screenHeight*0.015, marginLeft: screenWidth*0.02, flexDirection: "row"}}>
               <Image
                 source={require("../assets/appIcon/fridge2.png")}
-                style={styles.fridgelogo}
+                style={{height: screenWidth*0.05, width: screenWidth*0.05}}
               />
-              <View style={styles.fridgestatus}>
+              <View style={[{marginLeft: screenWidth*0.03}, styles.fridgestatus]}>
                 <ProgressBarAnimated
                   width={barWidth}
-                  height={18}
+                  height={screenWidth*0.05}
                   backgroundColor={colors.primary}
-                  value={Math.floor((Item / Limit) * 100)}
+                  value={fridgePct}
                 />
               </View>
             </View>
-            <Text style={styles.fridgetext}>
-              Your fridge is {Math.floor((Item / Limit) * 100)}% full
+            <Text style={{marginTop: screenHeight*0.015, marginLeft: screenWidth*0.02, fontSize: screenHeight*0.02}}>
+              Your fridge is {fridgePct}% full
             </Text>
-            <Text style={styles.fridgetext}>
+            <Text style={{marginTop: screenHeight*0.005, marginLeft: screenWidth*0.02, fontSize: screenHeight*0.02}}>
               Need to go shopping in the next 10 days
             </Text>
-            <View style={styles.seperatorline} />
-            <View style={styles.minilogoview}>
-              <View>
-                <ImageBackground
-                  source={require("../assets/appIcon/white.png")}
-                  style={styles.minilogo}
-                >
-                  <View style={styles.viewDemotext}>
-                    <Text style={styles.demotext}>{Expirein3}</Text>
-                  </View>
-                </ImageBackground>
-                <Text style={styles.minitext}>Item is expiring</Text>
-                <Text style={styles.minitext}>in 3 days</Text>
-              </View>
-              <View>
-                <ImageBackground
-                  source={require("../assets/appIcon/white.png")}
-                  style={styles.minilogo}
-                >
-                  <View style={styles.viewDemotext}>
-                    <Text style={styles.demotext}>{Expirein10}</Text>
-                  </View>
-                </ImageBackground>
-                <Text style={styles.minitext}>Item is expiring</Text>
-                <Text style={styles.minitext}>in 10 days</Text>
-              </View>
-
-              <View>
-                <ImageBackground
-                  source={require("../assets/appIcon/white.png")}
-                  style={styles.minilogo}
-                >
-                  <View style={styles.viewDemotext}>
-                    <Text style={styles.demotext}>{Expired}</Text>
-                  </View>
-                </ImageBackground>
-                <Text style={styles.minitext}>Item is already</Text>
-                <Text style={styles.minitext}>expired</Text>
-              </View>
+            <View style={[{marginTop: screenHeight*0.015, marginHorizontal: screenWidth*0.02}, styles.seperatorline]} />
+            <View
+              style={{
+                marginTop: screenHeight*0.02,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingHorizontal: 8,
+              }}
+            >
+              <CircularOverview
+                stat={Expirein3}
+                title={"Items expiring"}
+                title2={"in 3 days"}
+                size={Math.floor(screenWidth*0.2)}
+                fontSize={screenWidth*0.1}
+                fontColor={colors.grey}
+              />
+              <CircularOverview
+                stat={Expirein10}
+                title={"Items expiring"}
+                title2={"in 10 days"}
+                size={Math.floor(screenWidth*0.2)}
+                fontSize={screenWidth*0.1}
+                fontColor={colors.grey}
+              />
+              <CircularOverview
+                stat={Expired}
+                title={"Items already"}
+                title2={"expired"}
+                size={Math.floor(screenWidth*0.2)}
+                fontSize={screenWidth*0.1}
+                fontColor={colors.grey}
+              />
             </View>
           </CardView>
-          <Text style={styles.suggestHeader}>Suggested Meals</Text>
+          <Text style={[{marginLeft: screenWidth*0.06, fontSize: screenWidth*0.06}, styles.suggestHeader]}>Suggested Meals</Text>
           <CardView>
             <Text style={styles.suggestHeader}>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -229,8 +226,8 @@ function Profile(state) {
 
 const styles = StyleSheet.create({
   suggestHeader: {
-    marginLeft: 20,
-    fontSize: 12,
+    // marginLeft: 20,
+    // fontSize: 12,
     fontWeight: "bold",
     marginBottom: 10,
     marginTop: 10,
@@ -295,12 +292,12 @@ const styles = StyleSheet.create({
     borderColor: "#537aff",
     overflow: "hidden",
     borderWidth: 2,
-    marginTop: 20,
-    marginBottom: 20,
+    // marginTop: 0,
+    marginBottom: 10,
   },
   minilogo: {
-    height: 80,
-    width: 80,
+    // height: 80,
+    // width: 80,
     borderRadius: 100,
     borderColor: "#537aff",
     overflow: "hidden",
@@ -323,47 +320,47 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   fridgetext: {
-    marginTop: 10,
-    marginLeft: 20,
-    fontSize: 10,
+    // marginTop: 10,
+    // marginLeft: 20,
+    // fontSize: 10,
   },
   fridgeview: {
-    marginTop: 20,
-    marginLeft: 20,
+    // marginTop: screenWidth*0.02,
+    // marginLeft: 20,
     flexDirection: "row",
   },
   fridgelogo: {
-    height: 40,
-    width: 40,
+    height: 30,
+    width: 30,
   },
   fridgestatus: {
-    marginLeft: 20,
-    marginTop: 10,
+    // marginLeft: 20,
+    // marginTop: 10,
     alignItems: "center",
   },
   seperatorline: {
-    margin: 20,
-    borderBottomColor: "black",
+    // margin: 20,
+    borderBottomColor: colors.lightGrey,
     borderBottomWidth: 1,
   },
   minilogoview: {
     flexDirection: "row",
-    margin: 20,
+    // margin: 20,
     justifyContent: "space-between",
   },
   minitext: {
-    marginTop: 5,
+    // marginTop: 5,
     textAlign: "center",
-    fontSize: 10,
+    // fontSize: 10,
   },
   viewDemotext: {
-    marginTop: 10,
+    justifyContent: "center",
     alignItems: "center",
   },
   demotext: {
-    fontSize: 35,
-    color: colors.primary,
-    fontWeight: "bold",
+    // fontSize: 35,
+    color: colors.grey,
+    // fontWeight: "bold",
   },
   screen: {
     paddingTop: 20,
