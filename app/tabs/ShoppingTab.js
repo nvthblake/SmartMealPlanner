@@ -69,13 +69,12 @@ function ShoppingTab(props) {
   };
 
   const submitHandler = () => {
-    var shopItemId = Math.random().toString()
-    addIngredientToCart({ name: text, id: shopItemId, checked: false });
+    addIngredientToCart({ name: text, id: text, checked: false });
     db.transaction((tx) => {
       tx.executeSql(
         `INSERT INTO ShoppingList (name, id, checked) values (?, ?, ?)`,
-        [text, shopItemId, 0],
-        () => {console.log("Inserted to SQLite ", text, shopItemId)},
+        [text, text, 0],
+        () => {console.log("Inserted to SQLite ", text, text)},
         (_, error) =>
             console.log("ShoppingTab submitHandler SQLite -> ", error)
       )
@@ -133,7 +132,14 @@ function ShoppingTab(props) {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel",
                   },
-                  { text: "OK", onPress: () => clearCart() },
+                  { text: "OK", onPress: () => {
+                    clearCart();
+                    db.transaction((tx) => {
+                      tx.executeSql("DELETE FROM ShoppingList;",[],[],
+                      (_, error) =>
+                        console.log("ShoppingTab clearCart SQLite -> ", error));
+                    })
+                  } },
                 ],
                 { cancelable: false }
               );

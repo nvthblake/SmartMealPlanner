@@ -80,7 +80,7 @@ export default function App() {
     db.transaction((tx) => {
       tx.executeSql(
         `CREATE TABLE IF NOT EXISTS ShoppingList \
-        (id VARCHAR, \
+        (id VARCHAR PRIMARY KEY NOT NULL, \
         createdTs DATETIME DEFAULT CURRENT_TIMESTAMP, \
         name VARCHAR NOT NULL, \
         checked INT(1) NOT NULL);`

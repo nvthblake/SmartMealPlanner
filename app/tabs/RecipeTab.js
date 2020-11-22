@@ -51,6 +51,10 @@ import colors from "../config/colors";
 import { nFormatter } from "../utils/NumberFormatting";
 import { capitalize } from "../utils/TextFormatting";
 import CustomButton from "../components/CustomButton";
+// Database imports
+import { openDatabase } from "expo-sqlite";
+
+const db = openDatabase("db2.db");
 
 /* Copied from IngredientsTab */
 const screenWidth = Dimensions.get("window").width;
@@ -199,7 +203,17 @@ function RecipeTab(state) {
       missedIngredients
     );
     missedIngredients.forEach((missedIngredient) => {
-      addIngredientToCart(missedIngredient);
+      addIngredientToCart({ name: missedIngredient.name, id: missedIngredient.id, checked: false });
+      console.log("missed ingredient is", missedIngredient.name, missedIngredient.id);
+      db.transaction((tx) => {
+        tx.executeSql(
+          `INSERT INTO ShoppingList (name, id, checked) values (?, ?, ?)`,
+          [missedIngredient.name, missedIngredient.id.toString(), 0],
+          () => {console.log("Inserted to SQLite ", missedIngredient.name, missedIngredient.id.toString())},
+          (_, error) =>
+              console.log("RecipeTab addMissedIngredientsToCard SQLite -> ", error)
+        )
+      });
     });
 
     Alert.alert(
