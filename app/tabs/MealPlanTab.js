@@ -18,7 +18,7 @@ import Modal from "react-native-modal";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Redux
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
   addMealPlan,
@@ -33,6 +33,7 @@ import {
 import LoadingAnimation from "../components/LoadingAnimation";
 import Screen from "../components/Screen";
 import RecipeCard from "../components/RecipeCard";
+import MealPlanDatePicker from "../components/MealPlanDatePicker";
 
 // API
 import { getRecipes, getRecipeInfoInBulk } from "../api/Spoonacular";
@@ -42,6 +43,7 @@ import colors from "../config/colors";
 import { ScrollView } from "react-native-gesture-handler";
 import { nFormatter } from "../utils/NumberFormatting";
 import { capitalize } from "../utils/TextFormatting";
+import { Button } from "react-native-paper";
 
 /* Copied from IngredientsTab */
 const screenWidth = Dimensions.get("window").width;
@@ -80,6 +82,18 @@ function MealPlanTab(state) {
   const [selectDate, setSelectDate] = useState(curDate);
   const header = ["Breakfast", "Lunch", "Dinner"];
   const [heartImage, setHeartImage] = useState(null);
+  const [selectMealPlan, getMealPlanOnDate] = useState([]);
+  const reactiveRecipes = useSelector(tempState => tempState.ingredients);
+
+  let mealPlan = []
+
+  useEffect(() => {
+    // // console.log("Hello")
+    // // console.log(recipes[0])
+    mealPlan = generateMealPlan()
+    console.log(mealPlan)
+    getMealPlanOnDate(mealPlan[0])
+  }, [reactiveRecipes]);
 
   // Vars related to calendar
   let datesWhitelist = (num) => {
@@ -102,7 +116,7 @@ function MealPlanTab(state) {
   ];
 
   const getDateHeader = (date) => {
-    console.log("getDateHeader date, curDate: ", date, "   -   ", curDate);
+    // console.log("date: ", date, curDate);
     var msDateA = Date.UTC(
       date.getFullYear(),
       date.getMonth() + 1,
@@ -123,7 +137,7 @@ function MealPlanTab(state) {
   };
 
   const onDateSelect = (date) => {
-    console.log("\n------onDateSelect", date);
+    // console.log(date);
     let d = new Date(date);
     setSelectDate(d);
     var msDiff = new Date(date).getTime() - new Date().getTime(); //Future date - current date
@@ -246,6 +260,8 @@ function MealPlanTab(state) {
     console.log("-----minlength");
     console.log(minlength);
 
+    // console.log("here", Math.ceil(main_course.length / 2));
+    // console.log("here", Math.floor(main_course.length / 2));
     for (var i = 0; i < maxlength; i++) {
       mealPlan[i] = [];
       let b = breakfastRecipes[i];
@@ -276,8 +292,6 @@ function MealPlanTab(state) {
     }
     return mealPlan;
   };
-  let mealPlan = generateMealPlan();
-  const [selectMealPlan, getMealPlanOnDate] = useState(mealPlan[0]);
 
   // Utils Functions
   const openURLInDefaultBrowser = (url) => {
@@ -314,7 +328,7 @@ function MealPlanTab(state) {
         {
           text: "Yes",
           onPress: () => {
-            console.log(recipe);
+            // console.log(recipe);
             // Delete from reduce
             deleteMealPlan(recipe);
           },
@@ -462,7 +476,7 @@ function MealPlanTab(state) {
                 <TouchableOpacity
                   onPress={() => {
                     chosenRecipe.loved = !chosenRecipe.loved;
-                    console.log(chosenRecipe.loved);
+                    // console.log(chosenRecipe.loved);
                     chosenRecipe.loved
                       ? setHeartImage("heart")
                       : setHeartImage("heart-outline");
@@ -490,6 +504,7 @@ function MealPlanTab(state) {
                 >
                   {chosenRecipe.title}
                 </Text>
+                <MealPlanDatePicker/>
                 <View
                   style={{
                     height: 1,
