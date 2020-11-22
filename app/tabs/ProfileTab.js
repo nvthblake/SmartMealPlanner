@@ -27,7 +27,7 @@ import ProgressBarAnimated from "react-native-progress-bar-animated";
 import Screen from "../components/Screen";
 // Database imports
 import { openDatabase } from "expo-sqlite";
-import { default as ModalSlider } from "react-native-modal";
+import Modal from "react-native-modal";
 import IngredientSlider from "../components/IngredientSlider";
 import CustomButton from "../components/CustomButton";
 
@@ -289,9 +289,9 @@ function Profile(state) {
             </Text>
           </CardView>
           <View style={styles.centeredView}>
-            <ModalSlider
+            <Modal
               backdropColor={"#F2F5F8"}
-              backdropOpacity={1}
+              backdropOpacity={0.5}
               coverScreen={true}
               isVisible={modalSliderVisible}
               onBackdropPress={() => setModalSliderVisible(false)}
@@ -387,12 +387,6 @@ function Profile(state) {
                       }}
                     />
                     <CustomButton
-                      title="DELETE"
-                      // onPress={() => handleDelete(selectedIngre)}
-                      color={colors.danger}
-                      textColor={colors.white}
-                    />
-                    <CustomButton
                       title="CANCEL"
                       onPress={() => setModalSliderVisible(false)}
                       color={colors.medium}
@@ -401,12 +395,12 @@ function Profile(state) {
                   </View>
                 </View>
               </View>
-            </ModalSlider>
+            </Modal>
           </View>
           <View style={styles.centeredView}>
-            <ModalSlider
+            <Modal
               backdropColor={"#F2F5F8"}
-              backdropOpacity={0.5}
+              backdropOpacity={0.9}
               coverScreen={true}
               isVisible={modalVisible}
               onBackdropPress={() => setModalVisible(false)}
@@ -443,7 +437,7 @@ function Profile(state) {
                   </TouchableHighlight>
                 </View>
               </View>
-            </ModalSlider>
+            </Modal>
           </View>
         </ScrollView>
       </View>
@@ -472,6 +466,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20,
     padding: 10,
+    marginTop: screenHeight * 0.3,
   },
   suggestHeader: {
     // marginLeft: 20,
@@ -486,7 +481,7 @@ const styles = StyleSheet.create({
     // borderRadius: 20,
     padding: 20,
     // width: "100%",
-    alignItems: "flex-start",
+    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -497,10 +492,11 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   bottomedView: {
-    // flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: screenHeight - 220,
+    // marginHorizontal: 0,
+    margin: 0,
+    justifyContent: "flex-end",
+    // alignItems: "",
+    // marginTop: screenHeight - 211,
   },
   centeredView: {
     flex: 1,
@@ -560,13 +556,6 @@ const styles = StyleSheet.create({
   },
   imageView: {
     alignItems: "center",
-  },
-  welcome: {
-    marginTop: 20,
-    fontSize: 30,
-    fontWeight: "bold",
-    padding: 20,
-    color: colors.primary,
   },
   fridgeheader: {
     marginTop: 20,
