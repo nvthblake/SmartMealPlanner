@@ -102,6 +102,20 @@ function MealPlanTab(state) {
     }
   }, [reactiveRecipes]);
 
+
+  // add favorite into mealplan
+  const addToMealPlan = (date, selection, recipe) => {
+    var msDiff = date - new Date().getTime(); //Future date - current date
+    var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 2;
+    console.log(index)
+    let old = mealPlan;
+    let meal = {
+      "mealType": selection,
+      "recipeObj": recipe
+    }
+    old[index].push(meal);
+    setMealPlan(old);
+  }
   // Vars related to calendar
   let datesWhitelist = (num) => {
     return [
@@ -315,27 +329,6 @@ function MealPlanTab(state) {
     });
     return result;
   };
-  const handleDelete = (recipe) => {
-    Alert.alert(
-      "Done Eating?",
-      "This recipe will be removed from your meal planner",
-      [
-        {
-          text: "Yes",
-          onPress: () => {
-            // console.log(recipe);
-            // Delete from reduce
-            deleteMealPlan(recipe);
-          },
-        },
-        {
-          text: "No",
-          style: "cancel",
-        },
-      ],
-      { cancelable: true }
-    );
-  };
 
   useEffect(() => {
     setNumMealPlans(maxlength);
@@ -516,7 +509,7 @@ function MealPlanTab(state) {
                 >
                   {chosenRecipe.title}
                 </Text>
-                <MealPlanDatePicker />
+                <MealPlanDatePicker recipe={chosenRecipe} addToMealPlan={addToMealPlan}/>
                 <View
                   style={{
                     height: 1,
@@ -573,14 +566,6 @@ function MealPlanTab(state) {
                   justifyContent: "space-between",
                 }}
               >
-                <CustomButton
-                  color={"#FFBE6A"}
-                  title="Done Eating"
-                  height={40}
-                  // onPress={() =>
-                  //   addMissedIngredientsToCard(chosenRecipe.missedIngredients)
-                  // }
-                ></CustomButton>
                 <CustomButton
                   color={colors.primary}
                   title="See Details"

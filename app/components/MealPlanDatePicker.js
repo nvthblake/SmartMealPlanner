@@ -22,7 +22,7 @@ import { CalendarPicker, Calendar } from "react-native-calendars";
 import pickerOptions from "../config/pickerOptions";
 import CustomButton from "../components/CustomButton";
 
-function MealPlanDatePicker({}) {
+function MealPlanDatePicker({recipe, addToMealPlan}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [optionVisible, setOptionVisible] = useState(false);
   const [mealDate, setMealDate] = useState("2020-11-28");
@@ -52,7 +52,7 @@ function MealPlanDatePicker({}) {
     textMonthFontSize: 16,
     textDayHeaderFontSize: 16,
   };
-
+  const [daypicked, setDayPicked] = useState(new Date());
   return (
     <>
       <View style={styles.centeredView}>
@@ -79,10 +79,11 @@ function MealPlanDatePicker({}) {
               <Calendar
                 style={styles.calendar}
                 theme={calendarTheme}
-                current={Date()}
-                minDate={Date()}
+                current={new Date()}
+                minDate={new Date()}
                 onDayPress={(day) => {
                   setMealDate(day.dateString);
+                  setDayPicked(day)
                   setOptionVisible(true);
                 }}
                 hideExtraDays={true}
@@ -122,7 +123,7 @@ function MealPlanDatePicker({}) {
                       label={item.label}
                       onPress={() => {
                         setOptionVisible(false);
-                        console.log(item.label);
+                        addToMealPlan(daypicked.timestamp,item.label.toString(),recipe)
                       }}
                     />
                   )}
