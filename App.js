@@ -29,6 +29,11 @@ import CameraPage from "./app/tabs/pages/CameraPage";
 import MealPlanTab from "./app/tabs/MealPlanTab";
 import IngredientSlider from "./app/components/IngredientSlider";
 import CustomSlider from "./app/components/CustomSlider";
+import { LogBox } from 'react-native';
+
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 const store = createStore(reducers);
 const db = SQLite.openDatabase("db2.db");

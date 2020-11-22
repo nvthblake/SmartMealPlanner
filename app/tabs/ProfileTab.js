@@ -336,8 +336,9 @@ function Profile(state) {
                       textColor={colors.white}
                       onPress={() => {
                         ingredientsInFridge.forEach((ingre, index) => {
+                          let ratio = sliderValues[index] ? sliderValues[index] : 0;
                           let newQty = round(
-                            ingre.qty * (1.0 - parseFloat(sliderValues[index])),
+                            ingre.qty * (1.0 - ratio),
                             1
                           );
                           // let newQty = ingre.qty;
