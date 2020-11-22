@@ -115,7 +115,7 @@ function ScanTab(state) {
   const [viewHeight, setViewHeight] = useState(screenWidth * 0.5);
 
   const navigation = useNavigation();
-
+  const temp_ingredient = ["Carrot", "Meat", "Onion"];
   return (
     <Screen>
       <View style={styles.container}>
@@ -146,7 +146,7 @@ function ScanTab(state) {
                 >
                   <AppForm
                     initialValues={{
-                      ingredient: "",
+                      ingredient: temp_ingredient[index],
                       qty: "",
                       unit: { label: "unit", value: 7 },
                       category: null,
