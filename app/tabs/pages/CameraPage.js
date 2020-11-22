@@ -76,26 +76,26 @@ function CameraPage(state, { navigation }) {
 
   useEffect(() => {
     requestPermission();
-    if (!frameworkReady) {
-      (async () => {
-        //check permissions
-        // requestPermission();
+    // if (!frameworkReady) {
+    //   (async () => {
+    //     //check permissions
+    //     // requestPermission();
 
-        //we must always wait for the Tensorflow API to be ready before any TF operation...
-        await tf.ready();
+    //     //we must always wait for the Tensorflow API to be ready before any TF operation...
+    //     await tf.ready();
 
-        //load the mobilenet model and save it in state
-        setMobilenetModel(await loadMobileNetModel());
+    //     //load the mobilenet model and save it in state
+    //     setMobilenetModel(await loadMobileNetModel());
 
-        setFrameworkReady(true);
-      })();
-    }
+    //     setFrameworkReady(true);
+    //   })();
+    // }
   }, []);
 
-  const loadMobileNetModel = async () => {
-    const model = await mobilenet.load();
-    return model;
-  };
+  // const loadMobileNetModel = async () => {
+  //   const model = await mobilenet.load();
+  //   return model;
+  // };
 
   // Asking permission to use the camera
   const requestPermission = async () => {
@@ -143,17 +143,17 @@ function CameraPage(state, { navigation }) {
         // console.log("IMAGE URI -> ", ingredientToScan);
 
         // Classify the image.
-        const img = { uri: data.uri };
-        const imageAssetPath = Image.resolveAssetSource(img)
-        const response = await fetch(imageAssetPath.uri, {}, { isBinary: true })
-        const rawImageData = await response.arrayBuffer()
-        const imageTensor = imageToTensor(rawImageData)
-        const predictions = await mobilenetModel.classify(imageTensor)
-        predictions.forEach(function (value, index) {
-          if (value.probability > 0.3) {
-            console.log(`prediction: ${JSON.stringify(value)}`);
-          }
-        });
+        // const img = { uri: data.uri };
+        // const imageAssetPath = Image.resolveAssetSource(img)
+        // const response = await fetch(imageAssetPath.uri, {}, { isBinary: true })
+        // const rawImageData = await response.arrayBuffer()
+        // const imageTensor = imageToTensor(rawImageData)
+        // const predictions = await mobilenetModel.classify(imageTensor)
+        // predictions.forEach(function (value, index) {
+        //   if (value.probability > 0.3) {
+        //     console.log(`prediction: ${JSON.stringify(value)}`);
+        //   }
+        // });
         // console.log(predictions)
       }
     }
