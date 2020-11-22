@@ -27,14 +27,17 @@ class RecipeCard extends Component {
       recipe: this.props.recipe,
       setChosenRecipeFunc: this.props.setChosenRecipeFunc,
       header: this.props.header,
+      horizontal: false,
       heartImage: "heart",
     };
   }
 
   componentDidMount() {
-    console.log("header", this.props.header);
+    console.log("----header", this.props.header);
+    console.log("----recipe", this.props.recipe);
     this.setState({
       recipe: this.props.recipe,
+      horizontal: this.props.horizontal,
       header: this.props.header,
       setChosenRecipeFunc: this.props.setChosenRecipeFunc,
       heartImage: this.props.recipe.loved ? "heart" : "heart-outline",
@@ -62,59 +65,120 @@ class RecipeCard extends Component {
 
     return (
       <View style={{ margin: 1 }}>
-        <View style={styles.recipeCard}>
-          <TouchableOpacity
-            onPress={() => {
-              setChosenRecipeFunc(recipe);
-            }}
-          >
-            <View style={{ padding: 8 }}>
-              <View style={{ flexDirection: "column", height: '100%', minHeight: 240 }}>
-                <Image
-                  source={{ uri: recipe.image }}
-                  style={{
-                    width: "100%",
-                    height: 131,
-                    borderRadius: 10,
-                    marginRight: 8,
-                  }}
-                ></Image>
+        {/* Vertical Recipe Card */}
+        {!this.state.horizontal && (
+          <View style={styles.recipeCard}>
+            <TouchableOpacity
+              onPress={() => {
+                setChosenRecipeFunc(recipe);
+              }}
+            >
+              <View style={{ padding: 8 }}>
+                <View style={{ flexDirection: "column", height: '100%', minHeight: 240 }}>
+                  <Image
+                    source={{ uri: recipe.image }}
+                    style={{
+                      width: "100%",
+                      height: 131,
+                      borderRadius: 10,
+                      marginRight: 8,
+                    }}
+                  ></Image>
 
-                {/* With header */}
-                {this.state.header != undefined && (
-                  <View style={[styles.textHolder, { alignItems: 'center' }]}>
-                    <Text numberOfLines={2} style={styles.recipeHeader}>
-                      {this.state.header}
-                    </Text>
-                    <Text numberOfLines={2} style={[styles.recipeTitle, { textAlign: 'center' }]}>
-                      {recipe.title}
-                    </Text>
-                  </View>
-                )}
+                  {/* With header */}
+                  {this.state.header != undefined && (
+                    <View style={[styles.textHolder, { alignItems: 'center' }]}>
+                      <Text numberOfLines={2} style={styles.recipeHeader}>
+                        {this.state.header}
+                      </Text>
+                      <Text numberOfLines={2} style={[styles.recipeTitle, { textAlign: 'center' }]}>
+                        {recipe.title}
+                      </Text>
+                    </View>
+                  )}
 
-                {/* No header */}
-                {this.state.header == undefined && (
-                  <View style={styles.textHolder}>
-                    <Text numberOfLines={2} style={styles.recipeTitleHeader}>
-                      {recipe.title}
+                  {/* No header */}
+                  {this.state.header == undefined && (
+                    <View style={styles.textHolder}>
+                      <Text numberOfLines={2} style={styles.recipeTitleHeader}>
+                        {recipe.title}
+                      </Text>
+                      {/* likes */}
+                      <Text numberOfLines={2} style={styles.recipeLikes}>
+                        {nFormatter(recipe.likes, 1)}{" "} likes
                     </Text>
-                    {/* likes */}
-                    <Text numberOfLines={2} style={styles.recipeLikes}>
-                      {nFormatter(recipe.likes, 1)}{" "} likes
+                      {/* missing */}
+                      <Text
+                        numberOfLines={1}
+                        style={styles.recipeMissingIngredients}
+                      >
+                        {recipe.missedIngredients.length}{" "} missings
                     </Text>
-                    {/* missing */}
-                    <Text
-                      numberOfLines={1}
-                      style={styles.recipeMissingIngredients}
-                    >
-                      {recipe.missedIngredients.length}{" "} missings
-                    </Text>
-                  </View>
-                )}
+                    </View>
+                  )}
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        </View>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Horizontal Recipe Card */}
+        {this.state.horizontal && (
+          <View style={styles.recipeCard}>
+            <TouchableOpacity
+              onPress={() => {
+                setChosenRecipeFunc(recipe);
+              }}
+            >
+              <View style={{ padding: 8 }}>
+                <View style={{ flexDirection: "row", height: '100%', minHeight: 240 }}>
+                  <Image
+                    source={{ uri: recipe.image }}
+                    style={{
+                      width: "100%",
+                      height: 131,
+                      borderRadius: 10,
+                      marginRight: 8,
+                    }}
+                  ></Image>
+
+                  {/* With header */}
+                  {this.state.header != undefined && (
+                    <View style={[styles.textHolder, { alignItems: 'center' }]}>
+                      <Text numberOfLines={2} style={styles.recipeHeader}>
+                        {this.state.header}
+                      </Text>
+                      <Text numberOfLines={2} style={[styles.recipeTitle, { textAlign: 'center' }]}>
+                        {recipe.title}
+                      </Text>
+                    </View>
+                  )}
+
+                  {/* No header */}
+                  {this.state.header == undefined && (
+                    <View style={styles.textHolder}>
+                      <Text numberOfLines={2} style={styles.recipeTitleHeader}>
+                        {recipe.title}
+                      </Text>
+                      {/* likes */}
+                      <Text numberOfLines={2} style={styles.recipeLikes}>
+                        {nFormatter(recipe.likes, 1)}{" "} likes
+                  </Text>
+                      {/* missing */}
+                      <Text
+                        numberOfLines={1}
+                        style={styles.recipeMissingIngredients}
+                      >
+                        {recipe.missedIngredients.length}{" "} missings
+                  </Text>
+                    </View>
+                  )}
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+        )}
       </View>
     );
   }
