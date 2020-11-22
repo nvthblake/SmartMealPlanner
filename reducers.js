@@ -23,6 +23,7 @@ import {
   ADD_FAVORITE_RECIPE,
   DELETE_FAVORITE_RECIPE,
   CLEAR_FAVORITE_RECIPE,
+  SET_SCAN_PREDICTED_NAMES
 } from "./types";
 
 const today = new Date();
@@ -49,6 +50,7 @@ const INITIAL_STATE = {
   ],
   mealPlanner: [],
   favoriteRecipes: [],
+  scanPredictedNames: []
 };
 
 const ingredientsReducer = (state = INITIAL_STATE, action) => {
@@ -59,6 +61,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
     ingredientToScan,
     mealPlanner,
     favoriteRecipes,
+    scanPredictedNames
   } = state;
   let newState;
   switch (action.type) {
@@ -77,8 +80,8 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
-
       return newState;
 
     case ADD_INGREDIENT_TO_CART:
@@ -90,6 +93,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
       return newState;
 
@@ -102,6 +106,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
       return newState;
 
@@ -114,6 +119,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
       return newState;
 
@@ -126,6 +132,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
       return newState;
 
@@ -144,8 +151,8 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
-
       return newState;
 
     case DELETE_INGREDIENT_IN_FRIDGE:
@@ -163,8 +170,8 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
-
       return newState;
 
     case CLEAN_ZEROED_INGREDIENTS_IN_FRIDGE:
@@ -181,8 +188,8 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
-
       return newState;
 
     case ADD_INGREDIENT_TO_SCAN:
@@ -194,6 +201,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
       return newState;
 
@@ -212,6 +220,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
       return newState;
 
@@ -224,6 +233,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
       return newState;
 
@@ -236,6 +246,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
       return newState;
 
@@ -248,6 +259,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
       return newState;
 
@@ -266,8 +278,8 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
-
       return newState;
 
     case DELETE_MEAL_PLAN:
@@ -283,6 +295,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
       return newState;
 
@@ -295,6 +308,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
       return newState;
 
@@ -307,6 +321,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
       return newState;
 
@@ -323,6 +338,7 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
       return newState;
 
@@ -335,6 +351,22 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
+      };
+      return newState;
+
+    case SET_SCAN_PREDICTED_NAMES:
+      scanPredictedNames = action.payload
+      console.log("yay", scanPredictedNames)
+
+      newState = {
+        fridge,
+        cart,
+        recipes,
+        ingredientToScan,
+        mealPlanner,
+        favoriteRecipes,
+        scanPredictedNames
       };
       return newState;
 
@@ -346,8 +378,9 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
         ingredientToScan,
         mealPlanner,
         favoriteRecipes,
+        scanPredictedNames
       };
-      return state;
+      return newState;
   }
 };
 

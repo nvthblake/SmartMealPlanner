@@ -19,6 +19,7 @@ import {
   ADD_FAVORITE_RECIPE,
   DELETE_FAVORITE_RECIPE,
   CLEAR_FAVORITE_RECIPE,
+  SET_SCAN_PREDICTED_NAMES
 } from "./types";
 
 export const addIngredientToFridge = (ingredient) => ({
@@ -110,4 +111,9 @@ export const deleteFavoriteRecipe = (recipe) => ({
 
 export const clearFavoriteRecipe = () => ({
   type: CLEAR_FAVORITE_RECIPE,
+});
+
+export const setScanPredictedNames = (names) => ({
+  type: SET_SCAN_PREDICTED_NAMES,
+  payload: names,
 });

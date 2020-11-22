@@ -46,9 +46,12 @@ const validationSchema = Yup.object().shape({
 function ScanTab(state) {
   const { ingredients, addIngredientToFridge, deleteIngredientToScan } = state;
   const ingredientToScan = ingredients.ingredientToScan;
+  const predictedNames = ingredients.scanPredictedNames
 
   const [forceUpdate, forceUpdateId] = useForceUpdate();
   const [success, setSuccess] = useState(true);
+
+  console.log("Here", predictedNames)
 
   const handleSubmit = async (values, { resetForm }) => {
     // const imageUri = "file:/data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FSmartMealPlanner-c7f11723-ddae-4ba6-97f3-0120a5d82b7e/ImagePicker/acface9b-60ad-40d8-886d-43347ba91603.jpg";
@@ -147,7 +150,7 @@ function ScanTab(state) {
                   <AppForm
                     initialValues={{
                       ingredient: "",
-                      qty: "",
+                      qty: "1",
                       unit: { label: "unit", value: 7 },
                       category: null,
                       dayToExp: "",
@@ -204,6 +207,7 @@ function ScanTab(state) {
                       icon="food-variant"
                       name="ingredient"
                       placeholder="Ingredient"
+                      value={predictedNames[index] ? predictedNames[index] : ""}
                       clearButtonMode="while-editing"
                     />
                     <View

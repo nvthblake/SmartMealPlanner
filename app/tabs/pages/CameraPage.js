@@ -26,6 +26,7 @@ import {
   addIngredientToScan,
   clearIngredientsToScan,
   deleteIngredientToScan,
+  setScanPredictedNames
 } from "../../../actions";
 import { } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -55,12 +56,14 @@ function CameraPage(state, { navigation }) {
   const [isPreview, setIsPreview] = useState(false);
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
+  const [predictions, setPredictions] = useState([])
 
   const {
     ingredients,
     addIngredientToScan,
     clearIngredientsToScan,
     deleteIngredientToScan,
+    setScanPredictedNames
   } = state;
   const ingredientToScan = ingredients.ingredientToScan;
 
@@ -73,6 +76,14 @@ function CameraPage(state, { navigation }) {
 
   //RAF ID
   let requestAnimationFrameId = 0;
+
+  useEffect(() => {
+    setPredictions([])
+  }, [])
+
+  useEffect(() => {
+    setScanPredictedNames(predictions)
+  }, [predictions])
 
   useEffect(() => {
     requestPermission();
@@ -148,8 +159,15 @@ function CameraPage(state, { navigation }) {
         const response = await fetch(imageAssetPath.uri, {}, { isBinary: true })
         const rawImageData = await response.arrayBuffer()
         const imageTensor = imageToTensor(rawImageData)
-        const predictions = await mobilenetModel.classify(imageTensor)
-        predictions.forEach(function (value, index) {
+        const predictionsFromTensor = await mobilenetModel.classify(imageTensor)
+        let predictedIndex = indexOfHighestProbabilityPrediction(predictionsFromTensor)
+        let predicted = ""
+        if (predictedIndex !== -1) {
+          predicted = predictionsFromTensor[predictedIndex].className
+        }
+        setPredictions([...predictions, predicted])
+        console.log("Yeah", predictionsFromTensor)
+        predictionsFromTensor.forEach(function (value, index) {
           if (value.probability > 0.3) {
             console.log(`prediction: ${JSON.stringify(value)}`);
           }
@@ -158,6 +176,25 @@ function CameraPage(state, { navigation }) {
       }
     }
   };
+
+  function indexOfHighestProbabilityPrediction(arr) {
+    if (arr.length === 0) {
+      return -1;
+    }
+
+    var max = arr[0].probability;
+    var maxIndex = 0;
+
+    for (var i = 1; i < arr.length; i++) {
+      if (arr[i].probability > max) {
+        maxIndex = i;
+        max = arr[i].probability;
+      }
+    }
+
+    return maxIndex;
+  }
+
   let openImagePickerAsync = async () => {
     let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
 
@@ -375,6 +412,7 @@ const mapDispatchToProps = (dispatch) =>
       addIngredientToScan,
       clearIngredientsToScan,
       deleteIngredientToScan,
+      setScanPredictedNames
     },
     dispatch
   );
