@@ -195,7 +195,6 @@ function MealPlanTab(state) {
     let dinnerRecipes = [];
 
     breakfastType.forEach(function (type_name, index) {
-      // console.log("type_name: ", type_name);
       // get recipe from API
       let breakfast = filteredRecipes.filter(
         (recipe) => recipe.dishTypes.indexOf(type_name) > -1
@@ -239,8 +238,8 @@ function MealPlanTab(state) {
       breakfastRecipes.length,
       lunchRecipes.length,
       dinnerRecipes.length
-    )
-    setMaxLength(maxlengthNew);
+    );
+    setMaxLength(maxlengthNew - 1);
     let minlength = Math.min(
       breakfastRecipes.length,
       lunchRecipes.length,
@@ -250,8 +249,6 @@ function MealPlanTab(state) {
     console.log("-----maxlength", maxlengthNew);
     console.log("-----minlength", minlength);
 
-    // console.log("here", Math.ceil(main_course.length / 2));
-    // console.log("here", Math.floor(main_course.length / 2));
     let header = ["Breakfast", "Lunch", "Dinner"];
     let mealPlanGenerate = {};
     for (var i = 0; i < maxlengthNew; i++) {
