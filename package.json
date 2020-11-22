@@ -8,10 +8,11 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@ptomasroos/react-native-multi-slider": "^2.2.2",
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/checkbox": "^0.5.5",
     "@react-native-community/masked-view": "0.1.10",
-    "@react-native-picker/picker": "react-native-picker/picker",
+    "@react-native-community/slider": "^3.0.3",
     "@react-navigation/bottom-tabs": "^5.9.2",
     "@react-navigation/material-top-tabs": "^5.3.9",
     "@react-navigation/native": "^5.7.6",
@@ -20,6 +21,7 @@
     "@tensorflow-models/mobilenet": "^2.0.4",
     "@tensorflow/tfjs": "^2.6.0",
     "@tensorflow/tfjs-react-native": "^0.4.0",
+    "atob": "^2.1.2",
     "expo": "^39.0.3",
     "expo-av": "^8.6.0",
     "expo-camera": "^9.0.0",
@@ -30,6 +32,7 @@
     "expo-progress": "^0.0.2",
     "expo-status-bar": "^1.0.2",
     "formik": "^2.2.0",
+    "jpeg-js": "^0.4.2",
     "native-base": "^2.13.14",
     "react": "16.13.1",
     "react-dom": "16.13.1",
