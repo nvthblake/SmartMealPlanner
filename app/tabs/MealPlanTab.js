@@ -33,6 +33,7 @@ import {
 import LoadingAnimation from "../components/LoadingAnimation";
 import Screen from "../components/Screen";
 import RecipeCard from "../components/RecipeCard";
+import MealPlanDatePicker from "../components/MealPlanDatePicker";
 
 // API
 import { getRecipes, getRecipeInfoInBulk } from "../api/Spoonacular";
@@ -42,6 +43,7 @@ import colors from "../config/colors";
 import { ScrollView } from "react-native-gesture-handler";
 import { nFormatter } from "../utils/NumberFormatting";
 import { capitalize } from "../utils/TextFormatting";
+import { Button } from "react-native-paper";
 
 /* Copied from IngredientsTab */
 const screenWidth = Dimensions.get("window").width;
@@ -333,71 +335,69 @@ function MealPlanTab(state) {
   }, [maxlength]);
 
   return (
-    <Screen style={styles.screen}>
-      {/* Calendar */}
-      <CalendarStrip
-        scrollable
-        calendarAnimation={{ type: "sequence", duration: 30 }}
-        daySelectionAnimation={{
-          type: "background",
-          duration: 200,
-          borderWidth: 2,
-          highlightColor: colors.secondary,
-          borderHighlightColor: "white",
-        }}
-        style={{ height: 90, paddingTop: 10, marginBottom: 10 }}
-        calendarHeaderStyle={{ color: "black" }}
-        calendarColor={"white"}
-        dateNumberStyle={{ color: "black" }}
-        dateNameStyle={{ color: "black" }}
-        highlightDateNumberStyle={{ color: colors.primary }}
-        highlightDateNameStyle={{ color: colors.primary }}
-        disabledDateNameStyle={{ color: "black" }}
-        disabledDateNumberStyle={{ color: "black" }}
-        datesWhitelist={datesWhitelist(numMealPlans)}
-        iconContainer={{ flex: 0.1 }}
-        markedDates={markedCurDate}
-        onDateSelected={onDateSelect}
-        selectedDate={curDate}
-      />
+      <Screen style={styles.screen}>
+        {/* Calendar */}
+        <CalendarStrip
+          scrollable
+          calendarAnimation={{ type: "sequence", duration: 30 }}
+          daySelectionAnimation={{
+            type: "background",
+            duration: 200,
+            borderWidth: 2,
+            highlightColor: colors.secondary,
+            borderHighlightColor: "white",
+          }}
+          style={{ height: 90, paddingTop: 10, marginBottom: 10 }}
+          calendarHeaderStyle={{ color: "black" }}
+          calendarColor={"white"}
+          dateNumberStyle={{ color: "black" }}
+          dateNameStyle={{ color: "black" }}
+          highlightDateNumberStyle={{ color: colors.primary }}
+          highlightDateNameStyle={{ color: colors.primary }}
+          disabledDateNameStyle={{ color: "black" }}
+          disabledDateNumberStyle={{ color: "black" }}
+          datesWhitelist={datesWhitelist(numMealPlans)}
+          iconContainer={{ flex: 0.1 }}
+          markedDates={markedCurDate}
+          onDateSelected={onDateSelect}
+          selectedDate={curDate}
+          startingDate={curDate}
+        />
 
-      {/* Today's Meal Plan */}
-      {isLoading && (
-        <View style={{ width: screenWidth, height: screenHeight / 1.5 }}>
-          <LoadingAnimation
-            show={isLoading}
-            label={"Finding the best recipes for you..."}
-          />
-        </View>
-      )}
-      {!isLoading && (
-        <ScrollView>
-          {/* Meal Plan */}
-          {selectMealPlan !== undefined && (
-            <View>
-              <View style={styles.sectionHeader}>
-                <Text style={{ fontSize: 22, fontWeight: "bold" }}>
-                  {getDateHeader(selectDate)}
-                </Text>
-              </View>
+
+        {/* Today's Meal Plan */}
+        {isLoading && (
+          <View style={{ width: screenWidth, height: screenHeight / 1.5 }}>
+            <LoadingAnimation
+              show={isLoading}
+              label={"Finding the best recipes for you..."}
+            />
+          </View>
+        )}
+        {!isLoading && (
+          <ScrollView>
+            {/* Meal Plan */}
+            {selectMealPlan !== undefined && (
               <View>
-                <FlatList
-                  style={styles.recipeScroll}
-                  showsHorizontalScrollIndicator={false}
-                  data={selectMealPlan}
-                  horizontal={true}
-                  keyExtractor={(recipe) => recipe.id.toString()}
-                  renderItem={({ recipe, index }) => {
-                    return (
-                      <RecipeCard
-                        header={header[index]}
-                        recipe={selectMealPlan[index]}
-                        setChosenRecipeFunc={setChosenRecipe}
-                      />
-                    );
-                  }}
-                ></FlatList>
-              </View>
+                <View style={styles.sectionHeader}>
+                  <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                    {getDateHeader(selectDate)}
+                  </Text>
+                </View>
+                <View>
+                  <FlatList
+                    style={styles.recipeScroll}
+                    showsHorizontalScrollIndicator={false}
+                    data={selectMealPlan}
+                    horizontal={true}
+                    keyExtractor={(recipe) => recipe.id.toString()}
+                    renderItem={({ recipe, index }) => {
+                      return (
+                        <RecipeCard header={header[index]} recipe={selectMealPlan[index]} setChosenRecipeFunc={setChosenRecipe} />
+                      );
+                    }}
+                  ></FlatList>
+                </View>
             </View>
           )}
 
@@ -484,6 +484,7 @@ function MealPlanTab(state) {
                 >
                   {chosenRecipe.title}
                 </Text>
+                <MealPlanDatePicker/>
                 <View
                   style={{
                     height: 1,
