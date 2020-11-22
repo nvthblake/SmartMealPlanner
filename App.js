@@ -56,6 +56,27 @@ export default function App() {
     });
     // db.transaction(tx => {
     //   tx.executeSql(
+    //     `DROP TABLE IF EXISTS UserProfile;`
+    //   );
+    //   });
+    db.transaction((tx) => {
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS UserProfile \
+        (id INTEGER PRIMARY KEY NOT NULL, \
+        userName VARCHAR, \
+        userProfileImageUri VARCHAR);`,
+        [],
+        () => {
+          db.transaction((tx) => {
+            tx.executeSql(
+              "INSERT INTO UserProfile (id, userName, userProfileImageUri) values (0, 'Best Person Ever', '')"
+            )
+          })
+        }
+      );
+    });
+    // db.transaction(tx => {
+    //   tx.executeSql(
     //     `DROP TABLE IF EXISTS ShoppingList;`
     //   );
     //   });

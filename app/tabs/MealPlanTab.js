@@ -16,9 +16,10 @@ import CalendarStrip from "react-native-calendar-strip";
 import moment from "moment";
 import Modal from "react-native-modal";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import CustomButton from "../components/CustomButton";
 
 // Redux
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
   addMealPlan,
@@ -33,6 +34,7 @@ import {
 import LoadingAnimation from "../components/LoadingAnimation";
 import Screen from "../components/Screen";
 import RecipeCard from "../components/RecipeCard";
+import MealPlanDatePicker from "../components/MealPlanDatePicker";
 
 // API
 import { getRecipes, getRecipeInfoInBulk } from "../api/Spoonacular";
@@ -41,7 +43,8 @@ import { getRecipes, getRecipeInfoInBulk } from "../api/Spoonacular";
 import colors from "../config/colors";
 import { ScrollView } from "react-native-gesture-handler";
 import { nFormatter } from "../utils/NumberFormatting";
-import { capitalize } from "../utils/TextFormatting"
+import { capitalize } from "../utils/TextFormatting";
+import { Button } from "react-native-paper";
 
 /* Copied from IngredientsTab */
 const screenWidth = Dimensions.get("window").width;
@@ -74,13 +77,42 @@ function MealPlanTab(state) {
 
   // State vars
   const [isLoading, setIsLoading] = useState(true);
+  const [isResultEmpty, setIsResultEmpty] = useState(false);
   const [categories, setCategory] = useState(INITIAL_CATEGORIES_STATE);
   const [chosenRecipe, setChosenRecipe] = useState(null);
   const [numMealPlans, setNumMealPlans] = useState(6);
   const [selectDate, setSelectDate] = useState(curDate);
-  const header = ["Breakfast", "Lunch", "Dinner"];
   const [heartImage, setHeartImage] = useState(null);
+  const [selectMealPlan, getMealPlanOnDate] = useState([]);
+  const [maxlength, setMaxLength] = useState(0);
+  const [mealPlan, setMealPlan] = useState([]);
+  const reactiveRecipes = useSelector(tempState => tempState.ingredients);
 
+  useEffect(() => {
+    setMealPlan(generateMealPlan())
+    getMealPlanOnDate(mealPlan[0])
+    if (mealPlan[0] === undefined || mealPlan[0].length === 0) {
+      // setIsResultEmpty(true)
+    }
+    if (mealPlan[0] !== undefined && mealPlan[0].length > 0) {
+      setIsLoading(false);
+    }
+  }, [reactiveRecipes]);
+
+
+  // add favorite into mealplan
+  const addToMealPlan = (date, selection, recipe) => {
+    var msDiff = date - new Date().getTime(); //Future date - current date
+    var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 2;
+    console.log(index)
+    let old = mealPlan;
+    let meal = {
+      "mealType": selection,
+      "recipeObj": recipe
+    }
+    old[index].push(meal);
+    setMealPlan(old);
+  }
   // Vars related to calendar
   let datesWhitelist = (num) => {
     return [
@@ -89,7 +121,7 @@ function MealPlanTab(state) {
         end: moment().add(num, "days"), // total 2 weeks
       },
     ];
-  }
+  };
   const markedCurDate = [
     {
       date: curDate,
@@ -102,33 +134,42 @@ function MealPlanTab(state) {
   ];
 
   const getDateHeader = (date) => {
-    console.log("date: ", date, curDate);
-    var msDateA = Date.UTC(date.getFullYear(), date.getMonth() + 1, date.getDate());
-    var msDateB = Date.UTC(curDate.getFullYear(), curDate.getMonth() + 1, curDate.getDate());
-    moment.locale('en');
+    // console.log("date: ", date, curDate);
+    var msDateA = Date.UTC(
+      date.getFullYear(),
+      date.getMonth() + 1,
+      date.getDate()
+    );
+    var msDateB = Date.UTC(
+      curDate.getFullYear(),
+      curDate.getMonth() + 1,
+      curDate.getDate()
+    );
+    moment.locale("en");
 
     if (msDateA == msDateB) {
       return "Today's Meal Plan";
+    } else {
+      return moment(date).format("MMM D") + " Meal Plan";
     }
-    else {
-      return moment(date).format('MMM D') + " Meal Plan";
-    }
-
-  }
+  };
 
   const onDateSelect = (date) => {
-    console.log(date);
+    // console.log(date);
     let d = new Date(date);
     setSelectDate(d);
-    var msDiff = new Date(date).getTime() - new Date().getTime();    //Future date - current date
+    var msDiff = new Date(date).getTime() - new Date().getTime(); //Future date - current date
     var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 1;
-    console.log(index);
+
+    console.log("\ndate from today", index);
+    console.log("mealPlan: ", Object.keys(mealPlan))
+    // console.log("selectMealPlan: ", Object.keys(mealPlan[index]))
     if (mealPlan[index] != undefined) {
-      console.log(Object.keys(mealPlan[index]));
+      console.log("onDateSelect mealPlan: ", Object.keys(mealPlan[index]));
       getMealPlanOnDate(mealPlan[index]);
     }
     return date;
-  }
+  };
 
   // Recipes
   const getRecipesBasedOnFilter = (recipes) => {
@@ -150,86 +191,107 @@ function MealPlanTab(state) {
     return result;
   };
 
-  // Generate meal plan
-  let maxlength;
+  /** Generate Meal Plan depending on current ingredients
+   * max_length: max days that ingredients can afford
+   * min_length: 
+   * @return {"date_from_today": [
+   *     {"mealType": "breakfast", "recipeObj": RecipeObj},
+   *     {"mealType": "lunch", "recipeObj": RecipeObj},
+   *     {"mealType": "dinner", "recipeObj": RecipeObj},
+   * ]}
+   */
   const generateMealPlan = () => {
     const filteredRecipes = getRecipesBasedOnFilter(recipes);
+    let breakfastType = ["breakfast", "salad", "soup", "sauce", "side dish"];
+    let lunchDinnerType = ["main course", "snack", "dinner", "lunch"];
+
     let breakfastRecipes = [];
     let lunchRecipes = [];
     let dinnerRecipes = [];
 
-    let breakfast = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("breakfast") > -1);
-    let main_course = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("main course") > -1);
-    let salad = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("salad") > -1);
-    let soup = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("soup") > -1);
-    let sauce = filteredRecipes.filter((recipe) => recipe.dishTypes.indexOf("sauce") > -1);
+    breakfastType.forEach(function (type_name, index) {
+      // get recipe from API
+      let breakfast = filteredRecipes.filter(
+        (recipe) => recipe.dishTypes.indexOf(type_name) > -1
+      );
 
-    breakfast.forEach(function (recipe) {
-      if (breakfastRecipes.find(e => e.id === recipe.id) == false) {
-        breakfastRecipes.push(recipe)
-      }
-    })
+      // add to breakfastRecipes, not repete recipe
+      breakfast.forEach(function (recipe) {
+        if (breakfastRecipes.some((e) => e.id === recipe.id) == false) {
+          breakfastRecipes.push(recipe);
+        }
+      });
+    });
 
-    salad.forEach(function (recipe) {
-      if (breakfastRecipes.some(e => e.id === recipe.id) == false) {
-        breakfastRecipes.push(recipe)
-      }
-    })
-    sauce.forEach(function (recipe) {
-      if (breakfastRecipes.some(e => e.id === recipe.id) == false) {
-        breakfastRecipes.push(recipe)
-      }
-    })
-    soup.forEach(function (recipe) {
-      if (breakfastRecipes.some(e => e.id === recipe.id) == false) {
-        breakfastRecipes.push(recipe)
-      }
-    })
+    let allLunchDinner = [];
+    lunchDinnerType.forEach(function (type_name, index) {
+      let lunchDinner = filteredRecipes.filter(
+        (recipe) => recipe.dishTypes.indexOf(type_name) > -1
+      );
 
-    console.log("------main_course");
-    console.log(Object.keys(main_course));
+      // add to breakfastRecipes, not repete recipe
+      lunchDinner.forEach(function (recipe) {
+        if (allLunchDinner.some((e) => e.id === recipe.id) == false) {
+          allLunchDinner.push(recipe);
+        }
+      });
+    });
 
-    lunchRecipes = main_course.slice(0, Math.ceil(main_course.length / 2));
-    dinnerRecipes = main_course.slice(Math.ceil(main_course.length / 2), main_course.length);
+    // Divide lunch to half
+    lunchRecipes = allLunchDinner.slice(0, Math.ceil(allLunchDinner.length / 2));
+    dinnerRecipes = allLunchDinner.slice(
+      Math.ceil(allLunchDinner.length / 2),
+      allLunchDinner.length
+    );
 
-    console.log("------breakfastRecipes");
-    console.log(Object.keys(breakfastRecipes));
-    console.log("------lunchRecipes");
-    console.log(Object.keys(lunchRecipes));
-    console.log("------dinnerRecipes");
-    console.log(Object.keys(dinnerRecipes));
 
-    let mealPlan = {};
-    maxlength = Math.max(breakfastRecipes.length, lunchRecipes.length, dinnerRecipes.length);
-    const minlength = Math.min(breakfastRecipes.length, lunchRecipes.length, dinnerRecipes.length);
+    // display
+    console.log("\n-----Breakfast: ", breakfastRecipes.length);
+    console.log("-----Lunch: ", lunchRecipes.length);
+    console.log("-----Dinner: ", dinnerRecipes.length);
 
-    console.log("-----maxlength");
-    console.log(maxlength);
-    console.log("-----minlength");
-    console.log(minlength);
+    let maxlengthNew = Math.max(
+      breakfastRecipes.length,
+      lunchRecipes.length,
+      dinnerRecipes.length
+    );
+    setMaxLength(maxlengthNew - 1);
+    let minlength = Math.min(
+      breakfastRecipes.length,
+      lunchRecipes.length,
+      dinnerRecipes.length
+    );
 
-    console.log("here", Math.ceil(main_course.length / 2));
-    console.log("here", Math.floor(main_course.length / 2));
-    for (var i = 0; i < maxlength; i++) {
-      let b = breakfastRecipes[i];
-      let l = lunchRecipes[i];
-      let d = dinnerRecipes[i];
+    console.log("-----maxlength", maxlengthNew);
+    console.log("-----minlength", minlength);
 
-      if (b === undefined && minlength != 0) {
-        b = breakfastRecipes[minlength - 1];
-      }
-      if (l === undefined && minlength != 0) {
-        l = lunchRecipes[minlength - 1];
-      }
-      if (d === undefined && minlength != 0) {
-        d = dinnerRecipes[minlength - 1];
-      }
-      mealPlan[i] = [b, l, d];
+    let header = ["Breakfast", "Lunch", "Dinner"];
+    let mealPlanGenerate = {};
+    for (var i = 0; i < maxlengthNew; i++) {
+      mealPlanGenerate[i] = [];
+      let dishRecipe = [
+        breakfastRecipes[i],
+        lunchRecipes[i],
+        dinnerRecipes[i]
+      ]
+      dishRecipe.forEach(function (item, index) {
+        if (item !== undefined) {
+          let meal = {
+            "mealType": header[index],
+            "recipeObj": item
+          };
+          mealPlanGenerate[i].push(meal);
+        }
+        else if (item === undefined && minlength > 0) {
+          let dishIndex = minlength - 1;
+          let meal = mealPlanGenerate[dishIndex][index];
+          mealPlanGenerate[i].push(meal);
+        }
+
+      });
     }
-    return mealPlan;
-  }
-  let mealPlan = generateMealPlan();
-  const [selectMealPlan, getMealPlanOnDate] = useState(mealPlan[0]);
+    return mealPlanGenerate;
+  };
 
   // Utils Functions
   const openURLInDefaultBrowser = (url) => {
@@ -258,30 +320,8 @@ function MealPlanTab(state) {
     });
     return result;
   };
-  const handleDelete = (recipe) => {
-    Alert.alert(
-      "Done Eating?",
-      "This recipe will be removed from your meal planner",
-      [
-        {
-          text: "Yes",
-          onPress: () => {
-            console.log(recipe);
-            // Delete from reduce
-            deleteMealPlan(recipe)
-          },
-        },
-        {
-          text: "No",
-          style: "cancel",
-        },
-      ],
-      { cancelable: true }
-    );
-  };
 
   useEffect(() => {
-    setIsLoading(false);
     setNumMealPlans(maxlength);
     getMealPlanOnDate(mealPlan[0]);
     onDateSelect(curDate);
@@ -292,305 +332,256 @@ function MealPlanTab(state) {
   }, [maxlength]);
 
   return (
-      <Screen style={styles.screen}>
-        {/* Calendar */}
-        <CalendarStrip
-          scrollable
-          calendarAnimation={{ type: "sequence", duration: 30 }}
-          daySelectionAnimation={{
-            type: "background",
-            duration: 200,
-            borderWidth: 2,
-            highlightColor: colors.secondary,
-            borderHighlightColor: "white",
-          }}
-          style={{ height: 90, paddingTop: 10, marginBottom: 10 }}
-          calendarHeaderStyle={{ color: "black" }}
-          calendarColor={"white"}
-          dateNumberStyle={{ color: "black" }}
-          dateNameStyle={{ color: "black" }}
-          highlightDateNumberStyle={{ color: colors.primary }}
-          highlightDateNameStyle={{ color: colors.primary }}
-          disabledDateNameStyle={{ color: "black" }}
-          disabledDateNumberStyle={{ color: "black" }}
-          datesWhitelist={datesWhitelist(numMealPlans)}
-          iconContainer={{ flex: 0.1 }}
-          markedDates={markedCurDate}
-          onDateSelected={onDateSelect}
-          selectedDate={curDate}
-        />
+    <Screen style={styles.screen}>
+      {/* Calendar */}
+      <CalendarStrip
+        scrollable
+        calendarAnimation={{ type: "sequence", duration: 30 }}
+        daySelectionAnimation={{
+          type: "background",
+          duration: 200,
+          borderWidth: 2,
+          highlightColor: colors.secondary,
+          borderHighlightColor: "white",
+        }}
+        style={{ height: 90, paddingTop: 10, marginBottom: 10 }}
+        calendarHeaderStyle={{ color: "black" }}
+        calendarColor={"white"}
+        dateNumberStyle={{ color: "black" }}
+        dateNameStyle={{ color: "black" }}
+        highlightDateNumberStyle={{ color: colors.primary }}
+        highlightDateNameStyle={{ color: colors.primary }}
+        disabledDateNameStyle={{ color: "black" }}
+        disabledDateNumberStyle={{ color: "black" }}
+        datesWhitelist={datesWhitelist(numMealPlans)}
+        iconContainer={{ flex: 0.1 }}
+        markedDates={markedCurDate}
+        onDateSelected={onDateSelect}
+        selectedDate={curDate}
+        startingDate={curDate}
+      />
 
 
-        {/* Today's Meal Plan */}
-        {isLoading && (
-          <View style={{ width: screenWidth, height: screenHeight / 1.5 }}>
-            <LoadingAnimation
-              show={isLoading}
-              label={"Finding the best recipes for you..."}
-            />
+      {/* Today's Meal Plan */}
+      {isLoading && (
+        <View style={{ width: screenWidth, height: screenHeight / 1.5 }}>
+          <LoadingAnimation
+            show={isLoading}
+            label={"Curating a healthy meal plan for your week..."}
+          />
+        </View>
+      )}
+      {!isLoading && isResultEmpty && (
+        <View style={{ width: screenWidth, height: screenHeight / 1.5 }}>
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <Text style={{ fontSize: 17, textAlign: "center" }}>
+              {"I can't find any recipes 😢\nTry adding more ingredients"}
+            </Text>
           </View>
-        )}
-        {!isLoading && (
-          <ScrollView>
-            {/* Meal Plan */}
-            {selectMealPlan !== undefined && (
-              <View>
-                <View style={styles.sectionHeader}>
-                  <Text style={{ fontSize: 22, fontWeight: "bold" }}>
-                    {getDateHeader(selectDate)}
-                  </Text>
-                </View>
-                <View>
-                  <FlatList
-                    style={styles.recipeScroll}
-                    showsHorizontalScrollIndicator={false}
-                    data={selectMealPlan}
-                    horizontal={true}
-                    keyExtractor={(recipe) => recipe.id.toString()}
-                    renderItem={({ recipe, index }) => {
-                      return (
-                        <RecipeCard header={header[index]} recipe={selectMealPlan[index]} setChosenRecipeFunc={setChosenRecipe} />
-                      );
-                    }}
-                  ></FlatList>
-                </View>
-              </View>
-            )}
-
-            {/* Favorite section */}
-            {favoriteRecipes.length > 0 && (
-              <View>
-                {/* Header */}
-                <View style={styles.sectionHeader}>
-                  <Text style={{ fontSize: 22, fontWeight: "bold" }}>
-                    Favourite
+        </View>
+      )}
+      {isLoading && (
+        <View style={{ width: screenWidth, height: screenHeight / 1.5 }}>
+          <LoadingAnimation
+            show={isLoading}
+            label={"Finding the best recipes for you..."}
+          />
+        </View>
+      )}
+      {!isLoading && (
+        <ScrollView>
+          {/* Meal Plan */}
+          {selectMealPlan !== undefined && (
+            <View>
+              <View style={styles.sectionHeader}>
+                <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                  {getDateHeader(selectDate)}
                 </Text>
-                </View>
-
-                {/* Recipe Cards */}
+              </View>
+              <View>
+                {/* Horizontal Scroll Bar of Recipe Card */}
                 <FlatList
-                  style={styles.recipeScroll}
-                  data={favoriteRecipes}
+                  style={styles.recipeScrollHeader}
+                  showsHorizontalScrollIndicator={false}
+                  data={Object.keys(selectMealPlan)}
                   horizontal={true}
-                  keyExtractor={(recipe) => recipe.id.toString()}
-                  renderItem={({ recipe, index }) => {
+                  // keyExtractor={(recipe) => recipe.id.toString()}
+                  renderItem={({ value, index }) => {
                     return (
-                      <RecipeCard recipe={favoriteRecipes[index]} setChosenRecipeFunc={setChosenRecipe} />
+                      <RecipeCard header={selectMealPlan[index]["mealType"]} recipe={selectMealPlan[index]["recipeObj"]} setChosenRecipeFunc={setChosenRecipe} />
                     );
                   }}
                 ></FlatList>
-                {/* <RecipeCard recipe={favoriteRecipes[0]} setChosenRecipeFunc={setChosenRecipe}/> */}
               </View>
-            )}
-          </ScrollView>
-        )}
-        <Modal
-          isVisible={!!chosenRecipe}
-          coverScreen={true}
-          onBackdropPress={() => setChosenRecipe(null)}
-          backdropColor={"#F2F5F8"}
-          backdropOpacity={0.9}
-        >
-          <View style={styles.modalCard}>
-            {!!chosenRecipe && (
-              <View style={{ flex: 1, justifyContent: "space-between" }}>
-                <View>
-                  <Image
-                    resizeMode={"cover"}
-                    source={{ uri: chosenRecipe.image }}
-                    style={{
-                      width: "100%",
-                      marginRight: 14,
-                      height: 160,
-                      borderRadius: 10,
-                      marginRight: 8,
-                    }}
-                  ></Image>
-                  <TouchableOpacity
-                    onPress={() => {
-                      chosenRecipe.loved = !chosenRecipe.loved;
-                      console.log(chosenRecipe.loved);
-                      chosenRecipe.loved
-                        ? setHeartImage("heart")
-                        : setHeartImage("heart-outline");
-                      chosenRecipe.loved
-                        ? addFavoriteRecipe(chosenRecipe)
-                        : deleteFavoriteRecipe(chosenRecipe);
-                    }}
-                    style={{ position: "absolute" }}
-                  >
-                    <MaterialCommunityIcons
-                      name={chosenRecipe.loved ? "heart" : "heart-outline"}
-                      size={40}
-                      color={colors.font_red}
+            </View>
+          )}
+
+          {/* Favorite section */}
+          {favoriteRecipes.length > 0 && (
+            <View>
+              {/* Header */}
+              <View style={styles.sectionHeader}>
+                <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                  Favourite
+                </Text>
+              </View>
+
+              {/* Recipe Cards */}
+              <FlatList
+                style={styles.recipeScroll}
+                data={favoriteRecipes}
+                horizontal={true}
+                keyExtractor={(recipe) => recipe.id.toString()}
+                renderItem={({ recipe, index }) => {
+                  return (
+                    <RecipeCard
+                      recipe={favoriteRecipes[index]}
+                      setChosenRecipeFunc={setChosenRecipe}
                     />
-                  </TouchableOpacity>
-                  <Text
-                    style={{
-                      color: "#4F555E",
-                      fontSize: 20,
-                      paddingHorizontal: 8,
-                      fontWeight: "600",
-                      paddingVertical: 12,
-                      textAlign: "center",
-                    }}
-                  >
-                    {chosenRecipe.title}
-                  </Text>
-                  {/* <View
+                  );
+                }}
+              />
+            </View>
+          )}
+        </ScrollView>
+      )}
+
+      {/* Modal Section */}
+      <Modal
+        isVisible={!!chosenRecipe}
+        coverScreen={true}
+        onBackdropPress={() => setChosenRecipe(null)}
+        backdropColor={"#F2F5F8"}
+        backdropOpacity={0.9}
+      >
+        <View style={styles.modalCard}>
+          {!!chosenRecipe && (
+            <View style={{ flex: 1, justifyContent: "space-between" }}>
+              <View style={{ flex: 1 }}>
+                <Image
+                  resizeMode={"cover"}
+                  source={{ uri: chosenRecipe.image }}
                   style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
+                    width: "100%",
+                    marginRight: 14,
+                    height: 160,
+                    borderRadius: 10,
+                    marginRight: 8,
+                  }}
+                ></Image>
+                <TouchableOpacity
+                  onPress={() => {
+                    chosenRecipe.loved = !chosenRecipe.loved;
+                    // console.log(chosenRecipe.loved);
+                    chosenRecipe.loved
+                      ? setHeartImage("heart")
+                      : setHeartImage("heart-outline");
+                    chosenRecipe.loved
+                      ? addFavoriteRecipe(chosenRecipe)
+                      : deleteFavoriteRecipe(chosenRecipe);
+                  }}
+                  style={{ position: "absolute" }}
+                >
+                  <MaterialCommunityIcons
+                    name={chosenRecipe.loved ? "heart" : "heart-outline"}
+                    size={40}
+                    color={colors.font_red}
+                  />
+                </TouchableOpacity>
+                <Text
+                  style={{
+                    color: "#4F555E",
+                    fontSize: 20,
                     paddingHorizontal: 8,
+                    fontWeight: "600",
+                    paddingVertical: 12,
+                    textAlign: "center",
                   }}
                 >
-                  <CircularOverview
-                    stat={chosenRecipe.servings.toString()}
-                    title={"Servings"}
-                    size={Math.floor(screenWidth / 5.5)}
-                  />
-                  <CircularOverview
-                    stat={chosenRecipe.readyInMinutes.toString() + " mins"}
-                    title={"Time"}
-                    size={Math.floor(screenWidth / 5.5)}
-                  />
-                  <CircularOverview
-                    stat={
-                      Math.floor(
-                        chosenRecipe.spoonacularScore * 0.05
-                      ).toString() + "/5"
-                    }
-                    title={"Ratings"}
-                    size={Math.floor(screenWidth / 5.5)}
-                  />
-                </View> */}
-                  <View
-                    style={{
-                      height: 1,
-                      marginHorizontal: 8,
-                      backgroundColor: "lightgrey",
-                      marginVertical: 12,
-                    }}
-                  ></View>
-                  <Text
-                    style={{
-                      marginHorizontal: 8,
-                      fontWeight: "500",
-                      fontSize: 15,
-                    }}
-                  >
-                    Ingredients
+                  {chosenRecipe.title}
                 </Text>
-                  <FlatList
-                    data={getAllNeededIngredientsForRecipe(chosenRecipe)}
-                    keyExtractor={(ingredient) =>
-                      ingredient.ingredient.id.toString() + "-chosen"
-                    }
-                    renderItem={({ ingredient, index }) => {
-                      return (
-                        <View>
-                          <Text
-                            style={{
-                              marginHorizontal: 8,
-                              color: getAllNeededIngredientsForRecipe(
-                                chosenRecipe
-                              )[index].isMissing
-                                ? "#D76774"
-                                : "#4F555E",
-                              fontSize: 16,
-                              marginVertical: 4,
-                            }}
-                          >
-                            {capitalize(
-                              getAllNeededIngredientsForRecipe(chosenRecipe)[
-                                index
-                              ].ingredient.name
-                            )}
-                          </Text>
-                        </View>
-                      );
-                    }}
-                  ></FlatList>
-                </View>
+                <MealPlanDatePicker recipe={chosenRecipe} addToMealPlan={addToMealPlan}/>
                 <View
                   style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    backgroundColor: "white",
-                    justifyContent: "space-between",
+                    height: 1,
+                    marginHorizontal: 8,
+                    backgroundColor: "lightgrey",
+                    marginVertical: 12,
+                  }}
+                ></View>
+                <Text
+                  style={{
+                    marginHorizontal: 8,
+                    fontWeight: "500",
+                    fontSize: 15,
                   }}
                 >
-                  <TouchableOpacity
-                    style={{
-                      borderColor: "#3E73FB",
-                      width: Math.floor(screenWidth / 4),
-                      borderRadius: 8,
-                      paddingVertical: 8,
-                      borderWidth: 1,
-                    }}
-                    onPress={() => {
-                      setChosenRecipe(null);
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "#3E73FB",
-                        fontSize: 16,
-                        textAlign: "center",
-                      }}
-                    >
-                      Back
-                  </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: "#3E73FB",
-                      width: Math.floor(screenWidth / 4),
-                      borderRadius: 8,
-                      paddingVertical: 8,
-                    }}
-                    onPress={() =>
-                      openURLInDefaultBrowser(chosenRecipe.sourceUrl)
-                    }
-                  >
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 16,
-                        textAlign: "center",
-                      }}
-                    >
-                      See Details
-                  </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: "#FFBE6A",
-                      width: Math.floor(screenWidth / 4),
-                      borderRadius: 8,
-                      paddingVertical: 8,
-                    }}
-                    onPress={() =>
-                      handleDelete(chosenRecipe)
-                    }
-                  >
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 16,
-                        textAlign: "center",
-                      }}
-                    >
-                      Finish Eating
-                  </Text>
-                  </TouchableOpacity>
-                </View>
+                  Ingredients
+                </Text>
+                <FlatList
+                  data={getAllNeededIngredientsForRecipe(chosenRecipe)}
+                  keyExtractor={(ingredient) =>
+                    ingredient.ingredient.id.toString() + "-chosen"
+                  }
+                  renderItem={({ ingredient, index }) => {
+                    return (
+                      <View>
+                        <Text
+                          style={{
+                            marginHorizontal: 8,
+                            color: getAllNeededIngredientsForRecipe(
+                              chosenRecipe
+                            )[index].isMissing
+                              ? "#D76774"
+                              : "#4F555E",
+                            fontSize: 16,
+                            marginVertical: 4,
+                          }}
+                        >
+                          {capitalize(
+                            getAllNeededIngredientsForRecipe(chosenRecipe)[
+                              index
+                            ].ingredient.name
+                          )}
+                        </Text>
+                      </View>
+                    );
+                  }}
+                ></FlatList>
               </View>
-            )}
-          </View>
-        </Modal>
-      </Screen>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  backgroundColor: "white",
+                  justifyContent: "space-between",
+                }}
+              >
+                <CustomButton
+                  color={colors.primary}
+                  title="See Details"
+                  height={40}
+                  onPress={() =>
+                    openURLInDefaultBrowser(chosenRecipe.sourceUrl)
+                  }
+                ></CustomButton>
+                <CustomButton
+                  color={colors.medium}
+                  textColor={colors.white}
+                  title="Back"
+                  height={40}
+                  onPress={() => {
+                    setChosenRecipe(null);
+                  }}
+                ></CustomButton>
+              </View>
+            </View>
+          )}
+        </View>
+      </Modal>
+    </Screen>
   );
 }
 
@@ -607,7 +598,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 10,
-    paddingBottom: 10,
+    paddingBottom: 5,
   },
   shadowBox: {
     // shadow
@@ -620,10 +611,17 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 9,
   },
+  recipeScrollHeader: {
+    marginLeft: 6,
+    height: screenHeight / 3.7,
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
   recipeScroll: {
     marginLeft: 6,
-    height: 240,
-    paddingBottom: 20
+    paddingTop: 10,
+    paddingBottom: 10,
+    height: screenHeight / 3.3,
   },
   recipeTitle: {
     fontSize: 16,

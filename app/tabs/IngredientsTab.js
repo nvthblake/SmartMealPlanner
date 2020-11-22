@@ -143,8 +143,8 @@ function IngredientsTab(state) {
     toggleModal(null);
     var expDate = new Date(
       new Date().getTime() +
-      values.dayToExp * 24 * 60 * 60 * 1000 +
-      24 * 60 * 60 * 1000
+        values.dayToExp * 24 * 60 * 60 * 1000 +
+        24 * 60 * 60 * 1000
     ).toISOString();
     db.transaction(
       (tx) => {
@@ -233,7 +233,6 @@ function IngredientsTab(state) {
           marginRight: screenWidth * 0.05,
         }}
       >
-
         {/* Filter Buttons */}
         <FlatList
           data={ingrFilter}
@@ -264,8 +263,9 @@ function IngredientsTab(state) {
                 <SqCard
                   title={ingredientsInFridge[index].ingredient}
                   subTitle1={`${ingredientsInFridge[index].qty} ${ingredientsInFridge[index].unit}`}
-                  subTitle2={`${expDateToColor(ingredientsInFridge[index].expDate)[0]
-                    } days`}
+                  subTitle2={`${
+                    expDateToColor(ingredientsInFridge[index].expDate)[0]
+                  } days`}
                   image={ingredientsInFridge[index].imageUri}
                   screenWidth={screenWidth}
                   expStatus={
@@ -468,7 +468,7 @@ function expDateToColor(expDateStr) {
   var dateDiff = Math.floor((expDate - today) / (1000 * 60 * 60 * 24));
   if (dateDiff <= 4) return [dateDiff, "red"];
   else if (dateDiff <= 8) return [dateDiff, "orange"];
-  else if (dateDiff <= 14) return [dateDiff, "yellow"];
+  else if (dateDiff <= 14) return [dateDiff, "goldenrod"];
   else return [dateDiff, "green"];
 }
 
