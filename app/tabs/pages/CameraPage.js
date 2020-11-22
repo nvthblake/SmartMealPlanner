@@ -15,10 +15,12 @@ import {
 } from "react-native";
 import { Camera, requestPermissionsAsync } from "expo-camera";
 import * as Permissions from "expo-permissions";
+
 // import Screen from "./Screen";
 import { ref } from "yup";
 import AppButton from "../../components/AppButton";
 import colors from "../../config/colors";
+
 // Redux
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -27,27 +29,35 @@ import {
   clearIngredientsToScan,
   deleteIngredientToScan,
 } from "../../../actions";
-import {} from "react-native-gesture-handler";
+import { } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Screen from "../../components/Screen";
 import * as ImagePicker from "expo-image-picker";
 import CustomButton from "../../components/CustomButton";
 import CamButton from "../../components/CamButton";
 
+// Tensorflow
+import * as tf from "@tensorflow/tfjs";
+import * as mobilenet from "@tensorflow-models/mobilenet";
+import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
+
+// Screen dim
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
+// Main
 function CameraPage(state, { navigation }) {
+  // Hook
   const [modalVisible, setModalVisible] = useState(false);
   const [camVisibility, setCamVisibility] = useState(false);
-  const showCameraView = () => {
-    setCamVisibility(true);
-  };
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
   const [hasPermission, setHasPermission] = useState(null);
+  const [predictionFound, setPredictionFound] = useState(false);
   const [type, setType] = useState(Camera.Constants.Type.back);
+  const showCameraView = () => { setCamVisibility(true); };
 
+  // Redux
   const {
     ingredients,
     addIngredientToScan,
@@ -56,9 +66,55 @@ function CameraPage(state, { navigation }) {
   } = state;
   const ingredientToScan = ingredients.ingredientToScan;
 
+  // Tensorflow and Permissions
+  const [mobilenetModel, setMobilenetModel] = useState(null);
+  const [frameworkReady, setFrameworkReady] = useState(false);
+
+  // TF Camera Decorator
+  const TensorCamera = cameraWithTensors(Camera);
+
+  //RAF ID
+  let requestAnimationFrameId = 0;
+
+  //performance hacks (Platform dependent)
+  const textureDims =
+    Platform.OS === "ios"
+      ? { width: 1080, height: 1920 }
+      : { width: 1600, height: 1200 };
+  const tensorDims = { width: 152, height: 200 };
+
+  // 1. Check camera permissions
+  // 2. Initialize TensorFlow
+  // 3. Load Mobilenet Model
   useEffect(() => {
-    requestPermission();
+    if (!frameworkReady) {
+      (async () => {
+        //check permissions
+        requestPermission();
+
+        //we must always wait for the Tensorflow API to be ready before any TF operation...
+        await tf.ready();
+
+        //load the mobilenet model and save it in state
+        setMobilenetModel(await loadMobileNetModel());
+
+        setFrameworkReady(true);
+      })();
+    }
   }, []);
+
+  // Run onUnmount routine for cancelling animation if running to avoid leaks
+  useEffect(() => {
+    return () => {
+      cancelAnimationFrame(requestAnimationFrameId);
+    };
+  }, [requestAnimationFrameId]);
+
+  // Loads the mobilenet Tensorflow model:
+  const loadMobileNetModel = async () => {
+    const model = await mobilenet.load();
+    return model;
+  };
 
   // Asking permission to use the camera
   const requestPermission = async () => {
@@ -73,6 +129,7 @@ function CameraPage(state, { navigation }) {
   const cameraRef = useRef();
 
   const takePicture = async () => {
+    console.log("---takePicture");
     if (cameraRef.current) {
       const options = { quality: 0.5, base64: true, skipProcessing: true };
       const data = await cameraRef.current.takePictureAsync(options);
@@ -88,7 +145,8 @@ function CameraPage(state, { navigation }) {
       }
     }
   };
-  let openImagePickerAsync = async () => {
+
+  const openImagePickerAsync = async () => {
     let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
 
     if (permissionResult.granted === false) {
@@ -125,6 +183,35 @@ function CameraPage(state, { navigation }) {
     );
   };
 
+  // get Prediction from tensor
+  const getPrediction = async (tensor) => {
+    if (!tensor) { return; }
+
+    // topk set to 1
+    const prediction = await mobilenetModel.classify(tensor, 1);
+
+    // if (!prediction || prediction.length === 0) { return; }
+
+    // only display to screen if probability is higher than 20%
+    if (prediction[0].probability > 0.3) {
+      console.log(`prediction: ${JSON.stringify(prediction)}`);
+
+      // stop looping!
+      // cancelAnimationFrame(requestAnimationFrameId);
+      // setPredictionFound(true);
+    }
+  };
+
+  // Tensorflow JS
+  const handleCameraStream = (imageAsTensors) => {
+    const loop = async () => {
+      const nextImageTensor = await imageAsTensors.next().value;
+      await getPrediction(nextImageTensor);
+      requestAnimationFrameId = requestAnimationFrame(loop);
+    };
+    if (!predictionFound) loop();
+  };
+
   return (
     <>
       <CamButton
@@ -157,12 +244,19 @@ function CameraPage(state, { navigation }) {
             justifyContent: "center",
           }}
         >
-          <Camera
+          <TensorCamera
             style={{ flex: 1 }}
             type={type}
-            ref={cameraRef}
-            onCameraReady={onCameraReady}
+            // ref={cameraRef}
             ratio={"1:1"}
+            zoom={0}
+            cameraTextureHeight={textureDims.height}
+            cameraTextureWidth={textureDims.width}
+            resizeHeight={tensorDims.height}
+            resizeWidth={tensorDims.width}
+            resizeDepth={3}
+            onCameraReady={onCameraReady}
+            onReady={(imageAsTensors) => handleCameraStream(imageAsTensors)}
           >
             <View
               style={{
@@ -192,7 +286,7 @@ function CameraPage(state, { navigation }) {
                 {/* <Text style={{ fontSize: 18, color: "white" }}>Flip</Text> */}
               </TouchableOpacity>
             </View>
-          </Camera>
+          </TensorCamera>
         </View>
         <View
           style={{
