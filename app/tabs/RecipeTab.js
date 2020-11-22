@@ -223,7 +223,7 @@ function RecipeTab(state) {
 
   function loadRecipesFromSpoonacular() {
     return new Promise((resolve, reject) => {
-      getRecipes(ingredientsInFridge, 10)
+      getRecipes(ingredientsInFridge, 30)
         .then((step1_recipes) => {
           if (step1_recipes.length === 0) {
             setIsResultEmpty(true);
@@ -525,21 +525,25 @@ function RecipeTab(state) {
           />
         </View>
       )}
+
+      {/* Starting Displaying recipe section */}
       {!isLoading && (
         <ScrollView
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
+          {/* Very Popular Recipes Section */}
           {veryPopularRecipes.length > 0 && (
             <View>
               <View style={styles.sectionHeader}>
-                <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                <Text style={{ fontSize: 21, fontWeight: "bold" }}>
                   Very Popular
                 </Text>
               </View>
               <View>
                 <FlatList
+                  style={styles.recipeScroll}
                   showsHorizontalScrollIndicator={false}
                   data={veryPopularRecipes}
                   horizontal={true}
@@ -555,7 +559,7 @@ function RecipeTab(state) {
                             }}
                           >
                             <View style={{ padding: 9 }}>
-                              <View style={{ flexDirection: "column" }}>
+                              <View style={{ flexDirection: "column", height: '100%', minHeight: 240 }}>
                                 <Image
                                   source={{
                                     uri: veryPopularRecipes[index].image,
@@ -615,12 +619,13 @@ function RecipeTab(state) {
           {veryHealthyRecipes.length > 0 && (
             <View>
               <View style={styles.sectionHeader}>
-                <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                <Text style={{ fontSize: 21, fontWeight: "bold" }}>
                   Very Healthy
                 </Text>
               </View>
               <View>
                 <FlatList
+                  style={styles.recipeScroll}
                   showsHorizontalScrollIndicator={false}
                   data={veryHealthyRecipes}
                   horizontal={true}
@@ -635,7 +640,7 @@ function RecipeTab(state) {
                             }
                           >
                             <View style={{ padding: 10 }}>
-                              <View style={{ flexDirection: "column" }}>
+                              <View style={{ flexDirection: "column", height: '100%', minHeight: 240 }}>
                                 <Image
                                   source={{
                                     uri: veryHealthyRecipes[index].image,
@@ -700,12 +705,13 @@ function RecipeTab(state) {
           {vegetarianRecipes.length > 0 && (
             <View>
               <View style={styles.sectionHeader}>
-                <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                <Text style={{ fontSize: 21, fontWeight: "bold" }}>
                   Vegeterian
                 </Text>
               </View>
               <View>
                 <FlatList
+                  style={styles.recipeScroll}
                   showsHorizontalScrollIndicator={false}
                   data={vegetarianRecipes}
                   horizontal={true}
@@ -720,7 +726,7 @@ function RecipeTab(state) {
                             }
                           >
                             <View style={{ padding: 10 }}>
-                              <View style={{ flexDirection: "column" }}>
+                              <View style={{ flexDirection: "column", height: '100%', minHeight: 240 }}>
                                 <Image
                                   source={{
                                     uri: vegetarianRecipes[index].image,
@@ -780,10 +786,11 @@ function RecipeTab(state) {
           {otherRecipes.length > 0 && (
             <View>
               <View style={styles.sectionHeader}>
-                <Text style={{ fontSize: 22, fontWeight: "bold" }}>Others</Text>
+                <Text style={{ fontSize: 21, fontWeight: "bold" }}>Others</Text>
               </View>
               <View>
                 <FlatList
+                  style={styles.recipeScroll}
                   showsHorizontalScrollIndicator={false}
                   data={otherRecipes}
                   horizontal={true}
@@ -796,7 +803,7 @@ function RecipeTab(state) {
                             onPress={() => setChosenRecipe(otherRecipes[index])}
                           >
                             <View style={{ padding: 10 }}>
-                              <View style={{ flexDirection: "column" }}>
+                              <View style={{ flexDirection: "column", height: '100%', minHeight: 240 }}>
                                 <Image
                                   source={{ uri: otherRecipes[index].image }}
                                   style={styles.imageHolder}
@@ -909,8 +916,8 @@ const styles = StyleSheet.create({
   sectionHeader: {
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: 8,
-    paddingBottom: 8,
+    // paddingTop: 8,
+    // paddingBottom: 8,
   },
   imageHolder: {
     width: "100%",
@@ -941,6 +948,12 @@ const styles = StyleSheet.create({
     marginTop: 3,
     color: "#FF5757",
     fontWeight: "bold",
+  },
+  recipeScroll: {
+    // marginLeft: 6,
+    paddingTop: 10,
+    paddingBottom: 10,
+    height: screenHeight / 3.3,
   },
   recipeCard: {
     marginLeft: 16,
