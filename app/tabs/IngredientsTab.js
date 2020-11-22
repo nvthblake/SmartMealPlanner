@@ -74,8 +74,10 @@ function IngredientsTab(state) {
       const categoryFiltered = inventoryFilter
         .filter((c) => c.select === true)
         .map((c) => `'${c.title}'`);
-      sqlQuery = sqlQuery.concat(categoryFiltered.join(",")).concat(");");
+      sqlQuery = sqlQuery.concat(categoryFiltered.join(",")).concat(")");
     }
+    sqlQuery = sqlQuery.concat(" ORDER BY expDate ASC;")
+    console.log(sqlQuery);
     // Load ingredients from database
     clearIngredientsInFridge();
 

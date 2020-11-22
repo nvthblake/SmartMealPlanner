@@ -79,7 +79,7 @@ class RecipeCard extends Component {
                     source={{ uri: recipe.image }}
                     style={{
                       width: "100%",
-                      height: "40%",
+                      height: "55%",
                       borderRadius: 15,
                       marginRight: 8,
                     }}
@@ -140,7 +140,7 @@ class RecipeCard extends Component {
                     source={{ uri: recipe.image }}
                     style={{
                       width: "100%",
-                      height: 131,
+                      height: "55%",
                       borderRadius: 10,
                       marginRight: 8,
                     }}
