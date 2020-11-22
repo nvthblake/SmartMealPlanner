@@ -76,6 +76,7 @@ function MealPlanTab(state) {
 
   // State vars
   const [isLoading, setIsLoading] = useState(true);
+  const [isResultEmpty, setIsResultEmpty] = useState(false);
   const [categories, setCategory] = useState(INITIAL_CATEGORIES_STATE);
   const [chosenRecipe, setChosenRecipe] = useState(null);
   const [numMealPlans, setNumMealPlans] = useState(6);
@@ -89,6 +90,12 @@ function MealPlanTab(state) {
   useEffect(() => {
     setMealPlan(generateMealPlan())
     getMealPlanOnDate(mealPlan[0])
+    if (mealPlan[0] === undefined || mealPlan[0].length === 0) {
+      // setIsResultEmpty(true)
+    }
+    if (mealPlan[0] !== undefined && mealPlan[0].length > 0) {
+      setIsLoading(false);
+    }
   }, [reactiveRecipes]);
 
   // Vars related to calendar
@@ -323,7 +330,6 @@ function MealPlanTab(state) {
   };
 
   useEffect(() => {
-    setIsLoading(false);
     setNumMealPlans(maxlength);
     getMealPlanOnDate(mealPlan[0]);
     onDateSelect(curDate);
@@ -365,6 +371,25 @@ function MealPlanTab(state) {
 
 
       {/* Today's Meal Plan */}
+      {isLoading && (
+        <View style={{ width: screenWidth, height: screenHeight / 1.5 }}>
+          <LoadingAnimation
+            show={isLoading}
+            label={"Curating a healthy meal plan for your week..."}
+          />
+        </View>
+      )}
+      {!isLoading && isResultEmpty && (
+        <View style={{ width: screenWidth, height: screenHeight / 1.5 }}>
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <Text style={{ fontSize: 17, textAlign: "center" }}>
+              {"I can't find any recipes 😢\nTry adding more ingredients"}
+            </Text>
+          </View>
+        </View>
+      )}
       {isLoading && (
         <View style={{ width: screenWidth, height: screenHeight / 1.5 }}>
           <LoadingAnimation
