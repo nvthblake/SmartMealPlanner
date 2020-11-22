@@ -10,6 +10,7 @@ import {
   FlatList,
   TouchableOpacity,
   ScrollView,
+  Platform,
 } from "react-native";
 import Screen from "../components/Screen";
 import AppText from "../components/AppText";
@@ -66,6 +67,7 @@ function ShoppingTab(props) {
   return (
     <Screen style={styles.screen} headerTitle="Shopping List">
       <ScrollView
+        showsVerticalScrollIndicator={false}
         style={{
           marginLeft: screenWidth * 0.05,
           marginRight: screenWidth * 0.05,
@@ -182,6 +184,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
+    marginBottom: 10,
   },
   buttonContainer: {
     marginTop: 4,
@@ -200,10 +203,21 @@ const styles = StyleSheet.create({
     width: 205,
   },
   list: {
-    // backgroundColor: "yellow",
+    backgroundColor: "white",
     // marginBottom: 20,
     flex: 1,
     // height: windowHeight * 0.3,
+    ...Platform.select({
+      ios: {
+        shadowColor: colors.primary,
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.4,
+        shadowRadius: 5,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
   },
   plusButton: {
     marginTop: 10,
