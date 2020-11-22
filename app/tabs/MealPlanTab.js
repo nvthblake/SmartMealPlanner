@@ -148,7 +148,7 @@ function MealPlanTab(state) {
 
     console.log("\ndate from today", index);
     console.log("mealPlan: ", Object.keys(mealPlan))
-    console.log("selectMealPlan: ", Object.keys(mealPlan[index]))
+    // console.log("selectMealPlan: ", Object.keys(mealPlan[index]))
     if (mealPlan[index] != undefined) {
       console.log("onDateSelect mealPlan: ", Object.keys(mealPlan[index]));
       getMealPlanOnDate(mealPlan[index]);
@@ -233,7 +233,7 @@ function MealPlanTab(state) {
     console.log("\n-----Breakfast: ", breakfastRecipes.length);
     console.log("-----Lunch: ", lunchRecipes.length);
     console.log("-----Dinner: ", dinnerRecipes.length);
-    
+
     let maxlengthNew = Math.max(
       breakfastRecipes.length,
       lunchRecipes.length,
@@ -408,7 +408,7 @@ function MealPlanTab(state) {
               <View>
                 {/* Horizontal Scroll Bar of Recipe Card */}
                 <FlatList
-                  style={styles.recipeScroll}
+                  style={styles.recipeScrollHeader}
                   showsHorizontalScrollIndicator={false}
                   data={Object.keys(selectMealPlan)}
                   horizontal={true}
@@ -453,6 +453,8 @@ function MealPlanTab(state) {
           )}
         </ScrollView>
       )}
+
+      {/* Modal Section */}
       <Modal
         isVisible={!!chosenRecipe}
         coverScreen={true}
@@ -647,7 +649,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 10,
-    paddingBottom: 10,
+    paddingBottom: 5,
   },
   shadowBox: {
     // shadow
@@ -660,10 +662,17 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 9,
   },
+  recipeScrollHeader: {
+    marginLeft: 6,
+    height: screenHeight / 3.7,
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
   recipeScroll: {
     marginLeft: 6,
-    height: 240,
-    paddingBottom: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
+    height: screenHeight / 3.3,
   },
   recipeTitle: {
     fontSize: 16,
