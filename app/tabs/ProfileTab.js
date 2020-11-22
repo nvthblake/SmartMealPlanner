@@ -93,7 +93,7 @@ function Profile(state) {
   let Expirein3 = 0;
   let Expirein10 = 0;
   let Expired = 0;
-  const ingreCount = ingredientsInFridge.length;
+  const ingreCount = ingredients.fridge.length;
   ingredientsInFridge.forEach((element) => {
     const today = new Date();
     const expDate = Date.parse(element.expDate);
@@ -329,7 +329,7 @@ function Profile(state) {
                       onPress={() => {
                         console.log("Slider temp ", sliderArrayTemp);
                         ingredientsInFridge.forEach((ingre, index) => {
-                          let newQty = sliderArrayTemp[index] ? sliderArrayTemp[index] : ingre.qty;
+                          let newQty = sliderArrayTemp[index];
                           db.transaction((tx) => {
                             tx.executeSql(
                               "UPDATE FactFridge SET qty = ? WHERE id = ?;",
