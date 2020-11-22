@@ -116,6 +116,8 @@ function ScanTab(state) {
 
   const navigation = useNavigation();
   const temp_ingredient = ["Carrot", "Meat", "Onion"];
+  const temp_category = [pickerOptions.categories[1], pickerOptions.categories[0], pickerOptions.categories[1]];
+  const temp_exp = ["10", "30", "10"];
   return (
     <Screen>
       <View style={styles.container}>
@@ -149,8 +151,8 @@ function ScanTab(state) {
                       ingredient: temp_ingredient[index],
                       qty: "",
                       unit: { label: "unit", value: 7 },
-                      category: null,
-                      dayToExp: "",
+                      category: temp_category[index],
+                      dayToExp: temp_exp[index],
                       imageUri: item.imageUri,
                     }}
                     onSubmit={handleSubmit}
