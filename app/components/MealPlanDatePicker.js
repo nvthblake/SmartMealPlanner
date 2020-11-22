@@ -7,6 +7,7 @@ import {
   Text,
   Alert,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import defaultStyles from "../config/styles";
@@ -19,12 +20,18 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Button } from "react-native-paper";
 import { CalendarPicker, Calendar } from "react-native-calendars";
 import pickerOptions from "../config/pickerOptions";
-import CustomButton from "../components/CustomButton";
+import CustomButton from "./CustomButton";
+import AppButton from "./AppButton";
+
+const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 
 function MealPlanDatePicker({ recipe, addToMealPlan }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [optionVisible, setOptionVisible] = useState(false);
-  const [mealDate, setMealDate] = useState(Date());
+  let tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const [mealDate, setMealDate] = useState("2020-11-23");
   const markedCurDate = {
     [mealDate]: {
       selected: true,
@@ -44,14 +51,25 @@ function MealPlanDatePicker({ recipe, addToMealPlan }) {
     disabledArrowColor: colors.lightGrey,
     monthTextColor: colors.primary,
     indicatorColor: colors.primary,
-    textDayFontWeight: "300",
+    textDayFontWeight: "100",
     textMonthFontWeight: "bold",
-    textDayHeaderFontWeight: "300",
-    textDayFontSize: 16,
-    textMonthFontSize: 16,
-    textDayHeaderFontSize: 16,
+    textDayHeaderFontWeight: "100",
+    textDayFontSize: 14,
+    textMonthFontSize: 14,
+    textDayHeaderFontSize: 14,
   };
-  const [daypicked, setDayPicked] = useState(new Date());
+  const [daypicked, setDayPicked] = useState(tomorrow);
+  const [mealTypes, setMealTypes] = useState(pickerOptions.mealtype);
+  const [mealTypeSelected, setMealTypeSelected] = useState(pickerOptions.mealtype[0]);
+  const toggleMealType = (item) => {
+    let temp = [...mealTypes];
+    for (let i = 0; i < temp.length; i++) {
+      i === item.id ? temp[i].select = true : temp[i].select = false;
+    }
+    setMealTypes(temp);
+    setMealTypeSelected(item.label);
+  };
+
   return (
     <>
       <View style={styles.centeredView}>
@@ -67,14 +85,26 @@ function MealPlanDatePicker({ recipe, addToMealPlan }) {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <TouchableHighlight
+              {/* <TouchableHighlight
                 style={styles.cancelButton}
                 onPress={() => {
                   setModalVisible(!modalVisible);
                 }}
               >
                 <Text style={styles.textStyle}>CANCEL</Text>
-              </TouchableHighlight>
+              </TouchableHighlight> */}
+              <Text
+                style={{
+                  color: "#4F555E",
+                  fontSize: 20,
+                  paddingHorizontal: 8,
+                  fontWeight: "600",
+                  paddingVertical: 12,
+                  textAlign: "center",
+                }}
+              >
+                {recipe.title}
+              </Text>
               <Calendar
                 style={styles.calendar}
                 theme={calendarTheme}
@@ -83,7 +113,7 @@ function MealPlanDatePicker({ recipe, addToMealPlan }) {
                 onDayPress={(day) => {
                   setMealDate(day.dateString);
                   setDayPicked(day);
-                  setOptionVisible(true);
+                  // setOptionVisible(true);
                 }}
                 hideExtraDays={true}
                 disableMonthChange={true}
@@ -92,44 +122,44 @@ function MealPlanDatePicker({ recipe, addToMealPlan }) {
                 enableSwipeMonths={true}
                 markedDates={markedCurDate}
               />
-            </View>
-          </View>
-        </Modal>
-        <Modal
-          backdropColor={"#F2F5F8"}
-          backdropOpacity={0.5}
-          coverScreen={true}
-          isVisible={optionVisible}
-          onBackdropPress={() => setOptionVisible(false)}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <TouchableHighlight
-                style={styles.cancelButton}
-                onPress={() => {
-                  setOptionVisible(!optionVisible);
-                }}
-              >
-                <Text style={styles.textStyle}>CANCEL</Text>
-              </TouchableHighlight>
-              <View style={styles.scrollContainer}>
+              <View style={[styles.buttonContainer, {justifyContent: "center", marginHorizontal: 10}]}>
                 <FlatList
                   data={pickerOptions.mealtype}
-                  numColumns={1}
+                  horizontal
+                  scrollEnabled={false}
+                  showsHorizontalScrollIndicator={false}
+                  keyExtractor={(listing) => listing.label}
                   renderItem={({ item }) => (
-                    <PickerItem
-                      item={item}
-                      label={item.label}
-                      onPress={() => {
-                        setOptionVisible(false);
-                        addToMealPlan(
-                          daypicked.timestamp,
-                          item.label.toString(),
-                          recipe
-                        );
-                      }}
+                    <AppButton
+                      color={item.select ? item.colorCode : colors.white}
+                      borderColor={item.colorCode}
+                      // borderColor={item.select ? item.colorCode : colors.grey}
+                      textColor={item.select ? colors.white : item.colorCode}
+                      onPress={() => toggleMealType(item)}
+                      title={item.buttonLabel}
+                      width={(screenWidth-90)/3}
                     />
                   )}
+                ></FlatList>
+              </View>
+              <View style={styles.buttonContainer}>
+                <CustomButton
+                  title="ADD TO MEAL PLAN"
+                  onPress={() => {
+                    addToMealPlan(
+                      daypicked.timestamp,
+                      mealTypeSelected,
+                      recipe
+                    );
+                    setModalVisible(!modalVisible);}}
+                  color={colors.primary}
+                  textColor={colors.white}
+                />
+                <CustomButton
+                  title="BACK"
+                  onPress={() => setModalVisible(!modalVisible)}
+                  color={colors.grey}
+                  textColor={colors.white}
                 />
               </View>
             </View>
@@ -152,6 +182,11 @@ function MealPlanDatePicker({ recipe, addToMealPlan }) {
 }
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
   button: {
     borderRadius: 30,
     padding: 10,
@@ -176,7 +211,6 @@ const styles = StyleSheet.create({
     fontSize: 40,
   },
   centeredView: {
-    alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -210,16 +244,16 @@ const styles = StyleSheet.create({
   },
   calendar: {
     padding: 8,
-    margin: 25,
     borderRadius: 20,
     shadowColor: colors.shadow,
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 0,
     },
-    shadowOpacity: 1,
-    shadowRadius: 10,
-    elevation: 9,
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0,
+    width: 300,
   },
 });
 

@@ -26,8 +26,8 @@ export default {
         { label: "unit", value: 7}
     ],
     mealtype: [
-        { label: "Breakfast", value: 1 },
-        { label: "Lunch", value: 2 },
-        { label: "Dinner", value: 3 },
+        { label: "Breakfast", value: 1, select: true, id: 0, colorCode: "#61911b", buttonLabel: "⛅ Breakfast" },
+        { label: "Lunch", value: 2, select: false, id: 1, colorCode: "#ff7040", buttonLabel: "☀️ Lunch"  },
+        { label: "Dinner", value: 3, select: false, id: 2, colorCode: "#42518c", buttonLabel: "🌙 Dinner"  },
     ]
 }
