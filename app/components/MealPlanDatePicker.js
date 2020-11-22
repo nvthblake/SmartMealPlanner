@@ -20,6 +20,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Button } from "react-native-paper";
 import { CalendarPicker, Calendar } from "react-native-calendars";
 import pickerOptions from "../config/pickerOptions";
+import CustomButton from "../components/CustomButton";
 
 function MealPlanDatePicker({}) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -137,6 +138,7 @@ function MealPlanDatePicker({}) {
             console.log("Pressed");
             setModalVisible(true);
           }}
+          style={styles.button}
         >
           Add to meal plan
         </Button>
@@ -146,6 +148,11 @@ function MealPlanDatePicker({}) {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    borderRadius: 30,
+    padding: 10,
+    elevation: 2,
+  },
   scrollContainer: {
     height: 200,
     width: 200,

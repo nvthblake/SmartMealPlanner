@@ -233,11 +233,6 @@ function MealPlanTab(state) {
       main_course.length
     );
 
-    // display
-    console.log("-----Breakfast: ", breakfastRecipes);
-    console.log("-----Lunch: ", lunchRecipes);
-    console.log("-----Dinner: ", dinnerRecipes);
-
     let mealPlanGenerate = {};
     getMaxLength (Math.max(
       breakfastRecipes.length,

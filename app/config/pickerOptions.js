@@ -26,8 +26,8 @@ export default {
         { label: "unit", value: 7}
     ],
     mealtype: [
-        { label: "breakfast", value: 1 },
-        { label: "lunch", value: 2 },
-        { label: "dinner", value: 3 },
+        { label: "Breakfast", value: 1 },
+        { label: "Lunch", value: 2 },
+        { label: "Dinner", value: 3 },
     ]
 }
