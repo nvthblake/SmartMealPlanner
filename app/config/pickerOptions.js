@@ -24,5 +24,10 @@ export default {
         { label: "kg", value: 3 },
         { label: "ml", value: 4 },
         { label: "unit", value: 7}
+    ],
+    mealtype: [
+        { label: "Breakfast", value: 1 },
+        { label: "Lunch", value: 2 },
+        { label: "Dinner", value: 3 },
     ]
 }

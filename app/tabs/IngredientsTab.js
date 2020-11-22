@@ -468,7 +468,7 @@ function expDateToColor(expDateStr) {
   var dateDiff = Math.floor((expDate - today) / (1000 * 60 * 60 * 24));
   if (dateDiff <= 4) return [dateDiff, "red"];
   else if (dateDiff <= 8) return [dateDiff, "orange"];
-  else if (dateDiff <= 14) return [dateDiff, "yellow"];
+  else if (dateDiff <= 14) return [dateDiff, "goldenrod"];
   else return [dateDiff, "green"];
 }
 
