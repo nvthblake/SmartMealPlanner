@@ -84,15 +84,12 @@ function MealPlanTab(state) {
   const [selectDate, setSelectDate] = useState(curDate);
   const [heartImage, setHeartImage] = useState(null);
   const [selectMealPlan, getMealPlanOnDate] = useState([]);
-  const [maxlength, getMaxLength] = useState(0);
+  const [maxlength, setMaxLength] = useState(0);
   const [mealPlan, setMealPlan] = useState([]);
   const reactiveRecipes = useSelector(tempState => tempState.ingredients);
 
   useEffect(() => {
-    // // console.log("Hello")
-    // // console.log(recipes[0])
     setMealPlan(generateMealPlan())
-    // console.log(mealPlan)
     getMealPlanOnDate(mealPlan[0])
     if (mealPlan[0] === undefined || mealPlan[0].length === 0) {
       // setIsResultEmpty(true)
@@ -166,7 +163,7 @@ function MealPlanTab(state) {
 
     console.log("\ndate from today", index);
     console.log("mealPlan: ", Object.keys(mealPlan))
-    console.log("selectMealPlan: ", mealPlan[index])
+    console.log("selectMealPlan: ", Object.keys(mealPlan[index]))
     if (mealPlan[index] != undefined) {
       console.log("onDateSelect mealPlan: ", Object.keys(mealPlan[index]));
       getMealPlanOnDate(mealPlan[index]);
@@ -205,99 +202,93 @@ function MealPlanTab(state) {
    */
   const generateMealPlan = () => {
     const filteredRecipes = getRecipesBasedOnFilter(recipes);
+    let breakfastType = ["breakfast", "salad", "soup", "sauce", "side dish"];
+    let lunchDinnerType = ["main course", "snack", "dinner", "lunch"];
+
     let breakfastRecipes = [];
     let lunchRecipes = [];
     let dinnerRecipes = [];
 
-    let breakfast = filteredRecipes.filter(
-      (recipe) => recipe.dishTypes.indexOf("breakfast") > -1
-    );
-    let main_course = filteredRecipes.filter(
-      (recipe) => recipe.dishTypes.indexOf("main course") > -1
-    );
-    let salad = filteredRecipes.filter(
-      (recipe) => recipe.dishTypes.indexOf("salad") > -1
-    );
-    let soup = filteredRecipes.filter(
-      (recipe) => recipe.dishTypes.indexOf("soup") > -1
-    );
-    let sauce = filteredRecipes.filter(
-      (recipe) => recipe.dishTypes.indexOf("sauce") > -1
-    );
+    breakfastType.forEach(function (type_name, index) {
+      // get recipe from API
+      let breakfast = filteredRecipes.filter(
+        (recipe) => recipe.dishTypes.indexOf(type_name) > -1
+      );
 
-    breakfast.forEach(function (recipe) {
-      if (breakfastRecipes.find((e) => e.id === recipe.id) == false) {
-        breakfastRecipes.push(recipe);
-      }
+      // add to breakfastRecipes, not repete recipe
+      breakfast.forEach(function (recipe) {
+        if (breakfastRecipes.some((e) => e.id === recipe.id) == false) {
+          breakfastRecipes.push(recipe);
+        }
+      });
     });
 
-    salad.forEach(function (recipe) {
-      if (breakfastRecipes.some((e) => e.id === recipe.id) == false) {
-        breakfastRecipes.push(recipe);
-      }
-    });
-    sauce.forEach(function (recipe) {
-      if (breakfastRecipes.some((e) => e.id === recipe.id) == false) {
-        breakfastRecipes.push(recipe);
-      }
-    });
-    soup.forEach(function (recipe) {
-      if (breakfastRecipes.some((e) => e.id === recipe.id) == false) {
-        breakfastRecipes.push(recipe);
-      }
+    let allLunchDinner = [];
+    lunchDinnerType.forEach(function (type_name, index) {
+      let lunchDinner = filteredRecipes.filter(
+        (recipe) => recipe.dishTypes.indexOf(type_name) > -1
+      );
+
+      // add to breakfastRecipes, not repete recipe
+      lunchDinner.forEach(function (recipe) {
+        if (allLunchDinner.some((e) => e.id === recipe.id) == false) {
+          allLunchDinner.push(recipe);
+        }
+      });
     });
 
     // Divide lunch to half
-    lunchRecipes = main_course.slice(0, Math.ceil(main_course.length / 2));
-    dinnerRecipes = main_course.slice(
-      Math.ceil(main_course.length / 2),
-      main_course.length
+    lunchRecipes = allLunchDinner.slice(0, Math.ceil(allLunchDinner.length / 2));
+    dinnerRecipes = allLunchDinner.slice(
+      Math.ceil(allLunchDinner.length / 2),
+      allLunchDinner.length
     );
 
-    let mealPlanGenerate = {};
-    getMaxLength(Math.max(
+
+    // display
+    console.log("\n-----Breakfast: ", breakfastRecipes.length);
+    console.log("-----Lunch: ", lunchRecipes.length);
+    console.log("-----Dinner: ", dinnerRecipes.length);
+    
+    let maxlengthNew = Math.max(
       breakfastRecipes.length,
       lunchRecipes.length,
       dinnerRecipes.length
-    ));
-    const minlength = Math.min(
+    );
+    setMaxLength(maxlengthNew - 1);
+    let minlength = Math.min(
       breakfastRecipes.length,
       lunchRecipes.length,
       dinnerRecipes.length
     );
 
-    console.log("-----maxlength", maxlength);
+    console.log("-----maxlength", maxlengthNew);
     console.log("-----minlength", minlength);
 
-    // console.log("here", Math.ceil(main_course.length / 2));
-    // console.log("here", Math.floor(main_course.length / 2));
-    for (var i = 0; i < maxlength; i++) {
+    let header = ["Breakfast", "Lunch", "Dinner"];
+    let mealPlanGenerate = {};
+    for (var i = 0; i < maxlengthNew; i++) {
       mealPlanGenerate[i] = [];
-      let b = breakfastRecipes[i];
-      let l = lunchRecipes[i];
-      let d = dinnerRecipes[i];
+      let dishRecipe = [
+        breakfastRecipes[i],
+        lunchRecipes[i],
+        dinnerRecipes[i]
+      ]
+      dishRecipe.forEach(function (item, index) {
+        if (item !== undefined) {
+          let meal = {
+            "mealType": header[index],
+            "recipeObj": item
+          };
+          mealPlanGenerate[i].push(meal);
+        }
+        else if (item === undefined && minlength > 0) {
+          let dishIndex = minlength - 1;
+          let meal = mealPlanGenerate[dishIndex][index];
+          mealPlanGenerate[i].push(meal);
+        }
 
-      if (b !== undefined) {
-        let meal = {
-          "mealType": "Breakfast",
-          "recipeObj": b
-        };
-        mealPlanGenerate[i].push(meal);
-      }
-      if (l !== undefined) {
-        let meal = {
-          "mealType": "Lunch",
-          "recipeObj": l
-        };
-        mealPlanGenerate[i].push(meal);
-      }
-      if (d !== undefined) {
-        let meal = {
-          "mealType": "Dinner",
-          "recipeObj": d
-        };
-        mealPlanGenerate[i].push(meal);
-      }
+      });
     }
     return mealPlanGenerate;
   };
