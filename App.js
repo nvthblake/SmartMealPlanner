@@ -34,49 +34,70 @@ const store = createStore(reducers);
 const db = SQLite.openDatabase("db2.db");
 
 export default function App() {
-  // React.useEffect(() => {
-  //   // db.transaction(tx => {
-  //   //   tx.executeSql(
-  //   //     `DROP TABLE IF EXISTS FactFridge;`
-  //   //   );
-  //   //   });
-  //   db.transaction((tx) => {
-  //     tx.executeSql(
-  //       `CREATE TABLE IF NOT EXISTS FactFridge \
-  //       (id INTEGER PRIMARY KEY NOT NULL, \
-  //       createdTs DATETIME DEFAULT CURRENT_TIMESTAMP, \
-  //       ingredient VARCHAR NOT NULL, \
-  //       qty INTEGER NOT NULL, \
-  //       unit VARCHAR NOT NULL, \
-  //       category VARCHAR NOT NULL, \
-  //       dayToExp INTEGER NOT NULL, \
-  //       expDate DATETIME NULL, \
-  //       inFridge INT(1), \
-  //       imageUri VARCHAR);`
-  //     );
-  //   });
-  //   // db.transaction(tx => {
-  //   //   tx.executeSql(
-  //   //     `DROP TABLE IF EXISTS ShoppingList;`
-  //   //   );
-  //   //   });
-  //   db.transaction((tx) => {
-  //     tx.executeSql(
-  //       `CREATE TABLE IF NOT EXISTS ShoppingList \
-  //       (id INTEGER PRIMARY KEY NOT NULL, \
-  //       createdTs DATETIME DEFAULT CURRENT_TIMESTAMP, \
-  //       ingredient VARCHAR NOT NULL, \
-  //       checked INT(1) NOT NULL);`
-  //     );
-  //   });
-  // }, []);
+  React.useEffect(() => {
+    // db.transaction(tx => {
+    //   tx.executeSql(
+    //     `DROP TABLE IF EXISTS FactFridge;`
+    //   );
+    //   });
+    db.transaction((tx) => {
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS FactFridge \
+        (id INTEGER PRIMARY KEY NOT NULL, \
+        createdTs DATETIME DEFAULT CURRENT_TIMESTAMP, \
+        ingredient VARCHAR NOT NULL, \
+        qty INTEGER NOT NULL, \
+        unit VARCHAR NOT NULL, \
+        category VARCHAR NOT NULL, \
+        dayToExp INTEGER NOT NULL, \
+        expDate DATETIME NULL, \
+        inFridge INT(1), \
+        imageUri VARCHAR);`
+      );
+    });
+    // db.transaction(tx => {
+    //   tx.executeSql(
+    //     `DROP TABLE IF EXISTS UserProfile;`
+    //   );
+    //   });
+    db.transaction((tx) => {
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS UserProfile \
+        (id INTEGER PRIMARY KEY NOT NULL, \
+        userName VARCHAR, \
+        userProfileImageUri VARCHAR);`,
+        [],
+        () => {
+          db.transaction((tx) => {
+            tx.executeSql(
+              "INSERT INTO UserProfile (id, userName, userProfileImageUri) values (0, 'Best Person Ever', '')"
+            );
+          });
+        }
+      );
+    });
+    // db.transaction(tx => {
+    //   tx.executeSql(
+    //     `DROP TABLE IF EXISTS ShoppingList;`
+    //   );
+    //   });
+    db.transaction((tx) => {
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS ShoppingList \
+        (id INTEGER PRIMARY KEY NOT NULL, \
+        createdTs DATETIME DEFAULT CURRENT_TIMESTAMP, \
+        ingredient VARCHAR NOT NULL, \
+        checked INT(1) NOT NULL);`
+      );
+    });
+  }, []);
 
-  // return (
-  //   <Provider store={store}>
-  //     <NavigationContainer>
-  //       <AppNavigator />
-  //     </NavigationContainer>
-  //   </Provider>
-  // );
-  return <IngredientSlider />;
+  return (
+    <Provider store={store}>
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
+    </Provider>
+  );
+  // return <IngredientSlider />;
 }
