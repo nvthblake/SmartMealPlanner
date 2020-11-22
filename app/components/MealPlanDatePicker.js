@@ -14,7 +14,6 @@ import AppText from "./AppText";
 import Screen from "./Screen";
 import PickerItem from "./PickerItem";
 import colors from "../config/colors";
-import { Picker } from "@react-native-picker/picker";
 import Modal from "react-native-modal";
 import { ScrollView } from "react-native-gesture-handler";
 import { Button } from "react-native-paper";
@@ -22,7 +21,7 @@ import { CalendarPicker, Calendar } from "react-native-calendars";
 import pickerOptions from "../config/pickerOptions";
 import CustomButton from "../components/CustomButton";
 
-function MealPlanDatePicker({recipe, addToMealPlan}) {
+function MealPlanDatePicker({ recipe, addToMealPlan }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [optionVisible, setOptionVisible] = useState(false);
   const [mealDate, setMealDate] = useState("2020-11-28");
@@ -83,7 +82,7 @@ function MealPlanDatePicker({recipe, addToMealPlan}) {
                 minDate={new Date()}
                 onDayPress={(day) => {
                   setMealDate(day.dateString);
-                  setDayPicked(day)
+                  setDayPicked(day);
                   setOptionVisible(true);
                 }}
                 hideExtraDays={true}
@@ -123,7 +122,11 @@ function MealPlanDatePicker({recipe, addToMealPlan}) {
                       label={item.label}
                       onPress={() => {
                         setOptionVisible(false);
-                        addToMealPlan(daypicked.timestamp,item.label.toString(),recipe)
+                        addToMealPlan(
+                          daypicked.timestamp,
+                          item.label.toString(),
+                          recipe
+                        );
                       }}
                     />
                   )}

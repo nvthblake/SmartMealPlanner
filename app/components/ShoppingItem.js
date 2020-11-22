@@ -36,6 +36,7 @@ function ShoppingItem({ item, pressHandler }) {
                 : setHidden(styles.hidden);
             }}
             color={colors.primary}
+            uncheckedColor={colors.primary}
           />
           <Text style={style}>{item.name}</Text>
         </View>
