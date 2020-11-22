@@ -74,18 +74,20 @@ function MealPlanTab(state) {
   const favoriteRecipes = ingredients.favoriteRecipes;
 
   const curDate = new Date();
+  const defaultMealPlan = 6;
 
   // State vars
   const [isLoading, setIsLoading] = useState(true);
   const [isResultEmpty, setIsResultEmpty] = useState(false);
   const [categories, setCategory] = useState(INITIAL_CATEGORIES_STATE);
   const [chosenRecipe, setChosenRecipe] = useState(null);
-  const [numMealPlans, setNumMealPlans] = useState(6);
+  const [numMealPlans, setNumMealPlans] = useState(0);
   const [selectDate, setSelectDate] = useState(curDate);
   const [heartImage, setHeartImage] = useState(null);
   const [selectMealPlan, getMealPlanOnDate] = useState([]);
   const [maxlength, setMaxLength] = useState(0);
   const [mealPlan, setMealPlan] = useState([]);
+  const [otherRecipes, setOtherRecipes] = useState([]);
   const reactiveRecipes = useSelector(tempState => tempState.ingredients);
 
   useEffect(() => {
@@ -202,6 +204,10 @@ function MealPlanTab(state) {
    */
   const generateMealPlan = () => {
     const filteredRecipes = getRecipesBasedOnFilter(recipes);
+    const otherRecipes = filteredRecipes.filter(
+      (recipe) => !recipe.vegetarian && !recipe.veryPopular && !recipe.veryHealthy
+    );
+    setOtherRecipes(otherRecipes);
     let breakfastType = ["breakfast", "salad", "soup", "sauce", "side dish"];
     let lunchDinnerType = ["main course", "snack", "dinner", "lunch"];
 
@@ -255,6 +261,14 @@ function MealPlanTab(state) {
       dinnerRecipes.length
     );
     setMaxLength(maxlengthNew - 1);
+    if (maxlengthNew < numMealPlans) {
+      // maxlengthNew = numMealPlans + 1;
+      setMaxLength(maxlengthNew);
+      setNumMealPlans(maxlengthNew);
+    }
+    else {
+      setNumMealPlans(defaultMealPlan);
+    }
     let minlength = Math.min(
       breakfastRecipes.length,
       lunchRecipes.length,
@@ -321,14 +335,15 @@ function MealPlanTab(state) {
   };
 
   useEffect(() => {
-    setNumMealPlans(maxlength);
     getMealPlanOnDate(mealPlan[0]);
     onDateSelect(curDate);
   }, [ingredientsInFridge]);
 
-  useEffect(() => {
-    setNumMealPlans(maxlength);
-  }, [maxlength]);
+  // useEffect(() => {
+  //   setNumMealPlans(maxlength);
+  // }, [maxlength]);
+
+
 
   return (
     <Screen style={styles.screen}>
@@ -417,6 +432,8 @@ function MealPlanTab(state) {
             </View>
           )}
 
+          <View style={styles.separator}></View>
+
           {/* Favorite section */}
           {favoriteRecipes.length > 0 && (
             <View>
@@ -444,8 +461,39 @@ function MealPlanTab(state) {
               />
             </View>
           )}
+
+          {/* Exploring */}
+          {otherRecipes.length > 0 && (
+            <View>
+              {/* Header */}
+              <View style={styles.sectionHeader}>
+                <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                  Exploring
+                </Text>
+              </View>
+
+              {/* Recipe Cards */}
+              <FlatList
+                style={styles.recipeScroll}
+                data={otherRecipes}
+                horizontal={true}
+                keyExtractor={(recipe) => recipe.id.toString()}
+                renderItem={({ recipe, index }) => {
+                  return (
+                    <RecipeCard
+                      recipe={otherRecipes[index]}
+                      setChosenRecipeFunc={setChosenRecipe}
+                    />
+                  );
+                }}
+              />
+            </View>
+          )}
+
         </ScrollView>
       )}
+
+
 
       {/* Modal Section */}
       <Modal
@@ -467,7 +515,6 @@ function MealPlanTab(state) {
                     marginRight: 14,
                     height: 160,
                     borderRadius: 10,
-                    marginRight: 8,
                   }}
                 ></Image>
                 <TouchableOpacity
@@ -501,7 +548,7 @@ function MealPlanTab(state) {
                 >
                   {chosenRecipe.title}
                 </Text>
-                <MealPlanDatePicker recipe={chosenRecipe} addToMealPlan={addToMealPlan}/>
+                <MealPlanDatePicker recipe={chosenRecipe} addToMealPlan={addToMealPlan} />
                 <View
                   style={{
                     height: 1,
@@ -597,7 +644,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 10,
-    paddingBottom: 5,
+    // paddingBottom: 5,
   },
   shadowBox: {
     // shadow
@@ -677,6 +724,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     // marginTop: screenHeight / 7,
     padding: 12,
+  },
+  separator: {
+    marginTop: 10,
+    marginBottom: 5,
+    marginRight: 15,
+    marginLeft: 20,
+    height: 1,
+    backgroundColor: colors.lightGrey,
   },
 });
 
