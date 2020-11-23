@@ -148,11 +148,11 @@ function ScanTab(state) {
                 >
                   <AppForm
                     initialValues={{
-                      ingredient: temp_ingredient[index],
+                      ingredient: "",
                       qty: "",
                       unit: { label: "unit", value: 7 },
-                      category: temp_category[index],
-                      dayToExp: temp_exp[index],
+                      category: "",
+                      dayToExp: "",
                       imageUri: item.imageUri,
                     }}
                     onSubmit={handleSubmit}
