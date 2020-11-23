@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flexWrap: "wrap",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
