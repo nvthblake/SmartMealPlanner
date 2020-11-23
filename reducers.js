@@ -82,15 +82,10 @@ const ingredientsReducer = (state = INITIAL_STATE, action) => {
       return newState;
 
     case ADD_INGREDIENT_TO_CART:
-      cart.push(action.payload);
-      newState = {
-        fridge,
-        cart,
-        recipes,
-        ingredientToScan,
-        mealPlanner,
-        favoriteRecipes,
-      };
+      const cartIndexInsert = cart.findIndex((ingre => ingre.id === action.payload.id));
+      console.log("cartIndexInsert ", action.payload.name, action.payload.id, cartIndexInsert);
+      cartIndexInsert === -1 ? cart.push(action.payload) : []  ;
+      newState = { fridge, cart, recipes, ingredientToScan, mealPlanner, favoriteRecipes };
       return newState;
 
     case ADD_RECIPE:

@@ -104,7 +104,7 @@ function MealPlanTab(state) {
   // add favorite into mealplan
   const addToMealPlan = (date, selection, recipe) => {
     var msDiff = date - new Date().getTime(); //Future date - current date
-    var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 2;
+    var index = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 1;
     console.log(index);
     let old = mealPlan;
     let meal = {
@@ -417,11 +417,24 @@ function MealPlanTab(state) {
                   // keyExtractor={(recipe) => recipe.id.toString()}
                   renderItem={({ value, index }) => {
                     return (
-                      <RecipeCard
-                        header={selectMealPlan[index]["mealType"]}
-                        recipe={selectMealPlan[index]["recipeObj"]}
-                        setChosenRecipeFunc={setChosenRecipe}
-                      />
+                      <View style={{...Platform.select({
+                        ios: {
+                          shadowColor: colors.primary,
+                          shadowOffset: { width: 2, height: 2 },
+                          shadowOpacity: 0.4,
+                          shadowRadius: 5,
+                        },
+                        android: {
+                          elevation: 3,
+                        },
+                      }),}}>
+                        <RecipeCard
+                          header={selectMealPlan[index]["mealType"]}
+                          recipe={selectMealPlan[index]["recipeObj"]}
+                          setChosenRecipeFunc={setChosenRecipe}
+                        />
+
+                      </View>
                     );
                   }}
                 ></FlatList>
@@ -522,12 +535,12 @@ function MealPlanTab(state) {
                       ? addFavoriteRecipe(chosenRecipe)
                       : deleteFavoriteRecipe(chosenRecipe);
                   }}
-                  style={{ position: "absolute" }}
+                  style={{ position: "absolute", padding: 5 }}
                 >
                   <MaterialCommunityIcons
                     name={chosenRecipe.loved ? "heart" : "heart-outline"}
                     size={40}
-                    color={colors.font_red}
+                    color={chosenRecipe.loved ? colors.font_red : colors.white}
                   />
                 </TouchableOpacity>
                 <Text
@@ -659,6 +672,8 @@ const styles = StyleSheet.create({
     height: screenHeight / 3.7,
     paddingTop: 10,
     paddingBottom: 10,
+    // marginVertical: 5,
+    // backgroundColor: "red"
   },
   recipeScroll: {
     marginLeft: 6,

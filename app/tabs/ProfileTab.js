@@ -27,7 +27,7 @@ import ProgressBarAnimated from "react-native-progress-bar-animated";
 import Screen from "../components/Screen";
 // Database imports
 import { openDatabase } from "expo-sqlite";
-import { default as ModalSlider } from "react-native-modal";
+import Modal from "react-native-modal";
 import IngredientSlider from "../components/IngredientSlider";
 import CustomButton from "../components/CustomButton";
 
@@ -93,6 +93,7 @@ function Profile(state) {
   let Expirein3 = 0;
   let Expirein10 = 0;
   let Expired = 0;
+  const ingreCount = ingredients.fridge.length;
   ingredientsInFridge.forEach((element) => {
     const today = new Date();
     const expDate = Date.parse(element.expDate);
@@ -106,31 +107,13 @@ function Profile(state) {
     }
   });
   let fridgePct = Item < Limit ? Math.floor((Item / Limit) * 100) : 100;
-  const [sliderValues, setSliderValues] = useState(
-    new Array(ingredientsInFridge.length)
-  );
-  let sliderArrayTemp = [...sliderValues];
+  let sliderArrayTemp = Array(ingredientsInFridge.length);
 
   // Model State
   const [modalVisible, setModalVisible] = useState(false);
   const [modalSliderVisible, setModalSliderVisible] = useState(false);
 
-  const getInitUserImage = () => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        `SELECT userProfileImageUri FROM UserProfile WHERE id = 0;`,
-        [],
-        (_, { rows }) => {
-          setSelectedImage({ localUri: rows._array[0].userProfileImageUri });
-        },
-        (_, error) =>
-          console.log("ProfileTab getInitUserImage SQLite -> ", error)
-      );
-    });
-  };
-
   const handleUpdateUserImage = (imagePath) => {
-    console.log("HandleUpdateUserIamge -> ", imagePath);
     setSelectedImage({ localUri: imagePath });
     db.transaction((tx) => {
       tx.executeSql(
@@ -140,11 +123,23 @@ function Profile(state) {
         [imagePath],
         [],
         (_, error) =>
-          console.log("ProfileTab handleUpdateUserImage SQLite -> ", error)
-      );
-    });
-    console.log("uri is ", userImageUri);
-  };
+            console.log("ProfileTab handleUpdateUserImage SQLite -> ", error)
+      )
+    })
+  }
+
+  const getInitUserImage = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `SELECT userProfileImageUri FROM UserProfile WHERE id = 0;`,
+        [],
+        (_, { rows }) => {
+          setSelectedImage({ localUri: rows._array[0].userProfileImageUri });
+        },  
+        (_, error) => console.log("ProfileTab getInitUserImage SQLite -> ", error),
+      )
+    })
+  }
 
   useEffect(getInitUserImage, []);
 
@@ -155,6 +150,7 @@ function Profile(state) {
           marginLeft: screenWidth * 0.02,
           marginRight: screenWidth * 0.02,
           paddingBottom: 50,
+          paddingTop: 55,
         }}
       >
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -256,12 +252,13 @@ function Profile(state) {
                 fontColor={colors.grey}
               />
               <CircularOverview
-                stat={Expirein10}
+                stat={ingreCount}
                 title={"Items need to"}
                 title2={"update"}
                 size={Math.floor(screenWidth * 0.2)}
                 fontSize={screenWidth * 0.1}
                 fontColor={colors.grey}
+                borderColor={ingreCount > 0 ? colors.font_red : colors.grey}
                 onPress={() => {
                   setModalSliderVisible(true);
                 }}
@@ -276,7 +273,7 @@ function Profile(state) {
               />
             </View>
           </CardView>
-          <Text
+          {/* <Text
             style={[
               { marginLeft: screenWidth * 0.06, fontSize: screenWidth * 0.06 },
               styles.suggestHeader,
@@ -290,11 +287,11 @@ function Profile(state) {
               eiusmod tempor incididunt ut labore et dolore magna aliqua aliquip
               ex ea commodo consequat.{" "}
             </Text>
-          </CardView>
+          </CardView> */}
           <View style={styles.centeredView}>
-            <ModalSlider
+            <Modal
               backdropColor={"#F2F5F8"}
-              backdropOpacity={1}
+              backdropOpacity={0.5}
               coverScreen={true}
               isVisible={modalSliderVisible}
               onBackdropPress={() => setModalSliderVisible(false)}
@@ -309,7 +306,7 @@ function Profile(state) {
                       }}
                       fontSize={20}
                     >
-                      How much ingredient did you use??
+                      How much ingredient do you have left?
                     </AppText>
                   </View>
                   <FlatList
@@ -318,16 +315,9 @@ function Profile(state) {
                     keyExtractor={(ingredient) => ingredient.id.toString()}
                     renderItem={({ ingredient, index }) => (
                       <IngredientSlider
-                        title={ingredientsInFridge[index].ingredient}
-                        value={(measure) => {
-                          console.log(
-                            measure +
-                              " " +
-                              ingredientsInFridge[index].ingredient
-                          );
-                          // let sliderArray = [...sliderValues];
-                          sliderArrayTemp.splice(index, 1, measure);
-                          // console.log(sliderValues);
+                        ingredient={ingredientsInFridge[index]}
+                        value={(measure, newQty) => {
+                          sliderArrayTemp.splice(index, 1, newQty);
                         }}
                       />
                     )}
@@ -338,18 +328,9 @@ function Profile(state) {
                       color={colors.primary}
                       textColor={colors.white}
                       onPress={() => {
+                        console.log("Slider temp ", sliderArrayTemp);
                         ingredientsInFridge.forEach((ingre, index) => {
-                          let newQty = round(
-                            ingre.qty * (1.0 - parseFloat(sliderValues[index])),
-                            1
-                          );
-                          // let newQty = ingre.qty;
-                          console.log(
-                            ingre.ingredient,
-                            sliderValues[index],
-                            newQty
-                          );
-                          setSliderValues(sliderArrayTemp);
+                          let newQty = sliderArrayTemp[index];
                           db.transaction((tx) => {
                             tx.executeSql(
                               "UPDATE FactFridge SET qty = ? WHERE id = ?;",
@@ -389,12 +370,6 @@ function Profile(state) {
                       }}
                     />
                     <CustomButton
-                      title="DELETE"
-                      // onPress={() => handleDelete(selectedIngre)}
-                      color={colors.danger}
-                      textColor={colors.white}
-                    />
-                    <CustomButton
                       title="CANCEL"
                       onPress={() => setModalSliderVisible(false)}
                       color={colors.medium}
@@ -403,12 +378,12 @@ function Profile(state) {
                   </View>
                 </View>
               </View>
-            </ModalSlider>
+            </Modal>
           </View>
           <View style={styles.centeredView}>
-            <ModalSlider
+            <Modal
               backdropColor={"#F2F5F8"}
-              backdropOpacity={0.5}
+              backdropOpacity={0.9}
               coverScreen={true}
               isVisible={modalVisible}
               onBackdropPress={() => setModalVisible(false)}
@@ -445,7 +420,7 @@ function Profile(state) {
                   </TouchableHighlight>
                 </View>
               </View>
-            </ModalSlider>
+            </Modal>
           </View>
         </ScrollView>
       </View>
@@ -474,6 +449,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20,
     padding: 10,
+    marginTop: screenHeight * 0.3,
   },
   suggestHeader: {
     // marginLeft: 20,
@@ -488,7 +464,7 @@ const styles = StyleSheet.create({
     // borderRadius: 20,
     padding: 20,
     // width: "100%",
-    alignItems: "flex-start",
+    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -499,10 +475,11 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   bottomedView: {
-    // flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: screenHeight - 220,
+    // marginHorizontal: 0,
+    margin: 0,
+    justifyContent: "flex-end",
+    // alignItems: "",
+    // marginTop: screenHeight - 211,
   },
   centeredView: {
     flex: 1,
@@ -562,13 +539,7 @@ const styles = StyleSheet.create({
   },
   imageView: {
     alignItems: "center",
-  },
-  welcome: {
-    marginTop: 20,
-    fontSize: 30,
-    fontWeight: "bold",
-    padding: 20,
-    color: colors.primary,
+    paddingBottom: 30,
   },
   fridgeheader: {
     marginTop: 20,

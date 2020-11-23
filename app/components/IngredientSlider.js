@@ -6,15 +6,18 @@ import Screen from "./Screen";
 import CustomSlider from "./CustomSlider";
 import colors from "../config/colors";
 
-function IngredientSlider({ title, value }) {
+function IngredientSlider({ ingredient, value }) {
   const screenWidth = Dimensions.get("window").width;
-  const [measure, setMeasure] = useState(0);
+  const [measure, setMeasure] = useState(1);
+  // let newQty = round(ingredient.qty * measure, 1);
+  const [newQty, setNewQty] = useState(ingredient.qty);
 
-  value(measure);
+  value(measure, newQty);
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <AppText style={{ width: 50, textAlign: "center" }}>{title}</AppText>
+        <AppText style={{ width: 50, textAlign: "center" }}>{ingredient.ingredient}</AppText>
+        <AppText style={{ width: 50, textAlign: "center" }}>{`${newQty} ${ingredient.unit}`}</AppText>
       </View>
       <View style={[styles.sliderContainer, {}]}>
         <View>
@@ -32,7 +35,7 @@ function IngredientSlider({ title, value }) {
               <View style={styles.tickShort} />
             </View>
             <View style={[styles.tickView]}>
-              <View style={styles.tick} />
+              <AppText fontSize={10}>Half</AppText>
             </View>
             <View style={[styles.tickView]}>
               <View style={styles.tickShort} />
@@ -55,8 +58,11 @@ function IngredientSlider({ title, value }) {
           minimumTrackTintColor={colors.primary}
           thumbTintColor={colors.primary}
           step={0.125}
+          value={1}
           onValueChange={(input) => {
             setMeasure(input);
+            setNewQty(round(ingredient.qty * input, 1));
+            // console.log("new qty", newQty);
           }}
         />
       </View>
@@ -117,5 +123,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
 });
+
+function round(value, precision) {
+  var multiplier = Math.pow(10, precision || 0);
+  return Math.round(value * multiplier) / multiplier;
+}
 
 export default IngredientSlider;

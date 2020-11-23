@@ -10,12 +10,13 @@ function AppButton({
   color = colors.white,
   size = 13,
   textColor = colors.primary,
+  width,
 }) {
   return (
     <TouchableOpacity
       style={[
         styles.button,
-        { backgroundColor: color, borderColor: borderColor, height: size + 15 },
+        { backgroundColor: color, borderColor: borderColor, height: size + 15, width: width },
       ]}
       onPress={onPress}
     >

@@ -115,11 +115,16 @@ function ScanTab(state) {
   const [viewHeight, setViewHeight] = useState(screenWidth * 0.5);
 
   const navigation = useNavigation();
-
+  const temp_ingredient = ["Carrot", "Meat", "Onion"];
+  const temp_category = [pickerOptions.categories[1], pickerOptions.categories[0], pickerOptions.categories[1]];
+  const temp_exp = ["10", "30", "10"];
   return (
     <Screen>
       <View style={styles.container}>
+        {/* Scan Button that pops up Camera */}
         <CameraPage />
+
+        {/* Form */}
         <FlatList
           data={ingredientToScan}
           horizontal
@@ -139,14 +144,14 @@ function ScanTab(state) {
               >
                 <View
                   style={{ flex: 1 }}
-                  // showsVerticalScrollIndicator={false}
+                // showsVerticalScrollIndicator={false}
                 >
                   <AppForm
                     initialValues={{
                       ingredient: "",
                       qty: "",
                       unit: { label: "unit", value: 7 },
-                      category: null,
+                      category: "",
                       dayToExp: "",
                       imageUri: item.imageUri,
                     }}

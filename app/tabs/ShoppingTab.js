@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -31,6 +31,10 @@ import {
 } from "../../actions";
 import AppTextInput from "../components/AppTextInput";
 import CustomButton from "../components/CustomButton";
+// Database imports
+import { openDatabase } from "expo-sqlite";
+
+const db = openDatabase("db2.db");
 
 // Dimensions
 const windowHeight = Dimensions.get("window").height;
@@ -54,11 +58,52 @@ function ShoppingTab(props) {
 
   const pressHandler = (ingredient) => {
     deleteIngredientInCart(ingredient);
+    db.transaction((tx) => {
+      tx.executeSql(
+        `DELETE FROM ShoppingList WHERE id = ?`,
+        [ingredient.id],
+        [],
+        (_, error) =>
+            console.log("ShoppingTab pressHandler SQLite -> ", error)
+      )
+    })
   };
 
   const submitHandler = () => {
-    addIngredientToCart({ name: text, id: Math.random().toString() });
+    addIngredientToCart({ name: text, id: text, checked: false });
+    db.transaction((tx) => {
+      tx.executeSql(
+        `INSERT INTO ShoppingList (name, id, checked) values (?, ?, ?)`,
+        [text, text, 0],
+        () => {console.log("Inserted to SQLite ", text, text)},
+        (_, error) =>
+            console.log("ShoppingTab submitHandler SQLite -> ", error)
+      )
+    })
   };
+
+  const getInitCart = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `SELECT name, id, checked FROM ShoppingList;`,
+        [],
+        (_, { rows }) => {
+          console.log("All initial items in cart ", rows)
+          rows._array.forEach((row) => {
+            checkBool = row.checked === 1 ? true : false
+            addIngredientToCart({
+              name: row.name,
+              id: row.id,
+              checked: checkBool,
+            });
+          });
+        },  
+        (_, error) => console.log("ShoppingTab getInitCart SQLite -> ", error),
+      )
+    })
+  }
+
+  useEffect(getInitCart, []);
 
   // Modal states
   const [modalVisible, setModalVisible] = useState(false);
@@ -89,7 +134,14 @@ function ShoppingTab(props) {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel",
                   },
-                  { text: "OK", onPress: () => clearCart() },
+                  { text: "OK", onPress: () => {
+                    clearCart();
+                    db.transaction((tx) => {
+                      tx.executeSql("DELETE FROM ShoppingList;",[],[],
+                      (_, error) =>
+                        console.log("ShoppingTab clearCart SQLite -> ", error));
+                    })
+                  } },
                 ],
                 { cancelable: false }
               );

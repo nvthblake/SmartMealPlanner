@@ -49,8 +49,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "95%",
-    margin: 2,
-    marginTop: 10,
+    marginHorizontal: 2,
+    // marginTop: 10,
   },
   icon: {
     marginRight: 5,

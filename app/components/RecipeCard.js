@@ -79,8 +79,8 @@ class RecipeCard extends Component {
                     source={{ uri: recipe.image }}
                     style={{
                       width: "100%",
-                      height: 131,
-                      borderRadius: 10,
+                      height: "55%",
+                      borderRadius: 15,
                       marginRight: 8,
                     }}
                   ></Image>
@@ -88,10 +88,10 @@ class RecipeCard extends Component {
                   {/* With header */}
                   {this.state.header != undefined && (
                     <View style={[styles.textHolder, { alignItems: 'center' }]}>
-                      <Text numberOfLines={2} style={styles.recipeHeader}>
+                      <Text numberOfLines={1} style={styles.recipeHeader}>
                         {this.state.header}
                       </Text>
-                      <Text numberOfLines={2} style={[styles.recipeTitle, { textAlign: 'center' }]}>
+                      <Text numberOfLines={1} style={[styles.recipeTitle, { textAlign: 'center' }]}>
                         {recipe.title}
                       </Text>
                     </View>
@@ -100,7 +100,7 @@ class RecipeCard extends Component {
                   {/* No header */}
                   {this.state.header == undefined && (
                     <View style={styles.textHolder}>
-                      <Text numberOfLines={2} style={styles.recipeTitleHeader}>
+                      <Text numberOfLines={1} style={styles.recipeTitleHeader}>
                         {recipe.title}
                       </Text>
                       {/* likes */}
@@ -140,7 +140,7 @@ class RecipeCard extends Component {
                     source={{ uri: recipe.image }}
                     style={{
                       width: "100%",
-                      height: 131,
+                      height: "55%",
                       borderRadius: 10,
                       marginRight: 8,
                     }}
@@ -149,10 +149,10 @@ class RecipeCard extends Component {
                   {/* With header */}
                   {this.state.header != undefined && (
                     <View style={[styles.textHolder, { alignItems: 'center' }]}>
-                      <Text numberOfLines={2} style={styles.recipeHeader}>
+                      <Text numberOfLines={1} style={styles.recipeHeader}>
                         {this.state.header}
                       </Text>
-                      <Text numberOfLines={2} style={[styles.recipeTitle, { textAlign: 'center' }]}>
+                      <Text numberOfLines={1} style={[styles.recipeTitle, { textAlign: 'center' }]}>
                         {recipe.title}
                       </Text>
                     </View>
@@ -161,11 +161,11 @@ class RecipeCard extends Component {
                   {/* No header */}
                   {this.state.header == undefined && (
                     <View style={styles.textHolder}>
-                      <Text numberOfLines={2} style={styles.recipeTitleHeader}>
+                      <Text numberOfLines={1} style={styles.recipeTitleHeader}>
                         {recipe.title}
                       </Text>
                       {/* likes */}
-                      <Text numberOfLines={2} style={styles.recipeLikes}>
+                      <Text numberOfLines={1} style={styles.recipeLikes}>
                         {nFormatter(recipe.likes, 1)}{" "} likes
                   </Text>
                       {/* missing */}
@@ -242,18 +242,19 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20,
     width: screenWidth / 2.4,
+    paddingBottom: 5,
     // height: '100%',
-    ...Platform.select({
-      ios: {
-        shadowColor: colors.primary,
-        shadowOffset: { width: 2, height: 2 },
-        shadowOpacity: 0.4,
-        shadowRadius: 5,
-      },
-      android: {
-        elevation: 3,
-      },
-    }),
+    // ...Platform.select({
+    //   ios: {
+    //     shadowColor: colors.primary,
+    //     shadowOffset: { width: 2, height: 2 },
+    //     shadowOpacity: 0.4,
+    //     shadowRadius: 5,
+    //   },
+    //   android: {
+    //     elevation: 3,
+    //   },
+    // }),
   },
 });
 
