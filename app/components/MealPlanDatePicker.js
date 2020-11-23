@@ -229,6 +229,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20,
     padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
   icon: {
     marginRight: 10,
