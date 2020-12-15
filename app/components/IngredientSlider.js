@@ -16,7 +16,7 @@ function IngredientSlider({ ingredient, value }) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <AppText style={{ width: 50, textAlign: "center" }}>{ingredient.ingredient}</AppText>
+        <AppText style={{ width: 50, textAlign: "center", }}>{ingredient.ingredient}</AppText>
         <AppText style={{ width: 50, textAlign: "center" }}>{`${newQty} ${ingredient.unit}`}</AppText>
       </View>
       <View style={[styles.sliderContainer, {}]}>
@@ -78,8 +78,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // backgroundColor: "red",
   },
-  textContainer: {
-    flexWrap: "wrap",
+  textContainer: { 
+    flexDirection:"column",
+    // flexWrap: "wrap",
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
